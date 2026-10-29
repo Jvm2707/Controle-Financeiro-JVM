@@ -1,0 +1,1898 @@
+/* Fonte */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==========================================================
+   1. Paleta de cores do aplicativo
+   ========================================================== */
+:root {
+    color-scheme: dark;
+
+    --pagina: #050506;
+    --fundo: #09090B;
+    --cartao: #111114;
+    --icone: #1C1C21;
+    --borda: #26262B;
+
+    --texto: #F4F4F5;
+    --texto-2: #A1A1AA;
+
+    --dourado: #F0B93B;
+    --roxo: #8B7CF6;
+    --sucesso: #34D399;
+    --erro: #FB7185;
+
+    --texto-botao: #1A1405;
+}
+
+/* 1.1 Modo claro */
+body.modo-claro {
+    color-scheme: light;
+
+    --pagina: #F4F2F8;
+    --fundo: #FFFFFF;
+    --cartao: #F6F5F9;
+    --icone: #ECE9F3;
+    --borda: #E1DCEB;
+
+    --texto: #211A2D;
+    --texto-2: #655B72;
+
+    --dourado: #94700B;
+    --roxo: #6D28D9;
+    --sucesso: #047857;
+    --erro: #BE123C;
+
+    --texto-botao: #FFFFFF;
+}
+
+/* ==========================================================
+   2. Base
+   ========================================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+
+    color: var(--texto);
+    background-color: var(--pagina);
+
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Todos os ícones do app */
+svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icone-dourado { color: var(--dourado); }
+.icone-roxo { color: var(--roxo); }
+.icone-verde { color: var(--sucesso); }
+
+h1, h2, h3 {
+    line-height: 1.3;
+}
+
+p {
+    margin: 0 0 12px;
+    color: var(--texto-2);
+}
+
+hr {
+    display: none;
+}
+
+::selection {
+    color: #FFFFFF;
+    background-color: var(--roxo);
+}
+
+/* ==========================================================
+   3. Cabeçalho
+   ========================================================== */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 8px;
+}
+
+header h1 {
+    margin: 0;
+
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+header h1::first-letter {
+    color: var(--dourado);
+}
+
+header p {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+}
+
+.botao-tema {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 8px 12px;
+
+    color: var(--texto);
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.botao-tema:hover {
+    background-color: var(--cartao);
+}
+
+.botao-tema svg {
+    width: 16px;
+    height: 16px;
+    color: var(--dourado);
+}
+
+body.modo-claro .icone-sol { display: none; }
+body:not(.modo-claro) .icone-lua { display: none; }
+
+/* ==========================================================
+   4. Conteúdo e seções
+   ========================================================== */
+main {
+    width: 100%;
+    max-width: 720px;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+section {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 40px;
+    padding: 20px 16px 24px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+section h2,
+.topo-despesas h2 {
+    margin: 0 0 14px;
+    padding: 0;
+
+    color: var(--texto);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.topo-despesas {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.topo-despesas h2 {
+    margin: 0;
+}
+
+.periodo-despesas {
+    color: var(--texto-2);
+    font-size: 0.8rem;
+}
+
+section h3 {
+    margin: 24px 0 10px;
+
+    color: var(--texto);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+/* ==========================================================
+   5. Formulários
+   ========================================================== */
+form {
+    margin: 20px 0 0;
+    padding: 20px 0 0;
+
+    border-top: 1px solid var(--borda);
+}
+
+/* Formulário logo abaixo de um título: sem linha duplicada */
+section h3 + form {
+    margin-top: 0;
+    padding-top: 0;
+
+    border-top: 0;
+}
+
+fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+legend {
+    margin: 0 0 14px;
+    padding: 0;
+
+    color: var(--texto);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+label {
+    display: block;
+    margin: 4px 0 8px;
+
+    color: var(--texto);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+input,
+select,
+textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: 44px;
+    margin-bottom: 18px;
+    padding: 10px 12px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    outline: none;
+
+    font-family: inherit;
+    font-size: 1rem;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--texto-2);
+    opacity: 0.8;
+}
+
+select {
+    cursor: pointer;
+}
+
+select option {
+    color: var(--texto);
+    background-color: var(--fundo);
+}
+
+input[type="date"],
+input[type="month"] {
+    cursor: pointer;
+    color-scheme: dark;
+}
+
+body.modo-claro input[type="date"],
+body.modo-claro input[type="month"] {
+    color-scheme: light;
+}
+
+@media (hover: hover) {
+    input:hover,
+    select:hover {
+        border-color: var(--roxo);
+    }
+}
+
+input:focus-visible,
+select:focus-visible {
+    border-color: var(--roxo);
+    box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.25);
+}
+
+input:disabled,
+select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+input[type="checkbox"] {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    min-height: 0;
+    margin: 0;
+
+    accent-color: var(--dourado);
+}
+
+.check-recorrente {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 16px;
+
+    cursor: pointer;
+}
+
+/* Arquivo escondido (usado no botão "Restaurar backup") */
+.arquivo-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.campo-com-botao {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.campo-com-botao input {
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.acoes-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.acoes-form button {
+    flex: 1 1 160px;
+}
+
+.mensagem-despesa {
+    min-height: 1.4em;
+    margin: 10px 0 0;
+
+    color: var(--sucesso);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* ==========================================================
+   6. Botões
+   ========================================================== */
+button {
+    padding: 11px 18px;
+
+    color: var(--texto-botao);
+    background-color: var(--dourado);
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+button:hover {
+    filter: brightness(1.08);
+}
+
+button:focus-visible,
+.item-menu:focus-visible {
+    outline: 2px solid var(--roxo);
+    outline-offset: 2px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+form button[type="submit"] {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.campo-com-botao button[type="submit"],
+.acoes-form button[type="submit"] {
+    width: auto;
+    margin-top: 0;
+}
+
+.botao-secundario {
+    color: var(--texto);
+    background-color: transparent;
+    border-color: var(--borda);
+}
+
+.botao-secundario:hover {
+    background-color: var(--cartao);
+    filter: none;
+}
+
+.link-categorias {
+    margin: -8px 0 18px;
+    padding: 0;
+
+    color: var(--dourado);
+    background: none;
+    border: 0;
+
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.link-categorias:hover {
+    background: none;
+}
+
+/* ==========================================================
+   7. Cards de resumo
+   ========================================================== */
+.resumo-despesas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.card-resumo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 14px;
+
+    background-color: var(--cartao);
+    border-radius: 14px;
+}
+
+.card-resumo-rotulo {
+    margin: 6px 0 0;
+
+    font-size: 0.78rem;
+    line-height: 1.3;
+}
+
+.card-resumo strong {
+    display: block;
+
+    color: var(--texto);
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+#total-receita { color: var(--sucesso); }
+#total-despesa { color: var(--erro); }
+
+#saldo-disponivel-reserva,
+#total-aportado-mes,
+#total-reserva {
+    color: var(--dourado);
+}
+
+.card-resumo strong.valor-negativo {
+    color: var(--erro);
+}
+
+/* Resumo com 3 cards (mês e reserva) */
+@media (min-width: 560px) {
+    .resumo-mes {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 559px) {
+    .resumo-mes .card-resumo:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ==========================================================
+   8. Menu da seção "Minhas despesas" e do backup
+   ========================================================== */
+.menu-despesas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.item-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.item-menu:hover {
+    background-color: var(--cartao);
+    filter: none;
+}
+
+.item-menu:focus-within {
+    outline: 2px solid var(--roxo);
+    outline-offset: -2px;
+}
+
+.item-menu-icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+
+    color: var(--dourado);
+    background-color: var(--icone);
+    border-radius: 12px;
+}
+
+.item-menu-texto {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.item-menu-texto strong {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.item-menu-texto span {
+    color: var(--texto-2);
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+
+.item-menu-seta {
+    width: 16px;
+    height: 16px;
+    color: var(--texto-2);
+}
+
+/* Botão redondo para descer */
+.botao-rolar {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    z-index: 1;
+
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    color: var(--texto);
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.botao-rolar:hover {
+    background-color: var(--cartao);
+    filter: none;
+}
+
+/* ==========================================================
+   9. Telas internas de "Minhas despesas"
+   ========================================================== */
+.tela-despesas[hidden] {
+    display: none;
+}
+
+.tela-despesas form {
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+.cabecalho-tela {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.cabecalho-tela h3 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.botao-voltar {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    color: var(--texto);
+    background-color: var(--icone);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+}
+
+.botao-voltar:hover {
+    background-color: var(--borda);
+    filter: none;
+}
+
+.contagem-despesas {
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================
+   10. Listas e linhas (despesas, categorias, metas, investimentos)
+   ========================================================== */
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lista-despesas {
+    margin-top: 12px;
+}
+
+.lista-despesas > li,
+.linha-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 10px;
+    padding: 12px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+#lista-investimentos {
+    margin-top: 12px;
+}
+
+.linha-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.linha-titulo {
+    font-size: 0.92rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.linha-meta {
+    color: var(--texto-2);
+    font-size: 0.76rem;
+}
+
+.linha-direita {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.linha-valor {
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.linha-acoes {
+    display: flex;
+    gap: 6px;
+}
+
+.botao-icone {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+
+    color: var(--texto-2);
+    background-color: var(--icone);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+}
+
+.botao-icone:hover {
+    color: var(--texto);
+    background-color: var(--borda);
+    filter: none;
+}
+
+.botao-icone svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Selo de pagamento */
+.selo {
+    margin: 0;
+    padding: 2px 10px;
+
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+button.selo:hover {
+    background: transparent;
+    opacity: 0.8;
+    filter: none;
+}
+
+.selo-paga { color: var(--sucesso); }
+.selo-pendente { color: var(--dourado); }
+
+.vazio {
+    margin: 16px 0;
+
+    color: var(--texto-2);
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
+}
+
+.lista-despesas > li.vazio {
+    display: block;
+    background: none;
+    border: 0;
+}
+
+/* Histórico por mês */
+.grupo-mes {
+    margin-top: 20px;
+}
+
+.grupo-mes-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid var(--borda);
+}
+
+.grupo-mes-nome {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.grupo-mes-total {
+    color: var(--texto-2);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Metas */
+.lista-despesas > li.item-meta {
+    display: block;
+}
+
+.item-meta-topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-meta-rodape {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+
+    color: var(--texto-2);
+    font-size: 0.76rem;
+}
+
+.barra-progresso {
+    width: 100%;
+    height: 8px;
+    margin: 12px 0 8px;
+
+    background-color: var(--borda);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.barra-progresso-preenchimento {
+    width: 0;
+    height: 100%;
+
+    background: linear-gradient(90deg, var(--roxo), var(--dourado));
+    border-radius: 999px;
+
+    transition: width 0.5s ease;
+}
+
+/* ==========================================================
+   11. Gráficos
+   ========================================================== */
+#graficos-resumo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.card-grafico {
+    display: flex;
+    flex-direction: column;
+    height: 340px;
+    min-width: 0;
+    padding: 16px;
+
+    background-color: var(--cartao);
+    border-radius: 14px;
+}
+
+.card-grafico h3 {
+    margin: 0 0 12px;
+
+    color: var(--texto);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.area-grafico {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+@media (max-width: 600px) {
+    #graficos-resumo {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================
+   12. Telas estreitas
+   ========================================================== */
+@media (max-width: 360px) {
+    header h1 {
+        font-size: 1.15rem;
+    }
+
+    .texto-tema {
+        display: none;
+    }
+
+    .lista-despesas > li:not(.item-meta),
+    .linha-item {
+        flex-wrap: wrap;
+    }
+
+    .lista-despesas > li .linha-acoes {
+        justify-content: flex-end;
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* ==========================================================
+   13. Estrutura do app: menu lateral (PC) e barra inferior (celular)
+   ========================================================== */
+.menu-lateral {
+    display: none;
+}
+
+main {
+    padding-bottom: 104px;
+}
+
+section[hidden] {
+    display: none;
+}
+
+/* 13.1 Barra inferior (celular) */
+.barra-abas {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+
+    display: flex;
+    justify-content: center;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+
+    background-color: var(--fundo);
+    border-top: 1px solid var(--borda);
+}
+
+.barra-abas-interna {
+    display: flex;
+    width: 100%;
+    max-width: 720px;
+}
+
+.aba {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+    padding: 6px 0;
+
+    color: var(--texto-2);
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.aba svg {
+    width: 20px;
+    height: 20px;
+}
+
+.aba:hover {
+    background: transparent;
+    filter: none;
+}
+
+.aba.ativa {
+    color: var(--dourado);
+}
+
+.aba-separador {
+    flex-shrink: 0;
+    width: 1px;
+    margin: 8px 2px;
+
+    background-color: var(--borda);
+}
+
+/* 13.2 Menu lateral (PC) */
+.menu-marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 8px 18px;
+}
+
+.menu-marca-icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+
+    color: var(--dourado);
+    background-color: var(--icone);
+    border-radius: 12px;
+}
+
+.menu-marca-titulo {
+    margin: 0;
+
+    color: var(--texto);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.menu-marca-titulo::first-letter {
+    color: var(--dourado);
+}
+
+.menu-grupo-titulo {
+    margin: 18px 0 6px;
+    padding: 0 12px;
+
+    color: var(--texto-2);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 2px;
+    padding: 10px 12px;
+
+    color: var(--texto-2);
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+}
+
+.menu-item:hover {
+    color: var(--texto);
+    background-color: var(--cartao);
+    filter: none;
+}
+
+.menu-item.ativa {
+    color: var(--dourado);
+    background-color: var(--icone);
+}
+
+.menu-rodape {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.menu-rodape .botao-tema {
+    width: 100%;
+    justify-content: center;
+}
+
+@media (min-width: 900px) {
+    .app {
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+        min-height: 100vh;
+    }
+
+    .menu-lateral {
+        position: sticky;
+        top: 0;
+
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        padding: 20px 14px;
+        overflow-y: auto;
+
+        background-color: var(--fundo);
+        border-right: 1px solid var(--borda);
+    }
+
+    .barra-abas,
+    header {
+        display: none;
+    }
+
+    main {
+        max-width: 1080px;
+        margin: 0;
+        padding: 32px 32px 48px;
+    }
+
+    /* Seções de formulário não precisam ocupar a tela toda */
+    main > section:not(.painel-largo) {
+        max-width: 760px;
+    }
+}
+
+/* ==========================================================
+   14. Cards do painel (Início, Comparativo)
+   ========================================================== */
+.painel-grade {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.painel-card {
+    min-width: 0;
+    padding: 16px;
+
+    background-color: var(--cartao);
+    border-radius: 14px;
+}
+
+.painel-card form {
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+.painel-card input,
+.painel-card select {
+    background-color: var(--fundo);
+}
+
+.painel-solto {
+    margin-top: 14px;
+}
+
+@media (min-width: 900px) {
+    .painel-grade {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .painel-grade > .col-2 {
+        grid-column: 1 / -1;
+    }
+
+    .painel-card form {
+        max-width: 520px;
+    }
+}
+
+.painel-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.painel-titulo h3 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.painel-extra {
+    margin-left: auto;
+
+    color: var(--texto-2);
+    font-size: 0.78rem;
+}
+
+.painel-subtitulo {
+    margin: -8px 0 12px;
+    font-size: 0.8rem;
+}
+
+.painel-link {
+    padding: 0;
+
+    color: var(--dourado);
+    background: none;
+    border: 0;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.painel-link:hover {
+    background: none;
+    text-decoration: underline;
+}
+
+.painel-extra.painel-link {
+    color: var(--dourado);
+}
+
+.painel-card > .painel-link {
+    margin-top: 14px;
+}
+
+/* 14.1 Saldo total */
+.hero-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.hero-rotulo {
+    color: var(--texto-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hero-valor {
+    display: block;
+    margin: 4px 0 6px;
+
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.hero-sub {
+    margin: 0;
+    font-size: 0.82rem;
+}
+
+.hero-sub strong {
+    color: var(--texto);
+}
+
+.icone-olho-fechado { display: none; }
+body.ocultar-valores .icone-olho { display: none; }
+body.ocultar-valores .icone-olho-fechado { display: block; }
+
+/* Valores escondidos pelo ícone do olho */
+body.ocultar-valores .sensivel {
+    filter: blur(8px);
+    user-select: none;
+}
+
+.valor-positivo { color: var(--sucesso); }
+.valor-negativo { color: var(--erro); }
+.icone-erro { color: var(--erro); }
+
+.hero-sub strong.valor-negativo,
+.card-resumo strong.valor-negativo { color: var(--erro); }
+.card-resumo strong.valor-positivo { color: var(--sucesso); }
+
+/* 14.2 Orçamento e metas */
+.orc-linha,
+.meta-mini {
+    margin-bottom: 14px;
+}
+
+.orc-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.82rem;
+}
+
+.orc-nome {
+    color: var(--texto);
+    font-weight: 600;
+}
+
+.orc-valores {
+    color: var(--texto);
+    font-variant-numeric: tabular-nums;
+}
+
+.orc-limite {
+    color: var(--texto-2);
+}
+
+.orc-barra {
+    height: 6px;
+    margin: 8px 0 0;
+}
+
+.barra-progresso-preenchimento.orc-normal { background: var(--dourado); }
+.barra-progresso-preenchimento.orc-estourou { background: var(--erro); }
+.barra-progresso-preenchimento.orc-sem-limite { background: var(--roxo); }
+
+.selo-pct {
+    padding: 2px 8px;
+
+    color: var(--roxo);
+    background-color: rgba(139, 124, 246, 0.15);
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.reserva-mini {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--borda);
+    font-size: 0.82rem;
+}
+
+.reserva-mini span {
+    color: var(--texto-2);
+}
+
+.reserva-mini strong {
+    color: var(--dourado);
+    font-variant-numeric: tabular-nums;
+}
+
+/* 14.3 Movimentações */
+.mov-icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+
+    background-color: var(--icone);
+    border-radius: 12px;
+}
+
+.mov-receita { color: var(--sucesso); }
+.mov-despesa { color: var(--erro); }
+
+/* 14.4 Cards de resumo com seta (Comparativo) */
+.card-resumo-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.card-resumo-linha strong {
+    font-size: 1.15rem;
+    white-space: nowrap;
+}
+
+.card-resumo-linha svg {
+    width: 20px;
+    height: 20px;
+}
+
+.card-resumo-nota {
+    margin: 4px 0 0;
+    font-size: 0.72rem;
+    line-height: 1.3;
+}
+
+/* 14.5 Controles do comparativo */
+.controles-comparativo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.controles-comparativo > div {
+    flex: 1 1 140px;
+    min-width: 0;
+}
+
+.controles-comparativo select {
+    margin-bottom: 0;
+}
+
+.controles-comparativo > div[hidden] {
+    display: none;
+}
+
+.area-comparativo {
+    flex: none;
+    height: 300px;
+}
+
+@media (min-width: 900px) {
+    .area-comparativo {
+        height: 360px;
+    }
+}
+
+/* 14.6 Tabela de balanço */
+.tabela-rolagem {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+    padding: 10px 6px;
+
+    border-bottom: 1px solid var(--borda);
+    text-align: right;
+    white-space: nowrap;
+}
+
+th:first-child,
+td:first-child {
+    text-align: left;
+}
+
+th {
+    color: var(--texto-2);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+td:first-child {
+    font-weight: 600;
+}
+
+th.col-receita,
+td.col-receita {
+    color: var(--sucesso);
+}
+
+th.col-despesa,
+td.col-despesa {
+    color: var(--erro);
+}
+
+tfoot td {
+    font-weight: 700;
+    border-top: 1px solid var(--texto-2);
+    border-bottom: 0;
+}
+
+/* Categorias: campo de orçamento */
+.tela-despesas .form-despesa + .lista-despesas {
+    margin-top: 16px;
+}
+
+/* Tabela mais compacta no celular */
+@media (max-width: 480px) {
+    table {
+        font-size: 0.76rem;
+    }
+
+    th,
+    td {
+        padding: 10px 4px;
+    }
+}
+
+.app-conteudo {
+    min-width: 0;
+}
+
+
+/* ==========================================================
+   15. Registrar receita (botão no saldo e janela)
+   ========================================================== */
+.hero-corpo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.hero-info {
+    min-width: 0;
+}
+
+.botao-receita {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 11px 18px;
+
+    border-radius: 12px;
+
+    font-size: 0.88rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.botao-receita svg {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 520px) {
+    .hero-corpo {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .botao-receita {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+
+    background-color: rgba(0, 0, 0, 0.62);
+}
+
+.modal[hidden] {
+    display: none;
+}
+
+.modal-caixa {
+    width: 100%;
+    max-width: 460px;
+    margin: auto;
+    padding: 20px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.modal-topo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.modal-topo h3 {
+    flex: 1;
+    margin: 0;
+
+    font-size: 1rem;
+}
+
+.modal form {
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+.link-excluir {
+    display: block;
+    margin: 14px auto 0;
+
+    color: var(--erro);
+}
+
+body.modal-aberto {
+    overflow: hidden;
+}
+
+/* ==========================================================
+   16. Movimentações
+   ========================================================== */
+.cabecalho-tela h2 {
+    margin: 0;
+
+    font-size: 1.15rem;
+}
+
+.mov-meta { color: var(--roxo); }
+.mov-reserva { color: var(--dourado); }
+
+.mov-valor-receita { color: var(--sucesso); }
+.mov-valor-despesa { color: var(--erro); }
+.mov-valor-meta { color: var(--roxo); }
+.mov-valor-reserva { color: var(--dourado); }
+
+.selo-pct.selo-dourado {
+    color: var(--dourado);
+    background-color: rgba(240, 185, 59, 0.15);
+}
+
+/* ==========================================================
+   17. Metas e Reserva (resumo no topo + ações)
+   ========================================================== */
+.lista-resumo {
+    margin-top: 0;
+}
+
+.lista-resumo > li.vazio {
+    justify-content: center;
+}
+
+#reserva-meta-bloco {
+    margin-top: 12px;
+}
+
+#reserva-meta-bloco[hidden] {
+    display: none;
+}
+
+#reserva-meta-bloco .meta-mini {
+    margin-bottom: 0;
+}
+
+/* ==========================================================
+   18. Simulador da reserva
+   ========================================================== */
+.grade-campos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 12px;
+}
+
+@media (max-width: 480px) {
+    .grade-campos {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sim-rent-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.sim-rent-valor {
+    color: var(--dourado);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+input[type="range"] {
+    height: 24px;
+    min-height: 0;
+    padding: 0;
+
+    background: transparent;
+    border: 0;
+
+    accent-color: var(--dourado);
+    cursor: pointer;
+}
+
+.rotulo-campo {
+    margin: 0 0 8px;
+
+    color: var(--texto);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.chips-prazo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 8px 14px;
+
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.chip input {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    accent-color: var(--dourado);
+}
+
+.chip:has(input:checked) {
+    border-color: var(--dourado);
+}
+
+.sim-ajuda {
+    margin: -8px 0 16px;
+
+    font-size: 0.78rem;
+}
+
+.sim-resultado {
+    margin-top: 6px;
+    padding: 16px;
+
+    background-color: var(--pagina);
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+}
+
+.sim-rotulo {
+    display: block;
+
+    color: var(--texto-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.sim-total {
+    display: block;
+    margin: 6px 0 4px;
+
+    color: var(--sucesso);
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.sim-resultado .sim-ajuda {
+    margin: 0 0 12px;
+}
+
+.sim-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 16px;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--borda);
+    color: var(--texto-2);
+    font-size: 0.82rem;
+}
+
+.sim-detalhes strong {
+    color: var(--texto);
+    font-variant-numeric: tabular-nums;
+}
+
+.sim-detalhes strong.valor-positivo {
+    color: var(--sucesso);
+}
+
+/* ==========================================================
+   19. Comparativo de períodos
+   ========================================================== */
+.painel-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 16px;
+
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+}
+
+.painel-cabecalho h2 {
+    margin: 0 0 2px;
+
+    font-size: 1.1rem;
+}
+
+.painel-cabecalho p {
+    margin: 0;
+
+    font-size: 0.8rem;
+}
+
+.comp-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.comp-topo-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.comp-topo .painel-titulo {
+    margin-bottom: 4px;
+}
+
+.comp-topo .painel-titulo h3 {
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.comp-topo .painel-subtitulo {
+    margin: 0;
+}
+
+.select-ano {
+    flex-shrink: 0;
+    width: auto;
+    min-width: 112px;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 12px;
+
+    font-size: 0.88rem;
+}

@@ -1896,3 +1896,85 @@ input[type="range"] {
 
     font-size: 0.88rem;
 }
+
+/* Receita: mês que já tem lançamento */
+.receita-saldo-atual {
+    margin: -6px 0 16px;
+
+    color: var(--texto-2);
+    font-size: 0.82rem;
+}
+
+.receita-saldo-atual strong {
+    color: var(--sucesso);
+}
+
+.botao-ajustar {
+    color: var(--texto);
+    background-color: var(--icone);
+    border-color: var(--borda);
+}
+
+.botao-ajustar:hover {
+    background-color: var(--borda);
+    filter: none;
+}
+
+.receita-dica {
+    margin: 12px 0 0;
+
+    font-size: 0.78rem;
+    text-align: center;
+}
+
+#acoes-receita-existente[hidden] {
+    display: none;
+}
+
+.acoes-form[hidden],
+#acoes-receita-nova[hidden] {
+    display: none;
+}
+
+.botao-com-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    line-height: 1.25;
+    text-align: left;
+}
+
+.botao-com-icone svg {
+    width: 20px;
+    height: 20px;
+}
+
+#acoes-receita-existente .acoes-form {
+    gap: 8px;
+}
+
+#acoes-receita-existente .acoes-form button {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 0;
+    padding: 8px 10px;
+
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+#acoes-receita-existente .acoes-form button svg {
+    width: 16px;
+    height: 16px;
+}
+
+#acoes-receita-existente .acoes-form #cancelar-receita-2 {
+    flex-basis: 100%;
+}
+
+#acoes-receita-existente .receita-dica {
+    margin-top: 10px;
+
+    font-size: 0.72rem;
+}

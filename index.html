@@ -1103,9 +1103,31 @@
                     placeholder="Ex.: Salário / Freelance"
                 >
 
-                <div class="acoes-form">
+                <p id="receita-saldo-atual" class="receita-saldo-atual" hidden></p>
+
+                <!-- Primeira receita do mês -->
+                <div id="acoes-receita-nova" class="acoes-form">
                     <button type="submit" class="botao-principal">Salvar receita</button>
                     <button type="button" id="cancelar-receita" class="botao-secundario">Cancelar</button>
+                </div>
+
+                <!-- Mês que já tem receita -->
+                <div id="acoes-receita-existente" hidden>
+                    <div class="acoes-form">
+                        <button type="button" id="receita-adicionar" class="botao-principal botao-com-icone">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                            <span>Adicionar receita</span>
+                        </button>
+                        <button type="button" id="receita-ajustar" class="botao-ajustar botao-com-icone">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+                            <span>Ajustar saldo existente</span>
+                        </button>
+                        <button type="button" id="cancelar-receita-2" class="botao-secundario">Cancelar</button>
+                    </div>
+                    <p class="receita-dica">
+                        (Escolha “novo lançamento” para somar ao que já foi recebido no mês,
+                        ou “ajustar saldo” para reescrever o total.)
+                    </p>
                 </div>
 
                 <button type="button" class="painel-link link-excluir" onclick="excluirReceitaDoMes()">

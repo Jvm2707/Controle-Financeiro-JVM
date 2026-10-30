@@ -19,67 +19,91 @@ filtroMes.value = mesAtual;
 let receitas = JSON.parse(localStorage.getItem("receitas")) || [];
 
 // 2. Formulário da receita
-formReceita.onsubmit = function(event) {
-    event.preventDefault();
+// 2.0 Cada mês guarda o total (valor) e a lista dos lançamentos que o formam
+function lancamentosDaReceita(receita) {
+    if (Array.isArray(receita.lancamentos)) {
+        return receita.lancamentos;
+    }
 
-    // 2.1 Pegar o valor digitado
-    let receita = campoReceita.value;
+    // Receitas antigas: o valor do mês é um único lançamento
+    return [{
+        valor: Number(receita.valor),
+        descricao: receita.descricao || "",
+        registradoEm: receita.registradoEm || 0
+    }];
+}
 
-    // 2.2 Guardar a receita como número
-    let receitaNumero = Number(receita);
+// modo "novo": soma ao mês (ou cria o mês); modo "ajustar": reescreve o total
+function salvarReceita(modo) {
+    const receitaNumero = Number(campoReceita.value);
 
-    // 2.2.1 Validar o valor da receita
     if (!Number.isFinite(receitaNumero) || receitaNumero <= 0) {
         alert("Informe uma receita válida maior que zero.");
         return;
     }
 
-    // 2.3 Pegar o mês escolhido
-    let mesReceita = campoMesReceita.value;
+    const mesReceita = campoMesReceita.value;
 
-    // 2.3.1 Validar o mês da receita
     if (!mesReceita) {
         alert("Selecione o mês da receita.");
         return;
     }
 
-    // 2.4 Procurar uma receita do mesmo mês
-    let receitaExistente = receitas.find(function(receita) {
+    const descricaoReceita = campoDescricaoReceita.value.trim();
+    const lancamento = {
+        valor: receitaNumero,
+        descricao: descricaoReceita,
+        registradoEm: Date.now()
+    };
+
+    const receitaExistente = receitas.find(function(receita) {
         return receita.mes === mesReceita;
     });
 
-    // 2.5 Atualizar ou guardar a receita
-    const descricaoReceita = campoDescricaoReceita.value.trim();
-
-    if (receitaExistente) {
-        receitaExistente.valor = receitaNumero;
-        receitaExistente.descricao = descricaoReceita;
-        receitaExistente.registradoEm = Date.now();
-    } else {
-        let novaReceita = {
+    if (!receitaExistente) {
+        receitas.push({
             mes: mesReceita,
             valor: receitaNumero,
             descricao: descricaoReceita,
-            registradoEm: Date.now()
-        };
+            registradoEm: lancamento.registradoEm,
+            lancamentos: [lancamento]
+        });
+    } else if (modo === "ajustar") {
+        receitaExistente.valor = receitaNumero;
+        receitaExistente.descricao = descricaoReceita;
+        receitaExistente.registradoEm = lancamento.registradoEm;
+        receitaExistente.lancamentos = [lancamento];
+    } else {
+        const lista = lancamentosDaReceita(receitaExistente).slice();
 
-        receitas.push(novaReceita);
+        lista.push(lancamento);
+        receitaExistente.lancamentos = lista;
+        receitaExistente.valor = lista.reduce(function(soma, item) {
+            return soma + (Number(item.valor) || 0);
+        }, 0);
+        receitaExistente.registradoEm = lancamento.registradoEm;
     }
 
     localStorage.setItem("receitas", JSON.stringify(receitas));
 
-    // 2.6 Selecionar no resumo o mês da receita cadastrada
     filtroMes.value = mesReceita;
     atualizarHistorico();
-
-    // 2.7 Atualizar o resumo mensal
     atualizarResumoMensal();
-
-    // 2.8 Atualizar saldo restante
     atualizarSaldo();
-
-    // 2.9 Fechar a janela de receita
     fecharModalReceita();
+}
+
+formReceita.onsubmit = function(event) {
+    event.preventDefault();
+
+    // Enter só salva sozinho quando o mês ainda não tem receita
+    const jaTem = receitas.some(function(receita) {
+        return receita.mes === campoMesReceita.value;
+    });
+
+    if (!jaTem) {
+        salvarReceita("novo");
+    }
 };
 
 // 3. Elementos das despesas
@@ -294,9 +318,18 @@ function mostrarListaCategorias() {
     categorias.forEach(function(nomeCategoria) {
         let item = document.createElement("li");
 
-        let quantidade = gastos.filter(function(despesa) {
-            return despesa.categoria === nomeCategoria;
-        }).length;
+        // Uma despesa recorrente conta uma vez só (e não uma por mês gerado)
+        let cadastradas = new Set();
+
+        gastos.forEach(function(despesa) {
+            if (despesa.categoria === nomeCategoria) {
+                cadastradas.add(
+                    despesa.recorrente ? `rec-${despesa.idRecorrencia || despesa.id}` : `avulsa-${despesa.id}`
+                );
+            }
+        });
+
+        let quantidade = cadastradas.size;
 
         let info = document.createElement("div");
         info.className = "linha-info";
@@ -1316,22 +1349,12 @@ function buscarReceitaDoMes(mes) {
     return 0;
 }
 
-// 5.4 Carregar a receita do mês
+// 5.4 Preparar o formulário de receita para o mês escolhido
 function carregarReceitaDoMes() {
-    let mesSelecionado = campoMesReceita.value;
-    let valorReceita = buscarReceitaDoMes(mesSelecionado);
+    campoReceita.value = "";
+    campoDescricaoReceita.value = "";
 
-    if (receitas.some(function(receita) {
-        return receita.mes === mesSelecionado;
-    })) {
-        campoReceita.value = valorReceita;
-        campoDescricaoReceita.value = receitas.find(function(receita) {
-            return receita.mes === mesSelecionado;
-        }).descricao || "";
-    } else {
-        campoReceita.value = "";
-        campoDescricaoReceita.value = "";
-    }
+    atualizarModoModalReceita();
 }
 
 campoMesReceita.addEventListener("change", function() {
@@ -2834,21 +2857,23 @@ function coletarMovimentacoes() {
     const itens = [];
 
     receitas.forEach(function(receita) {
-        const valor = Number(receita.valor);
-        const data = receita.registradoEm
-            ? dataDoCarimbo(receita.registradoEm)
-            : `${receita.mes}-01`;
+        lancamentosDaReceita(receita).forEach(function(lancamento) {
+            const valor = Number(lancamento.valor);
+            const data = lancamento.registradoEm
+                ? dataDoCarimbo(lancamento.registradoEm)
+                : `${receita.mes}-01`;
 
-        if (data <= hoje && Number.isFinite(valor)) {
-            itens.push({
-                tipo: "receita",
-                titulo: receita.descricao || "Receita mensal",
-                detalhe: `Receita de ${nomeDoMes(receita.mes).toLowerCase()}`,
-                data: data,
-                ordem: receita.registradoEm || 0,
-                valor: valor
-            });
-        }
+            if (data <= hoje && Number.isFinite(valor)) {
+                itens.push({
+                    tipo: "receita",
+                    titulo: lancamento.descricao || "Receita mensal",
+                    detalhe: `Receita de ${nomeDoMes(receita.mes).toLowerCase()}`,
+                    data: data,
+                    ordem: lancamento.registradoEm || 0,
+                    valor: valor
+                });
+            }
+        });
     });
 
     gastos.forEach(function(despesa) {
@@ -3685,6 +3710,33 @@ filtroMesRelatorios.addEventListener("change", function() {
 const modalReceita = document.getElementById("modal-receita");
 const botaoAbrirReceita = document.getElementById("botao-abrir-receita");
 
+// Primeira receita do mês: formulário simples. Mês com receita: dois botões.
+function atualizarModoModalReceita() {
+    const existente = receitas.find(function(receita) {
+        return receita.mes === campoMesReceita.value;
+    });
+
+    document.getElementById("acoes-receita-nova").hidden = Boolean(existente);
+    document.getElementById("acoes-receita-existente").hidden = !existente;
+
+    const aviso = document.getElementById("receita-saldo-atual");
+
+    aviso.hidden = !existente;
+
+    if (existente) {
+        aviso.innerHTML = "";
+        aviso.append("Receita já registrada neste mês: ");
+
+        const forte = document.createElement("strong");
+        forte.textContent = formatarMoeda(existente.valor);
+        aviso.appendChild(forte);
+    }
+
+    document.getElementById("modal-receita-titulo").textContent = existente
+        ? "Registrar nova transação de receita"
+        : "Registrar receita mensal";
+}
+
 function abrirModalReceita() {
     // Começa pelo mês que está em destaque no app
     campoMesReceita.value = filtroMes.value || mesAtual;
@@ -3703,6 +3755,13 @@ function fecharModalReceita() {
 botaoAbrirReceita.addEventListener("click", abrirModalReceita);
 document.getElementById("fechar-modal-receita").addEventListener("click", fecharModalReceita);
 document.getElementById("cancelar-receita").addEventListener("click", fecharModalReceita);
+document.getElementById("cancelar-receita-2").addEventListener("click", fecharModalReceita);
+document.getElementById("receita-adicionar").addEventListener("click", function() {
+    salvarReceita("novo");
+});
+document.getElementById("receita-ajustar").addEventListener("click", function() {
+    salvarReceita("ajustar");
+});
 
 // Clicar fora da caixa também fecha
 modalReceita.addEventListener("click", function(evento) {

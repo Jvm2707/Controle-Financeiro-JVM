@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle Financeiro</title>
     <link rel="stylesheet" href="Controlefinanceiro.css">
-    <link rel="icon" type="image/png" href="faviconnobg.png">
 </head>
 
 <body>
@@ -72,8 +71,11 @@
         <!-- 1. INÍCIO: VISÃO GERAL FINANCEIRA -->
         <section id="inicio" class="painel-largo">
 
-            <div class="topo-despesas">
-                <h2>Visão geral financeira</h2>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Visão geral financeira</h2>
+                    <p>Resumo do seu dinheiro no mês</p>
+                </div>
                 <span id="periodo-inicio" class="periodo-despesas"></span>
             </div>
 
@@ -143,6 +145,22 @@
                     </div>
                 </div>
 
+                <!-- Vencimentos do mês -->
+                <div class="painel-card col-2" id="card-vencimentos">
+                    <div class="painel-titulo painel-titulo-quebra">
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                        <h3>Vencimentos do mês <span class="painel-detalhe">(contas recorrentes e cartão)</span></h3>
+                        <button type="button" id="botao-calendario" class="painel-link painel-extra" aria-expanded="false">
+                            Expandir calendário
+                        </button>
+                    </div>
+
+                    <div id="lista-vencimentos" class="faixa-vencimentos"></div>
+                    <div id="calendario-vencimentos" class="calendario" hidden></div>
+                </div>
+
+                <!-- Orçamento, metas e cotação lado a lado -->
+                <div class="painel-trio col-2">
                 <!-- Orçamento mensal -->
                 <div class="painel-card">
                     <div class="painel-titulo">
@@ -176,6 +194,52 @@
                     <div id="lista-metas-inicio"></div>
                 </div>
 
+                <!-- Cotação de moedas -->
+                <div class="painel-card" id="card-cotacao">
+                    <div class="painel-titulo">
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>
+                        </svg>
+                        <h3>Cotação de moedas</h3>
+                        <span id="cot-variacao" class="selo-variacao" hidden></span>
+                    </div>
+
+                    <div class="grade-campos">
+                        <div>
+                            <label for="cot-base" class="rotulo-curto">Moeda base</label>
+                            <select id="cot-base"></select>
+                        </div>
+
+                        <div>
+                            <label for="cot-alvo" class="rotulo-curto">Moeda alvo</label>
+                            <select id="cot-alvo"></select>
+                        </div>
+                    </div>
+
+                    <label for="cot-valor">Valor a converter (moeda base)</label>
+                    <input type="number" id="cot-valor" min="0" step="any" inputmode="decimal" value="1">
+
+                    <div class="cot-resultado">
+                        <span class="cot-rotulo">Resultado da conversão</span>
+                        <strong id="cot-resultado" class="cot-valor">—</strong>
+                        <p id="cot-taxa" class="cot-taxa"></p>
+                    </div>
+
+                    <p class="cot-saldo">
+                        <span id="cot-saldo-rotulo">Seu saldo total na moeda alvo:</span>
+                        <strong id="cot-saldo" class="sensivel">—</strong>
+                    </p>
+
+                    <div class="cot-rodape">
+                        <span id="cot-status" class="status-api">Carregando cotações…</span>
+                        <button type="button" id="cot-atualizar" class="botao-icone" aria-label="Atualizar cotações" title="Atualizar cotações">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                </div>
+
                 <!-- Últimas movimentações -->
                 <div class="painel-card col-2">
                     <div class="painel-titulo">
@@ -197,11 +261,18 @@
         <!-- 1.05 MOVIMENTAÇÕES (aberta por "Ver todas" no Início) -->
         <section id="movimentacoes" class="painel-largo" hidden>
 
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>Movimentações</h2>
+                    <p>Tudo o que entrou e saiu do seu bolso</p>
+                </div>
+            </div>
+
             <div class="cabecalho-tela">
                 <button type="button" class="botao-voltar" data-ir="inicio" aria-label="Voltar para o Início">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                 </button>
-                <h2>Últimas movimentações</h2>
+                <h3>Todas as movimentações</h3>
             </div>
 
             <label for="filtro-tipo-mov">Mostrar</label>
@@ -218,7 +289,12 @@
 
         <!-- 1.1 RELATÓRIOS -->
         <section id="relatorios" class="painel-largo" hidden>
-            <h2>Relatórios</h2>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>Relatórios</h2>
+                    <p>Gráficos do mês selecionado</p>
+                </div>
+            </div>
 
             <label for="filtro-mes-relatorios">Mês do resumo</label>
             <input type="month" id="filtro-mes-relatorios">
@@ -248,7 +324,7 @@
 
             <div class="painel-cabecalho">
                 <div>
-                    <h2>Comparativo de períodos</h2>
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>Comparativo de períodos</h2>
                     <p>Evolução mensal e anual das finanças</p>
                 </div>
                 <span id="periodo-comparativo" class="periodo-despesas"></span>
@@ -331,8 +407,11 @@
         <!-- 2. DESPESAS -->
         <section id="gastos" class="despesas-app" hidden>
 
-            <div class="topo-despesas">
-                <h2>Minhas despesas</h2>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>Minhas despesas</h2>
+                    <p>Controle seus gastos, contas e categorias</p>
+                </div>
                 <span id="periodo-despesas" class="periodo-despesas"></span>
             </div>
 
@@ -465,7 +544,7 @@
                         required
                     >
 
-                    <label for="valor">Valor</label>
+                    <label for="valor" id="rotulo-valor">Valor</label>
                     <input
                         type="number"
                         id="valor"
@@ -476,7 +555,7 @@
                         required
                     >
 
-                    <label for="data">Data do gasto</label>
+                    <label for="data" id="rotulo-data">Data do gasto</label>
                     <input
                         type="date"
                         id="data"
@@ -493,34 +572,82 @@
                         Criar ou editar categorias
                     </button>
 
-                    <!-- Configuração de despesa recorrente -->
-                    <div id="config-recorrencia">
-                        <label for="despesa-recorrente" class="check-recorrente">
-                            <input
-                                type="checkbox"
-                                id="despesa-recorrente"
-                                name="despesaRecorrente"
-                            >
-                            Esta é uma despesa recorrente
+                    <!-- Tipo de pagamento / recorrência -->
+                    <p class="rotulo-secao">Tipo de pagamento / recorrência</p>
+
+                    <div class="opcoes-pagamento" role="radiogroup" aria-label="Tipo de pagamento">
+                        <label class="opcao-pagamento">
+                            <input type="radio" name="tipo-pagamento" value="avulsa" checked>
+                            <span class="opcao-texto"><strong>Avulsa</strong><span>Gasto único</span></span>
                         </label>
 
-                        <div id="campos-recorrencia" hidden>
-                            <label for="frequencia-recorrencia">Frequência</label>
-                            <select id="frequencia-recorrencia">
-                                <option value="mensal">Mensalmente</option>
-                                <option value="semanal">Semanalmente</option>
-                                <option value="anual">Anualmente</option>
-                            </select>
+                        <label class="opcao-pagamento">
+                            <input type="radio" name="tipo-pagamento" value="recorrente">
+                            <span class="opcao-texto"><strong>Recorrente</strong><span>Mensalidade fixa</span></span>
+                        </label>
 
-                            <label for="dia-vencimento">Dia do vencimento</label>
-                            <input
-                                type="number"
-                                id="dia-vencimento"
-                                min="1"
-                                max="31"
-                                placeholder="Ex.: 10"
-                            >
+                        <label class="opcao-pagamento">
+                            <input type="radio" name="tipo-pagamento" value="parcelado">
+                            <span class="opcao-texto"><strong>Cartão parcelado</strong><span>Ex.: 4x no cartão</span></span>
+                        </label>
+                    </div>
+
+                    <!-- (guarda a escolha "recorrente" para a lógica de recorrência) -->
+                    <input type="checkbox" id="despesa-recorrente" name="despesaRecorrente" hidden>
+
+                    <!-- Recorrente: frequência e dia do vencimento -->
+                    <div id="campos-recorrencia" class="config-box" hidden>
+                        <p class="config-titulo">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                            <span>Configuração da recorrência</span>
+                        </p>
+
+                        <div class="grade-campos">
+                            <div>
+                                <label for="frequencia-recorrencia">Frequência</label>
+                                <select id="frequencia-recorrencia">
+                                    <option value="mensal">Mensalmente</option>
+                                    <option value="semanal">Semanalmente</option>
+                                    <option value="anual">Anualmente</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="dia-vencimento">Dia do vencimento</label>
+                                <input
+                                    type="number"
+                                    id="dia-vencimento"
+                                    min="1"
+                                    max="31"
+                                    placeholder="Ex.: 10"
+                                >
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Cartão parcelado -->
+                    <div id="campos-parcelas" class="config-box" hidden>
+                        <p class="config-titulo">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
+                            <span>Configuração das parcelas</span>
+                        </p>
+
+                        <div class="grade-campos">
+                            <div>
+                                <label for="num-parcelas">Nº de parcelas (ex.: 4)</label>
+                                <input type="number" id="num-parcelas" min="2" max="60" step="1" inputmode="numeric" placeholder="Ex.: 4">
+                            </div>
+
+                            <div>
+                                <span class="rotulo-campo">Valor por parcela</span>
+                                <strong id="valor-parcela" class="valor-parcela">—</strong>
+                            </div>
+                        </div>
+
+                        <p class="config-nota">
+                            O sistema criará automaticamente os registros dos meses seguintes, etiquetados como
+                            <strong>Nome (4× 1/4)</strong>, <strong>(4× 2/4)</strong>, etc. O valor digitado acima é o total da compra.
+                        </p>
                     </div>
 
                     <button type="submit" class="botao-principal">Adicionar despesa</button>
@@ -600,8 +727,11 @@
         <!-- 3. METAS -->
         <section id="planejamento" hidden>
 
-            <div class="topo-despesas">
-                <h2>Minhas metas</h2>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Minhas metas</h2>
+                    <p>Acompanhe seus objetivos e aportes</p>
+                </div>
             </div>
 
             <!-- 3.1 Tela inicial: resumo das metas + ações -->
@@ -734,12 +864,25 @@
 
         <hr>
 
-        <!-- 4. RESERVA DE EMERGÊNCIA -->
+        <!-- 4. RESERVA & INVESTIMENTOS -->
         <section id="reserva-emergencia" hidden>
 
-            <div class="topo-despesas">
-                <h2>Reserva de emergência</h2>
-                <span id="periodo-reserva" class="periodo-despesas"></span>
+            <div class="painel-cabecalho cabecalho-reserva">
+                <div class="cabecalho-reserva-texto">
+                    <h2>
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        Reserva &amp; Investimentos
+                    </h2>
+                    <p>Gestão de alocações com sincronização via API em tempo real</p>
+                </div>
+
+                <label class="seletor-mes" for="reserva-mes">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                    <select id="reserva-mes" aria-label="Mês de referência"></select>
+                </label>
             </div>
 
             <!-- 4.1 Tela inicial: resumo + ações -->
@@ -752,7 +895,8 @@
                             <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
                         </svg>
                         <p class="card-resumo-rotulo">Saldo disponível no mês</p>
-                        <strong id="saldo-disponivel-reserva">R$ 0,00</strong>
+                        <strong id="saldo-disponivel-reserva" class="sensivel">R$ 0,00</strong>
+                        <p class="card-resumo-nota">Livre para aportes</p>
                     </div>
 
                     <div class="card-resumo">
@@ -763,7 +907,8 @@
                             <circle cx="16" cy="16" r="6"/>
                         </svg>
                         <p class="card-resumo-rotulo">Aportado neste mês</p>
-                        <strong id="total-aportado-mes">R$ 0,00</strong>
+                        <strong id="total-aportado-mes" class="sensivel">R$ 0,00</strong>
+                        <p id="nota-aportado-mes" class="card-resumo-nota"></p>
                     </div>
 
                     <div class="card-resumo">
@@ -772,7 +917,8 @@
                             <path d="m9 12 2 2 4-4"/>
                         </svg>
                         <p class="card-resumo-rotulo">Total acumulado na reserva</p>
-                        <strong id="total-reserva">R$ 0,00</strong>
+                        <strong id="total-reserva" class="sensivel">R$ 0,00</strong>
+                        <p id="nota-lucro-mes" class="card-resumo-nota"></p>
                     </div>
                 </div>
 
@@ -781,12 +927,12 @@
                 <nav class="menu-despesas" aria-label="Ações da reserva">
 
                     <button type="button" class="item-menu" data-abrir="cadastrar-invest">
-                        <span class="item-menu-icone">
+                        <span class="item-menu-icone tom-dourado">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2h0V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h.01"/></svg>
                         </span>
                         <span class="item-menu-texto">
                             <strong>Cadastrar investimento / reserva</strong>
-                            <span>Insira instituição, data inicial e meta opcional.</span>
+                            <span>Insira instituição, data inicial, meta e vinculação com APIs dinâmicas.</span>
                         </span>
                         <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="m9 18 6-6-6-6"/>
@@ -794,12 +940,12 @@
                     </button>
 
                     <button type="button" class="item-menu" data-abrir="aporte-reserva">
-                        <span class="item-menu-icone">
+                        <span class="item-menu-icone tom-roxo">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg>
                         </span>
                         <span class="item-menu-texto">
                             <strong>Registrar aporte</strong>
-                            <span>Adicione dinheiro a um investimento da reserva.</span>
+                            <span>Adicione novo saldo em dinheiro a um investimento da reserva existente.</span>
                         </span>
                         <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="m9 18 6-6-6-6"/>
@@ -807,12 +953,12 @@
                     </button>
 
                     <button type="button" class="item-menu" data-abrir="simulador">
-                        <span class="item-menu-icone">
+                        <span class="item-menu-icone tom-roxo">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
                         </span>
                         <span class="item-menu-texto">
                             <strong>Simulador da reserva &amp; projeção futura</strong>
-                            <span>Calcule com rentabilidade e prazos dinâmicos.</span>
+                            <span>Calcule a rentabilidade projetada para prazos médios e longos.</span>
                         </span>
                         <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="m9 18 6-6-6-6"/>
@@ -820,12 +966,12 @@
                     </button>
 
                     <button type="button" class="item-menu" data-abrir="ativos">
-                        <span class="item-menu-icone">
+                        <span class="item-menu-icone tom-verde">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg>
                         </span>
                         <span class="item-menu-texto">
                             <strong>Investimentos ativos</strong>
-                            <span>Consulte as alocações da sua reserva.</span>
+                            <span>Consulte suas alocações, lucros do mês selecionado e variações em tempo real.</span>
                         </span>
                         <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="m9 18 6-6-6-6"/>
@@ -841,36 +987,99 @@
                     <button type="button" class="botao-voltar" data-abrir="menu" aria-label="Voltar">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                     </button>
-                    <h3>Cadastrar investimento / reserva</h3>
+                    <h3>Cadastrar novo investimento</h3>
                 </div>
 
+                <p class="subtitulo-tela">Selecione o tipo de ativo e configure a integração automática por API.</p>
+
                 <form id="form-reserva" class="form-despesa">
+                    <label for="nome-investimento">Instituição / Nome do ativo</label>
+                    <input
+                        type="text"
+                        id="nome-investimento"
+                        name="nomeInvestimento"
+                        placeholder="Ex.: Banco Inter, Petrobras, Bitcoin, MXRF11"
+                    >
+
                     <label for="tipo-investimento">Tipo de investimento</label>
                     <select
                         id="tipo-investimento"
                         name="tipoInvestimento"
                         required
                     >
-                        <option value="">Selecione um investimento</option>
                         <option value="CDB com liquidez diária">CDB com liquidez diária</option>
                         <option value="Tesouro Selic">Tesouro Selic</option>
-                        <option value="Outro">Outro</option>
+                        <option value="Outro">Outro (Renda variável / Cripto / FII)</option>
                     </select>
 
-                    <label for="nome-investimento">Nome ou instituição (opcional)</label>
-                    <input
-                        type="text"
-                        id="nome-investimento"
-                        name="nomeInvestimento"
-                        placeholder="Ex.: Banco ou corretora"
-                    >
+                    <!-- API fixa (renda fixa) -->
+                    <div id="api-fixa" class="config-box">
+                        <p class="config-titulo config-verde">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+                            <span id="api-fixa-titulo">Sincronização de API predefinida (Taxa DI / Selic oficial)</span>
+                        </p>
+                        <div class="api-fonte">
+                            <span>Fonte do rendimento: <strong id="api-fixa-fonte">API Banco Central do Brasil (BCB)</strong></span>
+                            <span id="api-fixa-taxa" class="api-fonte-taxa">100% CDI</span>
+                        </div>
+                    </div>
 
-                    <label for="data-investimento">Mês e ano do aporte inicial</label>
-                    <input
-                        type="month"
-                        id="data-investimento"
-                        required
-                    >
+                    <!-- API personalizada (Outro) -->
+                    <div id="api-personalizada" class="config-box" hidden>
+                        <p class="config-titulo">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                            <span>Configuração de API personalizada (renda variável)</span>
+                        </p>
+
+                        <div class="grade-campos">
+                            <div>
+                                <label for="api-categoria">Categoria do ativo</label>
+                                <select id="api-categoria">
+                                    <option value="acao">Ação Nacional / FII (B3)</option>
+                                    <option value="cripto">Criptomoeda</option>
+                                    <option value="internacional">Ação Internacional / Global</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <div class="rotulo-com-selo">
+                                    <label for="api-provedor">Provedor da API</label>
+                                    <span id="selo-recomendado" class="selo-recomendado">✨ Recomendado: Brapi</span>
+                                </div>
+                                <select id="api-provedor"></select>
+                            </div>
+                        </div>
+
+                        <label for="api-ticker">Ticker ou endpoint da API</label>
+                        <div class="campo-icone">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                            <input type="text" id="api-ticker" placeholder="Ex.: PETR4, HGLG11" autocomplete="off">
+                        </div>
+                        <p class="config-nota">A API irá atualizar a cotação e calcular ganhos e variações (%) automaticamente.</p>
+                    </div>
+
+                    <div class="grade-campos">
+                        <div>
+                            <label for="data-investimento">Mês e ano do aporte inicial</label>
+                            <input
+                                type="month"
+                                id="data-investimento"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label for="valor-aporte-inicial">Valor do aporte inicial (R$)</label>
+                            <input
+                                type="number"
+                                id="valor-aporte-inicial"
+                                min="0"
+                                step="0.01"
+                                inputmode="decimal"
+                                placeholder="Ex.: 1500.00"
+                            >
+                        </div>
+                    </div>
 
                     <label for="meta-investimento">Meta da reserva (opcional)</label>
                     <input
@@ -881,7 +1090,10 @@
                         placeholder="Ex.: 10000.00"
                     >
 
-                    <button type="submit" class="botao-principal">Cadastrar investimento</button>
+                    <button type="submit" class="botao-principal botao-com-icone">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                        <span>Cadastrar investimento</span>
+                    </button>
                 </form>
             </div>
 
@@ -979,6 +1191,70 @@
                             <span>Rendimento (juros): <strong id="sim-juros" class="valor-positivo">R$ 0,00</strong></span>
                         </div>
                     </div>
+
+                    <button type="button" id="sim-abrir-detalhe" class="botao-detalhe botao-com-icone" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                        <span>Ver rendimento detalhado por mês e ano</span>
+                    </button>
+
+                    <!-- Consulta específica por período -->
+                    <div id="sim-detalhe" class="sim-detalhe" hidden>
+                        <span class="selo-consulta">Consulta específica por período</span>
+
+                        <div class="sim-detalhe-topo">
+                            <div>
+                                <h4 class="sim-detalhe-titulo">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                                    Detalhamento por mês selecionado
+                                </h4>
+                                <p class="sim-ajuda">Filtre qualquer mês para descobrir quanto a carteira rendeu de juros especificamente naquele mês.</p>
+                            </div>
+
+                            <div class="sim-mes-box">
+                                <label for="sim-mes-select">Mês/Ano:</label>
+                                <select id="sim-mes-select"></select>
+                            </div>
+                        </div>
+
+                        <div class="sim-stats">
+                            <div class="sim-stat sim-stat-destaque">
+                                <span class="sim-stat-rotulo">Juros gerados no mês</span>
+                                <strong id="sim-stat-juros-mes" class="sim-stat-valor valor-dourado">R$ 0,00</strong>
+                                <span class="sim-stat-nota">Rendimento exclusivo do mês filtrado</span>
+                            </div>
+                            <div class="sim-stat">
+                                <span class="sim-stat-rotulo">Saldo acumulado até o mês</span>
+                                <strong id="sim-stat-saldo" class="sim-stat-valor">R$ 0,00</strong>
+                                <span class="sim-stat-nota">Patrimônio até o mês</span>
+                            </div>
+                            <div class="sim-stat">
+                                <span class="sim-stat-rotulo">Total aportado acumulado</span>
+                                <strong id="sim-stat-aportado" class="sim-stat-valor">R$ 0,00</strong>
+                                <span class="sim-stat-nota">Valor saído do seu bolso</span>
+                            </div>
+                            <div class="sim-stat">
+                                <span class="sim-stat-rotulo">Total de juros acumulados</span>
+                                <strong id="sim-stat-juros-total" class="sim-stat-valor valor-positivo">R$ 0,00</strong>
+                                <span class="sim-stat-nota">Soma de juros até este mês</span>
+                            </div>
+                        </div>
+
+                        <div class="sim-grafico">
+                            <p class="sim-grafico-titulo">Evolução do patrimônio × juros</p>
+                            <div class="area-grafico area-sim">
+                                <canvas id="grafico-simulador"></canvas>
+                            </div>
+                        </div>
+
+                        <button type="button" id="sim-abrir-tabela" class="botao-detalhe botao-com-icone" aria-expanded="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg>
+                            <span>Ver tabela detalhada de todos os meses da projeção</span>
+                        </button>
+
+                        <div id="sim-tabela-wrap" class="tabela-rolagem" hidden>
+                            <table id="sim-tabela"></table>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -989,6 +1265,13 @@
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                     </button>
                     <h3>Investimentos ativos</h3>
+                </div>
+
+                <div class="barra-cotacoes">
+                    <span id="status-cotacoes" class="status-api">Cotações ainda não atualizadas.</span>
+                    <button type="button" id="atualizar-cotacoes" class="botao-icone" aria-label="Atualizar cotações" title="Atualizar cotações">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                    </button>
                 </div>
 
                 <div id="lista-investimentos">
@@ -1002,7 +1285,12 @@
 
         <!-- 5. BACKUP E RESTAURAÇÃO -->
         <section id="backup" hidden>
-            <h2>Backup e restauração</h2>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>Backup e restauração</h2>
+                    <p>Guarde e recupere seus dados com segurança</p>
+                </div>
+            </div>
 
             <p>Salve seus dados ou restaure um backup anterior.</p>
 
@@ -1116,7 +1404,7 @@
                     <div class="acoes-form">
                         <button type="button" id="receita-adicionar" class="botao-principal botao-com-icone">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-                            <span>Adicionar receita</span>
+                            <span>Adicionar como novo lançamento</span>
                         </button>
                         <button type="button" id="receita-ajustar" class="botao-ajustar botao-com-icone">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>

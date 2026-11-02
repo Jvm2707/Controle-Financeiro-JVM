@@ -1978,3 +1978,1356 @@ input[type="range"] {
 
     font-size: 0.72rem;
 }
+
+
+/* ==========================================================
+   20. Reserva & Investimentos, cadastro com API e simulador por período
+   ========================================================== */
+.item-menu-icone.tom-roxo { color: var(--roxo); }
+.item-menu-icone.tom-verde { color: var(--sucesso); }
+
+.nota-positiva { color: var(--sucesso); }
+.nota-negativa { color: var(--erro); }
+
+.cabecalho-reserva {
+    flex-wrap: wrap;
+}
+
+.cabecalho-reserva h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cabecalho-reserva h2 svg {
+    width: 22px;
+    height: 22px;
+}
+
+.seletor-mes {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 4px 8px 4px 12px;
+
+    color: var(--dourado);
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.seletor-mes select {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 6px 4px;
+
+    color: var(--texto);
+    background-color: transparent;
+    border: 0;
+
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.subtitulo-tela {
+    margin: -6px 0 16px;
+
+    font-size: 0.82rem;
+}
+
+.config-box {
+    margin: 0 0 18px;
+    padding: 14px;
+
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.config-box[hidden] {
+    display: none;
+}
+
+.config-box input,
+.config-box select {
+    margin-bottom: 12px;
+
+    background-color: var(--fundo);
+}
+
+.config-box label {
+    font-size: 0.8rem;
+}
+
+.config-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+
+    color: var(--dourado);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.config-titulo svg {
+    width: 16px;
+    height: 16px;
+}
+
+.config-titulo.config-verde {
+    color: var(--sucesso);
+}
+
+.config-nota {
+    margin: 0;
+
+    font-size: 0.72rem;
+    font-style: italic;
+}
+
+.config-nota strong {
+    color: var(--texto);
+}
+
+.api-fonte {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+    padding: 10px 12px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+
+    font-size: 0.78rem;
+}
+
+.api-fonte strong {
+    color: var(--texto);
+}
+
+.api-fonte-taxa {
+    color: var(--dourado);
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.rotulo-com-selo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 8px;
+    margin: 4px 0 8px;
+}
+
+.rotulo-com-selo label {
+    margin: 0;
+}
+
+.selo-recomendado {
+    padding: 2px 10px;
+
+    color: var(--dourado);
+    background-color: rgba(240, 185, 59, 0.12);
+    border: 1px solid var(--dourado);
+    border-radius: 999px;
+
+    font-size: 0.66rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.campo-icone {
+    position: relative;
+}
+
+.campo-icone svg {
+    position: absolute;
+    top: 14px;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+
+    color: var(--texto-2);
+}
+
+.campo-icone input {
+    padding-left: 36px;
+}
+
+.botao-com-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.botao-com-icone svg {
+    width: 18px;
+    height: 18px;
+}
+
+form button.botao-com-icone[type="submit"] {
+    display: flex;
+}
+
+/* Lista de investimentos ativos */
+.barra-cotacoes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.status-api {
+    color: var(--texto-2);
+    font-size: 0.74rem;
+}
+
+.item-investimento {
+    flex-wrap: wrap;
+}
+
+.item-investimento .linha-info {
+    flex-basis: 55%;
+}
+
+.selo-api {
+    display: inline-block;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 4px;
+    padding: 2px 10px;
+
+    color: var(--texto-2);
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+
+    font-size: 0.68rem;
+    overflow-wrap: anywhere;
+}
+
+/* Simulador: consulta específica por período */
+.botao-detalhe {
+    width: 100%;
+    margin-top: 14px;
+
+    color: var(--dourado);
+    background-color: transparent;
+    border: 1px solid var(--dourado);
+
+    font-size: 0.85rem;
+}
+
+.botao-detalhe:hover {
+    background-color: rgba(240, 185, 59, 0.1);
+    filter: none;
+}
+
+form .botao-detalhe {
+    margin-top: 14px;
+}
+
+.sim-detalhe {
+    position: relative;
+    margin-top: 16px;
+    padding: 18px 14px 14px;
+
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+}
+
+.sim-detalhe[hidden] {
+    display: none;
+}
+
+.selo-consulta {
+    position: absolute;
+    top: -1px;
+    right: 12px;
+    padding: 2px 10px;
+
+    color: var(--dourado);
+    background-color: var(--fundo);
+    border: 1px solid var(--dourado);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.sim-detalhe-topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 6px 0 14px;
+}
+
+.sim-detalhe-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 4px;
+
+    color: var(--dourado);
+    font-size: 0.92rem;
+}
+
+.sim-detalhe-topo .sim-ajuda {
+    margin: 0;
+}
+
+.sim-mes-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px 2px 12px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.sim-mes-box label {
+    margin: 0;
+
+    color: var(--texto-2);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.sim-mes-box select {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 8px 4px;
+
+    background-color: transparent;
+    border: 0;
+
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.sim-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+@media (min-width: 700px) {
+    .sim-stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.sim-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 12px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.sim-stat-destaque {
+    border-color: var(--dourado);
+}
+
+.sim-stat-rotulo {
+    color: var(--texto-2);
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.sim-stat-valor {
+    font-size: 1.02rem;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.sim-stat-valor.valor-dourado {
+    color: var(--dourado);
+}
+
+.sim-stat-nota {
+    color: var(--texto-2);
+    font-size: 0.64rem;
+}
+
+.sim-grafico {
+    margin-top: 14px;
+    padding: 14px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.sim-grafico-titulo {
+    margin: 0 0 8px;
+
+    color: var(--texto);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.area-sim {
+    flex: none;
+    height: 260px;
+}
+
+#sim-tabela-wrap {
+    max-height: 380px;
+    margin-top: 12px;
+    overflow-y: auto;
+}
+
+#sim-tabela-wrap[hidden] {
+    display: none;
+}
+
+.linha-destacada td {
+    background-color: rgba(240, 185, 59, 0.12);
+}
+
+/* ==========================================================
+   21. Cadastro de despesa: tipo de pagamento
+   ========================================================== */
+.rotulo-secao {
+    margin: 4px 0 8px;
+
+    color: var(--dourado);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.opcoes-pagamento {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.opcao-pagamento {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    padding: 10px;
+
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    cursor: pointer;
+}
+
+.opcao-pagamento input {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    min-height: 0;
+    margin: 2px 0 0;
+    padding: 0;
+
+    accent-color: var(--dourado);
+}
+
+.opcao-pagamento:has(input:checked) {
+    background-color: rgba(240, 185, 59, 0.08);
+    border-color: var(--dourado);
+}
+
+.opcao-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.opcao-texto strong {
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.opcao-texto span {
+    color: var(--texto-2);
+    font-size: 0.66rem;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.valor-parcela {
+    display: block;
+
+    color: var(--texto);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.linha-titulo-selo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+}
+
+.selo-cartao {
+    padding: 1px 8px;
+
+    color: var(--roxo);
+    background-color: rgba(139, 124, 246, 0.14);
+    border: 1px solid rgba(139, 124, 246, 0.45);
+    border-radius: 6px;
+
+    font-size: 0.66rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ==========================================================
+   22. Início: vencimentos e cotação de moedas
+   ========================================================== */
+.painel-titulo-quebra {
+    flex-wrap: wrap;
+}
+
+.painel-detalhe {
+    color: var(--texto-2);
+    font-size: 0.72rem;
+    font-weight: 500;
+}
+
+.faixa-vencimentos {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 6px;
+    overflow-x: auto;
+}
+
+.vencimento {
+    display: flex;
+    flex: 0 0 168px;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 10px 12px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.vencimento-data {
+    color: var(--texto-2);
+    font-size: 0.7rem;
+}
+
+.vencimento-nome {
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vencimento-valor {
+    font-size: 0.74rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.venc-pago { color: var(--sucesso); }
+.venc-pendente { color: var(--dourado); }
+
+.calendario {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 12px;
+}
+
+.calendario[hidden] {
+    display: none;
+}
+
+.cal-semana {
+    color: var(--texto-2);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.cal-dia {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2px;
+    min-height: 50px;
+    min-width: 0;
+    padding: 4px 5px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+
+    font-size: 0.72rem;
+}
+
+.cal-tem {
+    border-color: var(--dourado);
+}
+
+.cal-hoje {
+    outline: 1px solid var(--roxo);
+}
+
+.cal-valor {
+    font-size: 0.6rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selo-variacao {
+    margin-left: auto;
+    padding: 2px 8px;
+
+    border-radius: 6px;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.selo-variacao[hidden] {
+    display: none;
+}
+
+.variacao-alta {
+    color: var(--sucesso);
+    background-color: rgba(52, 211, 153, 0.12);
+}
+
+.variacao-baixa {
+    color: var(--erro);
+    background-color: rgba(251, 113, 133, 0.12);
+}
+
+#card-cotacao .grade-campos {
+    gap: 0 10px;
+}
+
+.cot-resultado {
+    margin-bottom: 12px;
+    padding: 14px;
+
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+.cot-rotulo {
+    display: block;
+
+    color: var(--texto-2);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.cot-valor {
+    display: block;
+    margin: 4px 0;
+
+    color: var(--texto);
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.cot-taxa {
+    margin: 0;
+
+    font-size: 0.72rem;
+}
+
+.cot-saldo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin: 0 0 10px;
+
+    font-size: 0.8rem;
+}
+
+.cot-saldo strong {
+    color: var(--dourado);
+}
+
+.cot-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#despesa-recorrente {
+    display: none;
+}
+
+
+/* ==========================================================
+   23. Seletor de datas minimalista
+   ========================================================== */
+.dp {
+    position: relative;
+}
+
+/* O campo original continua guardando o valor, mas fica invisível */
+input.dp-nativo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dp-botao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    margin: 0 0 18px;
+    padding: 10px 12px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: left;
+
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dp-botao svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+
+    color: var(--dourado);
+}
+
+.dp-botao[aria-expanded="true"],
+.dp-botao:focus-visible {
+    border-color: var(--roxo);
+    box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.25);
+    outline: none;
+}
+
+.dp-botao.dp-invalido {
+    border-color: var(--erro);
+}
+
+@media (hover: hover) {
+    .dp-botao:hover {
+        border-color: var(--roxo);
+        filter: none;
+    }
+}
+
+.dp-texto.dp-vazio {
+    color: var(--texto-2);
+}
+
+.painel-card .dp-botao,
+.config-box .dp-botao {
+    background-color: var(--fundo);
+}
+
+/* Campos de mês dentro de cabeçalhos e filtros ficam sem margem extra quando estão sozinhos */
+.dp-janela {
+    position: fixed;
+    z-index: 4000;
+    width: min(296px, calc(100vw - 16px));
+    padding: 12px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.dp-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.dp-janela button {
+    margin: 0;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.dp-seta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    color: var(--texto-2);
+    background-color: transparent;
+    border: 0;
+    border-radius: 8px;
+}
+
+.dp-seta svg {
+    width: 18px;
+    height: 18px;
+}
+
+.dp-seta:hover,
+.dp-titulo:hover:not(:disabled) {
+    color: var(--texto);
+    background-color: var(--fundo);
+    filter: none;
+}
+
+.dp-titulo {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+
+    color: var(--texto);
+    background-color: transparent;
+    border: 0;
+    border-radius: 8px;
+
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.dp-titulo:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+.dp-titulo svg {
+    width: 16px;
+    height: 16px;
+
+    color: var(--dourado);
+}
+
+.dp-semana,
+.dp-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.dp-sigla {
+    padding: 4px 0;
+
+    color: var(--texto-2);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.dp-dia,
+.dp-ano,
+.dp-mes {
+    color: var(--texto);
+    background-color: transparent;
+    border: 0;
+    border-radius: 8px;
+
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.dp-dia {
+    aspect-ratio: 1;
+    padding: 0;
+
+    border-radius: 50%;
+}
+
+.dp-dia:hover,
+.dp-ano:hover,
+.dp-mes:hover {
+    background-color: var(--fundo);
+    filter: none;
+}
+
+.dp-hoje {
+    box-shadow: inset 0 0 0 1px var(--dourado);
+}
+
+.dp-janela .dp-escolhido,
+.dp-janela .dp-escolhido:hover {
+    color: #1a1400;
+    background-color: var(--dourado);
+    font-weight: 700;
+}
+
+.dp-anos {
+    display: flex;
+    flex-direction: column;
+    max-height: 124px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid var(--borda);
+    overflow-y: auto;
+}
+
+.dp-ano {
+    flex-shrink: 0;
+    padding: 7px 10px;
+
+    text-align: left;
+}
+
+.dp-meses {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.dp-mes {
+    padding: 9px 0;
+
+    text-transform: lowercase;
+}
+
+.dp-rodape {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+
+    border-top: 1px solid var(--borda);
+}
+
+.dp-atalho {
+    padding: 4px 8px;
+
+    color: var(--dourado);
+    background-color: transparent;
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.dp-atalho:hover {
+    background-color: var(--fundo);
+    filter: none;
+}
+
+.dp-atalho-limpar {
+    color: var(--texto-2);
+}
+
+/* ==========================================================
+   24. Cabeçalho das seções (cartão com ícone) e Início reorganizado
+   ========================================================== */
+.painel-cabecalho {
+    flex-wrap: wrap;
+}
+
+.painel-cabecalho h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.painel-cabecalho h2 svg {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+}
+
+.painel-cabecalho-texto {
+    min-width: 0;
+}
+
+.painel-cabecalho .periodo-despesas {
+    white-space: nowrap;
+}
+
+.painel-trio {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 14px;
+}
+
+.painel-trio > .painel-card {
+    display: flex;
+    flex-direction: column;
+}
+
+#card-cotacao .grade-campos {
+    gap: 0 8px;
+}
+
+#card-cotacao .rotulo-curto {
+    margin-top: 0;
+
+    color: var(--texto-2);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+#card-cotacao .cot-rodape {
+    margin-top: auto;
+}
+
+@media (min-width: 700px) {
+    .faixa-vencimentos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        overflow: visible;
+    }
+
+    .vencimento {
+        flex: none;
+    }
+}
+
+.painel-trio .painel-titulo .periodo-despesas {
+    margin-left: auto;
+
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+#card-cotacao select {
+    padding: 10px 6px;
+
+    font-size: 0.9rem;
+}
+
+
+/* ==========================================================
+   25. Listas de opções estilizadas (campos de seleção)
+   ========================================================== */
+.cs {
+    position: relative;
+    display: block;
+}
+
+select.cs-nativo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cs-botao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    margin: 0 0 18px;
+    padding: 10px 12px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: left;
+
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cs-botao > svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+
+    color: var(--dourado);
+}
+
+.cs-botao > .cs-seta {
+    width: 16px;
+    height: 16px;
+
+    transition: transform 0.2s ease;
+}
+
+.cs-botao[aria-expanded="true"] > .cs-seta {
+    transform: rotate(180deg);
+}
+
+.cs-botao[aria-expanded="true"],
+.cs-botao:focus-visible {
+    border-color: var(--roxo);
+    box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.25);
+    outline: none;
+}
+
+.cs-botao:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (hover: hover) {
+    .cs-botao:hover:not(:disabled) {
+        border-color: var(--roxo);
+        filter: none;
+    }
+}
+
+.cs-texto {
+    flex: 1;
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.painel-card .cs-botao,
+.config-box .cs-botao {
+    background-color: var(--fundo);
+}
+
+.config-box .cs-botao {
+    margin-bottom: 12px;
+}
+
+.controles-comparativo .cs-botao {
+    margin-bottom: 0;
+}
+
+/* Ano do comparativo (cabeçalho) */
+.cs-compacto {
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.cs-compacto .cs-botao {
+    width: auto;
+    min-width: 128px;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 12px;
+
+    font-size: 0.88rem;
+}
+
+/* Campos dentro de uma "pílula" (mês da reserva e do simulador) */
+.cs-plano {
+    display: inline-block;
+}
+
+.cs-plano .cs-botao {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 6px 4px;
+
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.sim-mes-box .cs-botao {
+    padding: 8px 4px;
+
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.cs-janela {
+    position: fixed;
+    z-index: 4000;
+    padding: 6px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--borda) transparent;
+    scrollbar-width: thin;
+}
+
+.cs-item {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 9px 12px;
+
+    color: var(--texto);
+    background-color: transparent;
+    border: 0;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 400;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.cs-item:hover:not(:disabled),
+.cs-item:focus-visible {
+    background-color: var(--fundo);
+    outline: none;
+    filter: none;
+}
+
+.cs-janela .cs-escolhido,
+.cs-janela .cs-escolhido:hover:not(:disabled),
+.cs-janela .cs-escolhido:focus-visible {
+    color: #1a1400;
+    background-color: var(--dourado);
+    font-weight: 700;
+}
+
+.cs-item:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.cs-grupo {
+    padding: 10px 12px 4px;
+
+    color: var(--texto-2);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Seletor de datas: lista de anos mais calma */
+.dp-anos {
+    max-height: 120px;
+
+    scroll-snap-type: y proximity;
+}
+
+.dp-ano {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+
+    scroll-snap-align: start;
+}
+
+.dp-seta:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* Cotação de moedas um pouco mais baixa */
+#card-cotacao label {
+    margin: 2px 0 6px;
+}
+
+#card-cotacao input {
+    min-height: 40px;
+    margin-bottom: 10px;
+}
+
+#card-cotacao .cs-botao {
+    min-height: 40px;
+    margin-bottom: 10px;
+    padding: 8px 8px;
+
+    font-size: 0.9rem;
+}
+
+.cot-resultado {
+    margin-bottom: 8px;
+    padding: 10px;
+}
+
+.cot-valor {
+    margin: 2px 0;
+
+    font-size: 1.2rem;
+}
+
+.cot-saldo {
+    margin-bottom: 6px;
+}
+
+/* Barras de progresso das metas: roxo premium até o dourado */
+.barra-progresso-preenchimento {
+    background: linear-gradient(90deg, #5b21b6 0%, #7c3aed 30%, #a855f7 58%, var(--dourado) 100%);
+}

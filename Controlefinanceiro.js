@@ -169,6 +169,31 @@ formGasto.onsubmit = function(event) {
         return;
     }
 
+    // 4.2.2 Compra no cartão parcelado: cria uma despesa por parcela
+    if (tipoPagamentoAtual() === "parcelado") {
+        const totalParcelas = Math.floor(Number(numParcelas.value));
+
+        if (!(totalParcelas >= 2 && totalParcelas <= 60)) {
+            alert("Informe o número de parcelas (de 2 a 60).");
+            return;
+        }
+
+        cadastrarCompraParcelada(descricao.trim(), gastoValor, data, categoria.trim(), totalParcelas);
+        localStorage.setItem("gastos", JSON.stringify(gastos));
+
+        filtroMes.value = data.slice(0, 7);
+        atualizarHistorico();
+
+        formGasto.reset();
+        campoData.value = dataDeHoje();
+        aplicarTipoPagamento();
+        mostrarMensagemDespesa(`Compra parcelada em ${totalParcelas}x cadastrada com sucesso!`);
+
+        atualizarResumoMensal();
+        atualizarSaldo();
+        return;
+    }
+
     // 4.3 Criar um objeto com os dados da despesa
     let novaDespesa = {
         id: Date.now(),
@@ -204,9 +229,7 @@ formGasto.onsubmit = function(event) {
     // 4.7 Limpar o formulário
     formGasto.reset();
     campoData.value = dataDeHoje();
-    camposRecorrencia.hidden = true;
-    frequenciaRecorrencia.required = false;
-    diaVencimento.required = false;
+    aplicarTipoPagamento();
     mostrarMensagemDespesa("Despesa cadastrada com sucesso!");
 
     // 4.8 Atualizar o resumo mensal
@@ -595,14 +618,25 @@ function criarLinhaDespesa(despesa, comAcoes) {
 
     let titulo = document.createElement("strong");
     titulo.className = "linha-titulo";
-    titulo.textContent = despesa.descricao;
+    titulo.textContent = tituloDaDespesa(despesa);
 
     let meta = document.createElement("span");
     meta.className = "linha-meta";
     meta.textContent =
         `${formatarDataBR(despesa.data)} · ${despesa.categoria || "Sem categoria"}`;
 
-    info.appendChild(titulo);
+    const linhaTitulo = document.createElement("div");
+    linhaTitulo.className = "linha-titulo-selo";
+    linhaTitulo.appendChild(titulo);
+
+    if (despesa.parcela) {
+        const seloCartao = document.createElement("span");
+        seloCartao.className = "selo-cartao";
+        seloCartao.textContent = `Cartão ${despesa.parcela.numero}/${despesa.parcela.total}`;
+        linhaTitulo.appendChild(seloCartao);
+    }
+
+    info.appendChild(linhaTitulo);
     info.appendChild(meta);
 
     // Valor e status de pagamento
@@ -615,8 +649,8 @@ function criarLinhaDespesa(despesa, comAcoes) {
 
     direita.appendChild(valor);
 
-    // O status de pagamento existe somente nas despesas recorrentes
-    if (despesa.recorrente) {
+    // O status de pagamento existe nas despesas recorrentes e nas parcelas do cartão
+    if (despesa.recorrente || despesa.parcela) {
         let selo;
 
         if (comAcoes) {
@@ -782,7 +816,7 @@ function mostrarHistoricoCompleto() {
 // 4.11.5 Contar as contas recorrentes que ainda não foram pagas
 function atualizarContasPendentes(lista) {
     let pendentes = lista.filter(function(despesa) {
-        return despesa.recorrente && !despesa.paga;
+        return (despesa.recorrente || despesa.parcela) && !despesa.paga;
     }).length;
 
     contasPendentes.textContent = pendentes;
@@ -1810,13 +1844,14 @@ const nomeInvestimento = document.getElementById("nome-investimento");
 const dataInvestimento = document.getElementById("data-investimento");
 const listaInvestimentos = document.getElementById("lista-investimentos");
 const metaInvestimento = document.getElementById("meta-investimento");
-const periodoReserva = document.getElementById("periodo-reserva");
 const reservaMetaBloco = document.getElementById("reserva-meta-bloco");
 
 // Resumo da reserva
 const saldoDisponivelReserva = document.getElementById("saldo-disponivel-reserva");
 const totalAportadoMes = document.getElementById("total-aportado-mes");
 const totalReserva = document.getElementById("total-reserva");
+const notaAportadoMes = document.getElementById("nota-aportado-mes");
+const notaLucroMes = document.getElementById("nota-lucro-mes");
 
 // Cadastro de novos aportes
 const formAporteReserva = document.getElementById("form-aporte-reserva");
@@ -1875,30 +1910,609 @@ function somarAportesMetasDoMes(mes) {
     return total;
 }
 
-// 14.4 Atualizar o resumo da reserva
-function atualizarResumoReserva() {
-    const mes = filtroMes.value;
 
-    periodoReserva.textContent = mes ? nomeDoMes(mes) : "Todos os períodos";
-    totalReserva.textContent = formatarMoeda(calcularTotalReserva());
+// ==========================================================
+// 24. APIs, rendimento da reserva e cadastro de investimentos
+// ==========================================================
 
-    if (!mes) {
-        saldoDisponivelReserva.textContent = "Selecione um mês";
-        totalAportadoMes.textContent = "R$ 0,00";
-    } else {
-        const receita = buscarReceitaDoMes(mes);
-        const despesas = somarDespesasDoMes(mes);
-        const aportesMetas = somarAportesMetasDoMes(mes);
-        const aportesInvestimentosMes = somarAportesInvestimentosDoMes(mes);
+// 24.1 Cache das consultas (para funcionar também sem internet)
+function lerCacheApi() {
+    try {
+        return JSON.parse(localStorage.getItem("cacheApi")) || {};
+    } catch (erro) {
+        return {};
+    }
+}
 
-        const saldo = receita - despesas - aportesMetas - aportesInvestimentosMes;
+let cacheApi = lerCacheApi();
 
-        saldoDisponivelReserva.textContent = formatarMoeda(saldo);
-        totalAportadoMes.textContent = formatarMoeda(aportesInvestimentosMes);
+function salvarCacheApi() {
+    try {
+        localStorage.setItem("cacheApi", JSON.stringify(cacheApi));
+    } catch (erro) {
+        // Sem armazenamento: apenas não guarda o cache
+    }
+}
+
+// Consulta JSON com tempo limite
+async function buscarJSON(url, limiteMs) {
+    const controle = new AbortController();
+    const temporizador = setTimeout(function() {
+        controle.abort();
+    }, limiteMs || 8000);
+
+    try {
+        const resposta = await fetch(url, { signal: controle.signal });
+
+        if (!resposta.ok) {
+            throw new Error(`HTTP ${resposta.status}`);
+        }
+
+        return await resposta.json();
+    } finally {
+        clearTimeout(temporizador);
+    }
+}
+
+// 24.2 Provedores (identificadores usados no cadastro)
+const URL_BCB = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.";
+
+const PROVEDORES = {
+    acao: {
+        recomendado: "brapi_api",
+        opcoes: [
+            ["brapi_api", "Brapi API [Recomendado para B3]"],
+            ["yahoo_finance", "Yahoo Finance API"],
+            ["endpoint", "Endpoint REST personalizado"]
+        ]
+    },
+    cripto: {
+        recomendado: "coingecko",
+        opcoes: [
+            ["coingecko", "CoinGecko API [Recomendado para cripto]"],
+            ["yahoo_finance", "Yahoo Finance API"],
+            ["endpoint", "Endpoint REST personalizado"]
+        ]
+    },
+    internacional: {
+        recomendado: "yahoo_finance",
+        opcoes: [
+            ["yahoo_finance", "Yahoo Finance API [Recomendado para ações globais]"],
+            ["endpoint", "Endpoint REST personalizado"]
+        ]
+    }
+};
+
+const NOMES_PROVEDOR = {
+    brapi_api: "Brapi",
+    coingecko: "CoinGecko",
+    yahoo_finance: "Yahoo Finance",
+    endpoint: "Endpoint REST"
+};
+
+const DICAS_TICKER = {
+    brapi_api: "Ex.: PETR4, HGLG11",
+    coingecko: "Ex.: bitcoin, ethereum",
+    yahoo_finance: "Ex.: AAPL, PETR4.SA, BTC-USD",
+    endpoint: "Ex.: https://api.exemplo.com/preco"
+};
+
+// 24.3 Taxas de renda fixa (Banco Central)
+const TAXA_PADRAO_ANUAL = { selic: 10.75, cdi: 10.65 };
+
+function anualDeDiaria(taxaDiaria) {
+    return (Math.pow(1 + taxaDiaria / 100, 252) - 1) * 100;
+}
+
+function mensalDeAnual(taxaAnual) {
+    return Math.pow(1 + taxaAnual / 100, 1 / 12) - 1;
+}
+
+function dataParaBCB(data) {
+    return `${String(data.getDate()).padStart(2, "0")}/` +
+        `${String(data.getMonth() + 1).padStart(2, "0")}/${data.getFullYear()}`;
+}
+
+// "01/10/2026" -> "2026-10"
+function mesDaDataBCB(texto) {
+    const partes = String(texto).split("/");
+
+    return `${partes[2]}-${partes[1]}`;
+}
+
+function taxaAnualAtual(serie) {
+    const taxas = cacheApi.taxas || {};
+    const valor = Number(taxas[`${serie}Anual`]);
+
+    return valor > 0 ? valor : TAXA_PADRAO_ANUAL[serie];
+}
+
+function mesMaisAntigoDaReserva() {
+    const meses = [];
+
+    investimentos.forEach(function(investimento) {
+        if (/^\d{4}-\d{2}$/.test(investimento.dataInicial || "")) {
+            meses.push(investimento.dataInicial);
+        }
+    });
+
+    aportesInvestimentos.forEach(function(aporte) {
+        if (typeof aporte.data === "string") {
+            meses.push(aporte.data.slice(0, 7));
+        }
+    });
+
+    meses.sort();
+
+    return meses.length > 0 ? meses[0] : mesAtual;
+}
+
+async function atualizarTaxasBCB(forcar) {
+    const antigas = cacheApi.taxas || {};
+
+    // Evita consultar de novo em menos de 6 horas
+    if (!forcar && antigas.atualizadoEm && Date.now() - antigas.atualizadoEm < 6 * 3600 * 1000) {
+        return;
     }
 
+    const inicio = mesMaisAntigoDaReserva();
+    const dataInicial = `01/${inicio.slice(5, 7)}/${inicio.slice(0, 4)}`;
+    const dataFinal = dataParaBCB(new Date());
+    const faixa = `?formato=json&dataInicial=${dataInicial}&dataFinal=${dataFinal}`;
+
+    // SGS 11 = Selic diária, 12 = CDI diário, 4390 = Selic do mês, 4391 = CDI do mês
+    const resultados = await Promise.allSettled([
+        buscarJSON(`${URL_BCB}11/dados/ultimos/1?formato=json`),
+        buscarJSON(`${URL_BCB}12/dados/ultimos/1?formato=json`),
+        buscarJSON(`${URL_BCB}4390/dados${faixa}`),
+        buscarJSON(`${URL_BCB}4391/dados${faixa}`)
+    ]);
+
+    const novas = Object.assign({}, antigas);
+    let algumaOk = false;
+
+    if (resultados[0].status === "fulfilled" && resultados[0].value.length) {
+        novas.selicAnual = anualDeDiaria(Number(resultados[0].value[0].valor));
+        algumaOk = true;
+    }
+
+    if (resultados[1].status === "fulfilled" && resultados[1].value.length) {
+        novas.cdiAnual = anualDeDiaria(Number(resultados[1].value[0].valor));
+        algumaOk = true;
+    }
+
+    [[2, "selicMensal"], [3, "cdiMensal"]].forEach(function(par) {
+        const resultado = resultados[par[0]];
+
+        if (resultado.status === "fulfilled" && Array.isArray(resultado.value)) {
+            const mapa = Object.assign({}, novas[par[1]]);
+
+            resultado.value.forEach(function(linha) {
+                const valor = Number(linha.valor);
+
+                if (Number.isFinite(valor)) {
+                    mapa[mesDaDataBCB(linha.data)] = valor;
+                }
+            });
+
+            novas[par[1]] = mapa;
+            algumaOk = true;
+        }
+    });
+
+    if (algumaOk) {
+        novas.atualizadoEm = Date.now();
+        cacheApi.taxas = novas;
+        cacheApi.erroTaxas = false;
+    } else {
+        cacheApi.erroTaxas = true;
+    }
+}
+
+// 24.4 Cotações de renda variável
+function extrairPreco(dados) {
+    const chaves = ["regularMarketPrice", "price", "preco", "last", "close", "valor", "bid", "brl"];
+
+    if (typeof dados === "number") {
+        return dados;
+    }
+
+    if (Array.isArray(dados)) {
+        for (const item of dados) {
+            const preco = extrairPreco(item);
+
+            if (preco > 0) {
+                return preco;
+            }
+        }
+
+        return null;
+    }
+
+    if (dados && typeof dados === "object") {
+        for (const chave of chaves) {
+            if (Number(dados[chave]) > 0) {
+                return Number(dados[chave]);
+            }
+        }
+
+        for (const valor of Object.values(dados)) {
+            const preco = extrairPreco(valor);
+
+            if (preco > 0) {
+                return preco;
+            }
+        }
+    }
+
+    return null;
+}
+
+async function buscarPrecoAtivo(api) {
+    const ticker = String(api.ticker || "").trim();
+
+    if (api.fonte === "brapi_api") {
+        const dados = await buscarJSON(`https://brapi.dev/api/quote/${encodeURIComponent(ticker)}`);
+
+        return Number(dados.results[0].regularMarketPrice);
+    }
+
+    if (api.fonte === "coingecko") {
+        const id = ticker.toLowerCase();
+        const dados = await buscarJSON(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(id)}&vs_currencies=brl`
+        );
+
+        return Number(dados[id].brl);
+    }
+
+    if (api.fonte === "yahoo_finance") {
+        const dados = await buscarJSON(
+            `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=1d`
+        );
+        const meta = dados.chart.result[0].meta;
+        let preco = Number(meta.regularMarketPrice);
+
+        // Cotação em dólar: converte para real quando a cotação do dólar está disponível
+        if (meta.currency === "USD") {
+            const dolar = valorEmDolar("BRL");
+
+            if (dolar > 0) {
+                preco = preco / dolar;
+            }
+        }
+
+        return preco;
+    }
+
+    if (api.fonte === "endpoint") {
+        return extrairPreco(await buscarJSON(ticker));
+    }
+
+    return null;
+}
+
+function registrarCotacao(investimento, preco) {
+    cacheApi.cotacoes = cacheApi.cotacoes || {};
+
+    const anterior = cacheApi.cotacoes[investimento.id] || {};
+    let inicioMes = anterior.inicioMes;
+
+    // No primeiro registro de cada mês, guarda o preço de partida do mês
+    if (!inicioMes || inicioMes.mes !== mesAtual) {
+        inicioMes = { mes: mesAtual, preco: anterior.preco > 0 ? anterior.preco : preco };
+    }
+
+    cacheApi.cotacoes[investimento.id] = {
+        preco: preco,
+        anterior: anterior.preco > 0 ? anterior.preco : null,
+        atualizadoEm: Date.now(),
+        inicioMes: inicioMes
+    };
+
+    // Aportes sem cotação passam a usar o preço de agora como preço de compra
+    let mudou = false;
+
+    aportesInvestimentos.forEach(function(aporte) {
+        if (aporte.investimentoId === investimento.id && !(Number(aporte.cotacao) > 0)) {
+            aporte.cotacao = preco;
+            mudou = true;
+        }
+    });
+
+    if (mudou) {
+        localStorage.setItem("aportesInvestimentos", JSON.stringify(aportesInvestimentos));
+    }
+}
+
+async function atualizarCotacoesAtivos(forcar) {
+    const variaveis = investimentos.filter(function(investimento) {
+        return investimento.tipo === "Outro" && investimento.api && investimento.api.ticker;
+    });
+
+    cacheApi.erroCotacoes = false;
+
+    for (const investimento of variaveis) {
+        const atual = (cacheApi.cotacoes || {})[investimento.id];
+
+        if (!forcar && atual && Date.now() - atual.atualizadoEm < 10 * 60 * 1000) {
+            continue;
+        }
+
+        try {
+            const preco = await buscarPrecoAtivo(investimento.api);
+
+            if (preco > 0) {
+                registrarCotacao(investimento, preco);
+            } else {
+                cacheApi.erroCotacoes = true;
+            }
+        } catch (erro) {
+            cacheApi.erroCotacoes = true;
+        }
+    }
+}
+
+// 24.5 Rendimento estimado de cada investimento
+function mesesEntre(inicio, fim) {
+    const lista = [];
+    let ano = Number(inicio.slice(0, 4));
+    let mes = Number(inicio.slice(5, 7));
+
+    while (`${ano}-${String(mes).padStart(2, "0")}` <= fim && lista.length < 1200) {
+        lista.push(`${ano}-${String(mes).padStart(2, "0")}`);
+
+        mes += 1;
+
+        if (mes > 12) {
+            mes = 1;
+            ano += 1;
+        }
+    }
+
+    return lista;
+}
+
+function fracaoDoMes() {
+    const hoje = new Date();
+    const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+
+    return hoje.getDate() / diasNoMes;
+}
+
+function aportesDoInvestimento(investimento) {
+    return aportesInvestimentos.filter(function(aporte) {
+        return aporte.investimentoId === investimento.id &&
+            typeof aporte.data === "string" &&
+            Number(aporte.valor) > 0;
+    });
+}
+
+// Série (selic ou cdi) e percentual de cada investimento de renda fixa
+function configuracaoFixa(investimento) {
+    const api = investimento.api || {};
+    const serie = api.serie || (investimento.tipo === "CDB com liquidez diária" ? "cdi" : "selic");
+
+    return { serie: serie, fator: (Number(api.percentual) || 100) / 100 };
+}
+
+function taxaMensalFixa(serie, mes, fator) {
+    const taxas = cacheApi.taxas || {};
+    const mensais = taxas[`${serie}Mensal`] || {};
+    const publicada = mensais[mes] != null;
+
+    let taxa = publicada
+        ? mensais[mes] / 100
+        : mensalDeAnual(taxaAnualAtual(serie));
+
+    taxa *= fator;
+
+    // Mês em andamento ainda sem taxa publicada: só rende até hoje
+    if (mes === mesAtual && !publicada) {
+        taxa *= fracaoDoMes();
+    }
+
+    return taxa;
+}
+
+// Renda fixa: cada mês rende (saldo anterior + aportes do mês) × taxa do mês
+function valorRendaFixa(investimento, ateMes) {
+    const aportes = aportesDoInvestimento(investimento);
+    const resultado = { saldo: 0, aportado: 0, lucroMes: 0, base: 0, aportesMes: 0 };
+
+    if (aportes.length === 0) {
+        return resultado;
+    }
+
+    const primeiro = aportes.map(function(aporte) {
+        return aporte.data.slice(0, 7);
+    }).sort()[0];
+
+    if (primeiro > ateMes) {
+        return resultado;
+    }
+
+    const configuracao = configuracaoFixa(investimento);
+    let saldo = 0;
+
+    mesesEntre(primeiro, ateMes).forEach(function(mes) {
+        const anterior = saldo;
+        let aportesMes = 0;
+
+        aportes.forEach(function(aporte) {
+            if (aporte.data.slice(0, 7) === mes) {
+                aportesMes += Number(aporte.valor);
+            }
+        });
+
+        const taxa = taxaMensalFixa(configuracao.serie, mes, configuracao.fator);
+
+        saldo = (anterior + aportesMes) * (1 + taxa);
+
+        resultado.aportado += aportesMes;
+        resultado.aportesMes = aportesMes;
+        resultado.base = anterior + aportesMes;
+        resultado.lucroMes = saldo - anterior - aportesMes;
+    });
+
+    resultado.saldo = saldo;
+
+    return resultado;
+}
+
+// Renda variável: quantidade comprada × cotação de hoje (só vale para o mês atual)
+function valorRendaVariavel(investimento, ateMes) {
+    const aportes = aportesDoInvestimento(investimento).filter(function(aporte) {
+        return aporte.data.slice(0, 7) <= ateMes;
+    });
+
+    const resultado = { saldo: 0, aportado: 0, lucroMes: 0, base: 0, aportesMes: 0 };
+
+    aportes.forEach(function(aporte) {
+        resultado.aportado += Number(aporte.valor);
+
+        if (aporte.data.slice(0, 7) === ateMes) {
+            resultado.aportesMes += Number(aporte.valor);
+        }
+    });
+
+    const cotacao = (cacheApi.cotacoes || {})[investimento.id];
+
+    if (ateMes !== mesAtual || !cotacao || !(cotacao.preco > 0)) {
+        // Sem cotação (ou mês passado, sem histórico): considera o valor aportado
+        resultado.saldo = resultado.aportado;
+        return resultado;
+    }
+
+    let quantidade = 0;
+    let semCotacao = 0;
+
+    aportes.forEach(function(aporte) {
+        if (Number(aporte.cotacao) > 0) {
+            quantidade += Number(aporte.valor) / Number(aporte.cotacao);
+        } else {
+            semCotacao += Number(aporte.valor);
+        }
+    });
+
+    resultado.saldo = quantidade * cotacao.preco + semCotacao;
+
+    const inicio = cotacao.inicioMes && cotacao.inicioMes.mes === mesAtual ? cotacao.inicioMes.preco : cotacao.preco;
+
+    resultado.lucroMes = quantidade * (cotacao.preco - inicio);
+    resultado.base = resultado.saldo - resultado.lucroMes;
+
+    return resultado;
+}
+
+function valorDoInvestimento(investimento, ateMes) {
+    return investimento.tipo === "Outro"
+        ? valorRendaVariavel(investimento, ateMes)
+        : valorRendaFixa(investimento, ateMes);
+}
+
+// Soma de todos os investimentos até o mês escolhido
+function resumoDaReserva(mes) {
+    const total = { saldo: 0, aportado: 0, lucroMes: 0, base: 0 };
+
+    investimentos.forEach(function(investimento) {
+        const valor = valorDoInvestimento(investimento, mes);
+
+        total.saldo += valor.saldo;
+        total.aportado += valor.aportado;
+        total.lucroMes += valor.lucroMes;
+        total.base += valor.base;
+    });
+
+    total.pctMes = total.base > 0 ? (total.lucroMes / total.base) * 100 : 0;
+
+    return total;
+}
+
+function calcularReservaAtualizada() {
+    return resumoDaReserva(mesAtual).saldo;
+}
+
+// 24.6 Seletor de mês e resumo da reserva
+const reservaMes = document.getElementById("reserva-mes");
+
+function mesDaReserva() {
+    return reservaMes.value || mesAtual;
+}
+
+// "2026-10" -> "out/26"
+function mesCurto(mesAno) {
+    return `${MESES_ABREV[Number(mesAno.slice(5, 7)) - 1].toLowerCase()}/${mesAno.slice(2, 4)}`;
+}
+
+// Só do mês atual para trás
+function montarSeletorMesReserva() {
+    const selecionado = reservaMes.value;
+    const maisAntigo = mesMaisAntigoDaReserva();
+    let limite = mesAtual;
+
+    for (let i = 0; i < 5; i++) {
+        limite = mesAnterior(limite);
+    }
+
+    const inicio = maisAntigo < limite ? maisAntigo : limite;
+    const meses = mesesEntre(inicio, mesAtual).reverse();
+    const assinatura = meses.join(",");
+
+    if (reservaMes.dataset.assinatura === assinatura) {
+        return;
+    }
+
+    reservaMes.dataset.assinatura = assinatura;
+    reservaMes.innerHTML = "";
+
+    meses.forEach(function(mes) {
+        const opcao = document.createElement("option");
+
+        opcao.value = mes;
+        opcao.textContent = nomeDoMes(mes) + (mes === mesAtual ? " (Atual)" : "");
+        reservaMes.appendChild(opcao);
+    });
+
+    reservaMes.value = meses.includes(selecionado) ? selecionado : mesAtual;
+}
+
+function formatarComSinal(valor) {
+    return (valor < 0 ? "-" : "+") + formatarMoeda(Math.abs(valor));
+}
+
+function atualizarResumoReserva() {
+    montarSeletorMesReserva();
+
+    const mes = mesDaReserva();
+
+    const saldo = buscarReceitaDoMes(mes) -
+        somarDespesasDoMes(mes) -
+        somarAportesMetasDoMes(mes) -
+        somarAportesInvestimentosDoMes(mes);
+
+    saldoDisponivelReserva.textContent = formatarMoeda(saldo);
+    saldoDisponivelReserva.classList.toggle("valor-negativo", saldo < 0);
+
+    // Aportado no mês e comparação com o mês anterior
+    const aportado = somarAportesInvestimentosDoMes(mes);
+    const anterior = mesAnterior(mes);
+    const diferenca = aportado - somarAportesInvestimentosDoMes(anterior);
+
+    totalAportadoMes.textContent = formatarMoeda(aportado);
+    notaAportadoMes.textContent = `${formatarComSinal(diferenca)} em relação a ${mesCurto(anterior)}`;
+    notaAportadoMes.className = "card-resumo-nota sensivel " + (diferenca >= 0 ? "nota-positiva" : "nota-negativa");
+
+    // Total acumulado (com rendimentos) e lucro do mês
+    const resumo = resumoDaReserva(mes);
+    const pct = resumo.pctMes.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    totalReserva.textContent = formatarMoeda(resumo.saldo);
+    notaLucroMes.textContent = `Lucro no mês: ${formatarComSinal(resumo.lucroMes)} (${resumo.lucroMes < 0 ? "-" : "+"}${pct.replace("-", "")}%)`;
+    notaLucroMes.className = "card-resumo-nota sensivel " + (resumo.lucroMes >= 0 ? "nota-positiva" : "nota-negativa");
+
     // Barra da meta da reserva (só aparece quando algum investimento tem meta)
-    const resumoMeta = resumoMetaReserva();
+    const resumoMeta = resumoMetaReserva(mes);
 
     reservaMetaBloco.innerHTML = "";
     reservaMetaBloco.hidden = resumoMeta.meta <= 0;
@@ -1910,24 +2524,129 @@ function atualizarResumoReserva() {
     }
 }
 
-// 14.5 Cadastrar investimentos
+reservaMes.addEventListener("change", function() {
+    atualizarResumoReserva();
+    mostrarInvestimentos();
+});
+
+// 24.7 Cadastro de investimentos (API fixa ou personalizada)
+const apiFixa = document.getElementById("api-fixa");
+const apiFixaTitulo = document.getElementById("api-fixa-titulo");
+const apiFixaFonte = document.getElementById("api-fixa-fonte");
+const apiFixaTaxa = document.getElementById("api-fixa-taxa");
+const apiPersonalizada = document.getElementById("api-personalizada");
+const apiCategoria = document.getElementById("api-categoria");
+const apiProvedor = document.getElementById("api-provedor");
+const apiTicker = document.getElementById("api-ticker");
+const seloRecomendado = document.getElementById("selo-recomendado");
+const valorAporteInicial = document.getElementById("valor-aporte-inicial");
+
+function formatarTaxaAnual(valor) {
+    return valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function montarProvedores() {
+    const categoria = PROVEDORES[apiCategoria.value];
+
+    apiProvedor.innerHTML = "";
+
+    categoria.opcoes.forEach(function(opcao) {
+        const elemento = document.createElement("option");
+
+        elemento.value = opcao[0];
+        elemento.textContent = opcao[1];
+        apiProvedor.appendChild(elemento);
+    });
+
+    apiProvedor.value = categoria.recomendado;
+    seloRecomendado.textContent = `✨ Recomendado: ${NOMES_PROVEDOR[categoria.recomendado]}`;
+
+    atualizarDicaTicker();
+}
+
+function atualizarDicaTicker() {
+    apiTicker.placeholder = DICAS_TICKER[apiProvedor.value];
+}
+
+function atualizarCamposApi() {
+    const tipo = tipoInvestimento.value;
+    const fixa = tipo !== "Outro";
+    const atualizadoEm = (cacheApi.taxas || {}).atualizadoEm;
+    const sufixo = atualizadoEm ? "" : " (estimativa, aguardando API)";
+
+    apiFixa.hidden = !fixa;
+    apiPersonalizada.hidden = fixa;
+
+    if (tipo === "Tesouro Selic") {
+        apiFixaTitulo.textContent = "Sincronização de API predefinida (Selic oficial)";
+        apiFixaFonte.textContent = "API Banco Central do Brasil (BCB)";
+        apiFixaTaxa.textContent = `100% Selic (~${formatarTaxaAnual(taxaAnualAtual("selic"))}% a.a.)${sufixo}`;
+    } else if (tipo === "CDB com liquidez diária") {
+        apiFixaTitulo.textContent = "Sincronização de API predefinida (Taxa DI / Selic oficial)";
+        apiFixaFonte.textContent = "API Banco Central do Brasil (BCB)";
+        apiFixaTaxa.textContent = `100% CDI (~${formatarTaxaAnual(taxaAnualAtual("cdi"))}% a.a.)${sufixo}`;
+    }
+
+    if (!fixa && apiProvedor.options.length === 0) {
+        montarProvedores();
+    }
+}
+
+tipoInvestimento.addEventListener("change", atualizarCamposApi);
+apiCategoria.addEventListener("change", montarProvedores);
+apiProvedor.addEventListener("change", atualizarDicaTicker);
+
 formReserva.addEventListener("submit", function(event) {
     event.preventDefault();
 
     const tipo = tipoInvestimento.value;
-    const nome = nomeInvestimento.value.trim();
     const data = dataInvestimento.value;
+    let nome = nomeInvestimento.value.trim();
 
     if (!tipo || !data) {
         alert("Preencha o tipo e o mês de início do investimento.");
         return;
     }
 
+    let api;
+
+    if (tipo === "Tesouro Selic") {
+        api = { fonte: "api_bcb", serie: "selic", percentual: 100 };
+    } else if (tipo === "CDB com liquidez diária") {
+        api = { fonte: "api_b3_di", serie: "cdi", percentual: 100 };
+    } else {
+        let ticker = apiTicker.value.trim();
+        const provedor = apiProvedor.value;
+
+        if (!ticker) {
+            alert("Informe o ticker ou o endpoint da API.");
+            return;
+        }
+
+        if (provedor === "endpoint" && !/^https?:\/\//i.test(ticker)) {
+            alert("O endpoint precisa começar com http:// ou https://.");
+            return;
+        }
+
+        if (provedor === "coingecko") {
+            ticker = ticker.toLowerCase();
+        } else if (provedor !== "endpoint") {
+            ticker = ticker.toUpperCase();
+        }
+
+        api = { fonte: provedor, categoria: apiCategoria.value, ticker: ticker };
+
+        if (!nome && provedor !== "endpoint") {
+            nome = ticker;
+        }
+    }
+
     const novoInvestimento = {
         id: Date.now(),
         tipo: tipo,
         nome: nome,
-        dataInicial: data
+        dataInicial: data,
+        api: api
     };
 
     const metaDigitada = Number(metaInvestimento.value);
@@ -1937,24 +2656,74 @@ formReserva.addEventListener("submit", function(event) {
     }
 
     investimentos.push(novoInvestimento);
+    localStorage.setItem("investimentos", JSON.stringify(investimentos));
 
-    localStorage.setItem(
-        "investimentos",
-        JSON.stringify(investimentos)
-    );
+    // Aporte inicial (opcional)
+    const valorInicial = Number(valorAporteInicial.value);
+    const registrouAporte = valorInicial > 0;
+
+    if (registrouAporte) {
+        aportesInvestimentos.push({
+            investimentoId: novoInvestimento.id,
+            valor: valorInicial,
+            data: data === mesAtual ? dataDeHoje() : `${data}-01`,
+            registradoEm: Date.now(),
+            cotacao: null
+        });
+
+        localStorage.setItem("aportesInvestimentos", JSON.stringify(aportesInvestimentos));
+    }
 
     mostrarInvestimentos();
     atualizarOpcoesInvestimentos();
-    atualizarResumoReserva();
-    atualizarPainel();
+    atualizarSaldo();
 
     formReserva.reset();
+    atualizarCamposApi();
     abrirTela(secaoReserva, "menu");
 
-    alert("Investimento cadastrado com sucesso! Agora você pode registrar um aporte.");
+    alert(registrouAporte
+        ? "Investimento cadastrado com sucesso!"
+        : "Investimento cadastrado com sucesso! Agora você pode registrar um aporte.");
+
+    // Busca a cotação do novo ativo
+    atualizarTudoApis(true);
 });
 
-// 14.6 Mostrar investimentos cadastrados
+// 24.8 Lista de investimentos ativos
+function descreverFonte(investimento) {
+    const api = investimento.api;
+
+    if (investimento.tipo !== "Outro") {
+        const configuracao = configuracaoFixa(investimento);
+
+        return configuracao.serie === "cdi"
+            ? `API BCB · ${Math.round(configuracao.fator * 100)}% CDI (~${formatarTaxaAnual(taxaAnualAtual("cdi"))}% a.a.)`
+            : `API BCB · Selic (~${formatarTaxaAnual(taxaAnualAtual("selic"))}% a.a.)`;
+    }
+
+    if (!api || !api.fonte) {
+        return "Sem API vinculada";
+    }
+
+    const rotulo = api.fonte === "endpoint" ? "Endpoint REST" : `${NOMES_PROVEDOR[api.fonte]} · ${api.ticker}`;
+    const cotacao = (cacheApi.cotacoes || {})[investimento.id];
+
+    if (!cotacao || !(cotacao.preco > 0)) {
+        return `${rotulo} · sem cotação`;
+    }
+
+    let texto = `${rotulo} · ${formatarMoeda(cotacao.preco)}`;
+
+    if (cotacao.anterior > 0) {
+        const variacao = (cotacao.preco / cotacao.anterior - 1) * 100;
+
+        texto += ` (${variacao >= 0 ? "+" : ""}${variacao.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%)`;
+    }
+
+    return texto;
+}
+
 function mostrarInvestimentos() {
     listaInvestimentos.innerHTML = "";
 
@@ -1966,20 +2735,14 @@ function mostrarInvestimentos() {
         return;
     }
 
+    const mes = mesDaReserva();
+
     investimentos.forEach(function(investimento) {
+        const valor = valorDoInvestimento(investimento, mes);
+
         const item = document.createElement("div");
-        item.className = "linha-item";
+        item.className = "linha-item item-investimento";
 
-        const total = aportesInvestimentos
-            .filter(function(aporte) {
-                return aporte.investimentoId === investimento.id;
-            })
-            .reduce(function(soma, aporte) {
-                const valor = Number(aporte.valor);
-                return soma + (Number.isFinite(valor) && valor > 0 ? valor : 0);
-            }, 0);
-
-        // 14.6.1 Exibir os dados do investimento com segurança
         const info = document.createElement("div");
         info.className = "linha-info";
 
@@ -1995,18 +2758,23 @@ function mostrarInvestimentos() {
             detalhes.textContent += ` · desde ${nomeDoMes(investimento.dataInicial).toLowerCase()}`;
         }
 
+        const fonte = document.createElement("span");
+        fonte.className = "selo-api";
+        fonte.textContent = descreverFonte(investimento);
+
         info.appendChild(titulo);
         info.appendChild(detalhes);
+        info.appendChild(fonte);
 
-        const valorMetaInvestimento = Number(investimento.meta);
+        const valorMeta = Number(investimento.meta);
 
-        if (valorMetaInvestimento > 0) {
+        if (valorMeta > 0) {
             const textoMeta = document.createElement("span");
-            textoMeta.className = "linha-meta";
+            textoMeta.className = "linha-meta sensivel";
 
-            const pct = Math.min((total / valorMetaInvestimento) * 100, 100);
+            const pct = Math.min((valor.saldo / valorMeta) * 100, 100);
 
-            textoMeta.textContent = `Meta: ${formatarMoeda(valorMetaInvestimento)} · ` +
+            textoMeta.textContent = `Meta: ${formatarMoeda(valorMeta)} · ` +
                 `${pct.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}% concluído`;
             info.appendChild(textoMeta);
         }
@@ -2015,17 +2783,21 @@ function mostrarInvestimentos() {
         direita.className = "linha-direita";
 
         const valorTotal = document.createElement("span");
-        valorTotal.className = "linha-valor";
-        valorTotal.textContent = formatarMoeda(total);
+        valorTotal.className = "linha-valor sensivel";
+        valorTotal.textContent = formatarMoeda(valor.saldo);
 
-        const rotulo = document.createElement("span");
-        rotulo.className = "linha-meta";
-        rotulo.textContent = "investido";
+        const aportadoTexto = document.createElement("span");
+        aportadoTexto.className = "linha-meta sensivel";
+        aportadoTexto.textContent = `investido ${formatarMoeda(valor.aportado)}`;
+
+        const lucro = document.createElement("span");
+        lucro.className = "linha-meta sensivel " + (valor.lucroMes >= 0 ? "nota-positiva" : "nota-negativa");
+        lucro.textContent = `${formatarComSinal(valor.lucroMes)} no mês`;
 
         direita.appendChild(valorTotal);
-        direita.appendChild(rotulo);
+        direita.appendChild(aportadoTexto);
+        direita.appendChild(lucro);
 
-        // Botão para excluir o investimento
         const botaoExcluir = criarBotaoIcone("excluir", "Excluir investimento", function() {
             excluirInvestimento(investimento.id);
         });
@@ -2043,9 +2815,95 @@ function mostrarInvestimentos() {
         item.appendChild(direita);
         item.appendChild(acoes);
 
-        // Adicionar o investimento à página
         listaInvestimentos.appendChild(item);
     });
+}
+
+// 24.9 Atualizar todas as APIs
+function horaCurta(carimbo) {
+    return new Date(carimbo).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function atualizarStatusApis() {
+    const status = document.getElementById("status-cotacoes");
+    const taxas = cacheApi.taxas || {};
+    const partes = [];
+
+    if (taxas.atualizadoEm) {
+        partes.push(`Taxas do BCB: ${horaCurta(taxas.atualizadoEm)}`);
+    } else if (cacheApi.erroTaxas) {
+        partes.push("BCB indisponível (usando taxa estimada)");
+    }
+
+    if (investimentos.some(function(investimento) { return investimento.tipo === "Outro"; })) {
+        partes.push(cacheApi.erroCotacoes ? "alguma cotação falhou" : "cotações em dia");
+    }
+
+    status.textContent = partes.length > 0 ? partes.join(" · ") : "Cotações ainda não atualizadas.";
+}
+
+let atualizandoApis = false;
+
+async function atualizarTudoApis(forcar) {
+    if (atualizandoApis || navigator.onLine === false) {
+        return;
+    }
+
+    atualizandoApis = true;
+
+    try {
+        await Promise.allSettled([
+            atualizarTaxasBCB(forcar),
+            atualizarCotacoesAtivos(forcar),
+            atualizarCotacaoMoedas(forcar)
+        ]);
+    } finally {
+        atualizandoApis = false;
+    }
+
+    salvarCacheApi();
+    preencherCotacoesDosAportes();
+
+    atualizarCamposApi();
+    atualizarResumoReserva();
+    mostrarInvestimentos();
+    atualizarMetasInicio();
+    atualizarStatusApis();
+    atualizarCotacaoTela();
+}
+
+document.getElementById("atualizar-cotacoes").addEventListener("click", function() {
+    atualizarTudoApis(true);
+});
+
+
+// 24.10 Cotação do momento (guardada no aporte para calcular a quantidade comprada)
+function cotacaoAtualDoInvestimento(id) {
+    const cotacao = (cacheApi.cotacoes || {})[id];
+
+    return cotacao && cotacao.preco > 0 ? cotacao.preco : null;
+}
+
+// Aportes feitos há pouco, antes de existir cotação, ganham a cotação do dia
+function preencherCotacoesDosAportes() {
+    let mudou = false;
+
+    aportesInvestimentos.forEach(function(aporte) {
+        if (aporte.cotacao > 0 || Date.now() - (aporte.registradoEm || 0) > 86400000) {
+            return;
+        }
+
+        const preco = cotacaoAtualDoInvestimento(aporte.investimentoId);
+
+        if (preco) {
+            aporte.cotacao = preco;
+            mudou = true;
+        }
+    });
+
+    if (mudou) {
+        localStorage.setItem("aportesInvestimentos", JSON.stringify(aportesInvestimentos));
+    }
 }
 
 // 14.6.2 Definir (ou remover) a meta de um investimento
@@ -2142,7 +3000,8 @@ formAporteReserva.addEventListener("submit", function(event) {
         investimentoId: investimentoId,
         valor: valor,
         data: data,
-        registradoEm: Date.now()
+        registradoEm: Date.now(),
+        cotacao: cotacaoAtualDoInvestimento(investimentoId)
     });
 
     localStorage.setItem(
@@ -2201,11 +3060,18 @@ function excluirInvestimento(id) {
         JSON.stringify(aportesInvestimentos)
     );
 
+    if (cacheApi.cotacoes) {
+        delete cacheApi.cotacoes[id];
+        salvarCacheApi();
+    }
+
     // Atualizar a tela e os cálculos
     mostrarInvestimentos();
     atualizarOpcoesInvestimentos();
     atualizarResumoMensal();
     atualizarSaldo();
+    atualizarResumoReserva();
+    atualizarPainel();
 
     alert("Investimento excluído com sucesso.");
 }
@@ -2773,7 +3639,7 @@ function criarBlocoProgresso(nomeBloco, acumulado, valorMeta, corSelo) {
 }
 
 // Quanto já foi guardado nos investimentos que têm meta, e a soma das metas
-function resumoMetaReserva() {
+function resumoMetaReserva(mes) {
     let acumulado = 0;
     let meta = 0;
 
@@ -2786,13 +3652,7 @@ function resumoMetaReserva() {
 
         meta += valorMeta;
 
-        aportesInvestimentos.forEach(function(aporte) {
-            const valor = Number(aporte.valor);
-
-            if (aporte.investimentoId === investimento.id && Number.isFinite(valor) && valor > 0) {
-                acumulado += valor;
-            }
-        });
+        acumulado += valorDoInvestimento(investimento, mes || mesAtual).saldo;
     });
 
     return { acumulado: acumulado, meta: meta };
@@ -2833,7 +3693,7 @@ function atualizarMetasInicio() {
 
     let valorReserva = document.createElement("strong");
     valorReserva.className = "sensivel";
-    valorReserva.textContent = formatarMoeda(calcularTotalReserva());
+    valorReserva.textContent = formatarMoeda(calcularReservaAtualizada());
 
     totalReserva.appendChild(rotuloReserva);
     totalReserva.appendChild(valorReserva);
@@ -2883,8 +3743,8 @@ function coletarMovimentacoes() {
             return;
         }
 
-        if (despesa.recorrente) {
-            // Conta recorrente: só entra aqui quando é marcada como paga
+        if (despesa.recorrente || despesa.parcela) {
+            // Conta recorrente ou parcela: só entra aqui quando é marcada como paga
             if (!despesa.paga) {
                 return;
             }
@@ -2894,8 +3754,8 @@ function coletarMovimentacoes() {
             if (dataPagamento <= hoje) {
                 itens.push({
                     tipo: "despesa",
-                    titulo: despesa.descricao,
-                    detalhe: `Conta recorrente paga · ${despesa.categoria || "Sem categoria"}`,
+                    titulo: tituloDaDespesa(despesa),
+                    detalhe: `${despesa.parcela ? "Parcela do cartão paga" : "Conta recorrente paga"} · ${despesa.categoria || "Sem categoria"}`,
                     data: dataPagamento,
                     ordem: despesa.pagoEm || 0,
                     valor: valor
@@ -2908,7 +3768,7 @@ function coletarMovimentacoes() {
         if (despesa.data <= hoje) {
             itens.push({
                 tipo: "despesa",
-                titulo: despesa.descricao,
+                titulo: tituloDaDespesa(despesa),
                 detalhe: despesa.categoria || "Sem categoria",
                 data: despesa.data,
                 ordem: 0,
@@ -3536,6 +4396,8 @@ function atualizarPainel() {
     atualizarMovimentacoes();
     mostrarMovimentacoesCompletas();
     atualizarComparativo();
+    atualizarVencimentos();
+    atualizarCotacaoTela();
 }
 
 
@@ -3775,6 +4637,7 @@ document.addEventListener("keydown", function(evento) {
         fecharModalReceita();
     }
 });
+
 // ==========================================================
 // 22. Simulador da reserva e projeção futura
 // ==========================================================
@@ -3790,6 +4653,17 @@ const simAportado = document.getElementById("sim-aportado");
 const simJuros = document.getElementById("sim-juros");
 const simPrazoTexto = document.getElementById("sim-prazo-texto");
 const formSimulador = document.getElementById("form-simulador");
+
+// Consulta específica por período
+const simAbrirDetalhe = document.getElementById("sim-abrir-detalhe");
+const simDetalhe = document.getElementById("sim-detalhe");
+const simMesSelect = document.getElementById("sim-mes-select");
+const simAbrirTabela = document.getElementById("sim-abrir-tabela");
+const simTabelaWrap = document.getElementById("sim-tabela-wrap");
+const simTabela = document.getElementById("sim-tabela");
+
+let graficoSimulador = null;
+let projecaoAtual = [];
 
 // O saldo inicial vem da reserva até a pessoa digitar outro valor
 let simSaldoEditado = false;
@@ -3829,11 +4703,36 @@ function mesesDaSimulacao() {
 }
 
 // 22.3 Calcular a projeção: o aporte entra no começo de cada mês e depois rende
+// Devolve o total e também a linha de cada mês (para a consulta por período)
 function calcularProjecao(saldoInicial, aporteMensal, taxaMensal, meses) {
     let saldo = saldoInicial;
+    let jurosAcumulados = 0;
+    const linhas = [];
 
-    for (let i = 0; i < meses; i++) {
-        saldo = (saldo + aporteMensal) * (1 + taxaMensal);
+    // A projeção começa no mês seguinte ao atual
+    let mesDaLinha = mesAtual;
+
+    for (let i = 1; i <= meses; i++) {
+        const partes = mesDaLinha.split("-").map(Number);
+        const data = new Date(partes[0], partes[1], 1);
+
+        mesDaLinha = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`;
+
+        const antes = saldo + aporteMensal;
+        const jurosDoMes = antes * taxaMensal;
+
+        saldo = antes + jurosDoMes;
+        jurosAcumulados += jurosDoMes;
+
+        linhas.push({
+            numero: i,
+            mes: mesDaLinha,
+            aporte: aporteMensal,
+            jurosMes: jurosDoMes,
+            saldo: saldo,
+            aportadoAcumulado: saldoInicial + aporteMensal * i,
+            jurosAcumulados: jurosAcumulados
+        });
     }
 
     const aportado = saldoInicial + aporteMensal * meses;
@@ -3841,8 +4740,14 @@ function calcularProjecao(saldoInicial, aporteMensal, taxaMensal, meses) {
     return {
         total: saldo,
         aportado: aportado,
-        juros: saldo - aportado
+        juros: saldo - aportado,
+        linhas: linhas
     };
+}
+
+// "2029-02" -> "02/2029 (Fev/2029)"
+function rotuloMesProjecao(mesAno) {
+    return `${mesAno.slice(5, 7)}/${mesAno.slice(0, 4)} (${MESES_ABREV[Number(mesAno.slice(5, 7)) - 1]}/${mesAno.slice(0, 4)})`;
 }
 
 // 22.4 Atualizar a tela do simulador
@@ -3865,16 +4770,225 @@ function atualizarSimulador() {
 
     const resultado = calcularProjecao(saldoInicial, aporteMensal, taxaPercentual / 100, meses);
 
+    projecaoAtual = resultado.linhas;
+
     simTotal.textContent = formatarMoeda(resultado.total);
     simAportado.textContent = formatarMoeda(resultado.aportado);
     simJuros.textContent = formatarMoeda(resultado.juros);
     simPrazoTexto.textContent = meses > 0 ? `Projeção para ${descreverPrazo(meses)}.` : "";
+
+    atualizarDetalheSimulador();
 }
 
-// 22.5 Preencher o saldo inicial com o total da reserva ao abrir o simulador
+// 22.5 Consulta específica por período (mês escolhido, cards, gráfico e tabela)
+function montarOpcoesMesSimulador() {
+    const assinatura = projecaoAtual.length > 0
+        ? `${projecaoAtual[0].mes}|${projecaoAtual.length}`
+        : "vazio";
+
+    if (simMesSelect.dataset.assinatura === assinatura) {
+        return;
+    }
+
+    const anterior = simMesSelect.value;
+
+    simMesSelect.dataset.assinatura = assinatura;
+    simMesSelect.innerHTML = "";
+
+    // Do mês mais distante para o mais próximo
+    projecaoAtual.slice().reverse().forEach(function(linha) {
+        const opcao = document.createElement("option");
+
+        opcao.value = linha.mes;
+        opcao.textContent = rotuloMesProjecao(linha.mes);
+        simMesSelect.appendChild(opcao);
+    });
+
+    const existe = projecaoAtual.some(function(linha) {
+        return linha.mes === anterior;
+    });
+
+    if (projecaoAtual.length > 0) {
+        simMesSelect.value = existe ? anterior : projecaoAtual[projecaoAtual.length - 1].mes;
+    }
+}
+
+function opcoesGraficoSimulador(cores) {
+    const tooltip = estiloTooltip(cores, true, function(item) {
+        return ` ${item.dataset.label}: ${formatarMoeda(item.parsed.y)}`;
+    });
+
+    tooltip.displayColors = true;
+
+    return {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        animation: { duration: 500 },
+        elements: { point: { radius: 0, hoverRadius: 4 } },
+        scales: {
+            x: {
+                grid: { display: false },
+                border: { display: false },
+                ticks: { color: cores.textoSecundario, maxTicksLimit: 8, maxRotation: 0 }
+            },
+            y: {
+                beginAtZero: true,
+                border: { display: false },
+                grid: { color: cores.borda },
+                ticks: {
+                    color: cores.textoSecundario,
+                    maxTicksLimit: 6,
+                    callback: function(valor) {
+                        return "R$ " + (Math.abs(valor) >= 1000
+                            ? (valor / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + "k"
+                            : valor.toLocaleString("pt-BR"));
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                position: "top",
+                labels: { color: cores.textoSecundario, boxWidth: 26, boxHeight: 10, padding: 14 }
+            },
+            tooltip: tooltip
+        }
+    };
+}
+
+function atualizarGraficoSimulador() {
+    if (typeof Chart === "undefined" || simDetalhe.hidden || projecaoAtual.length === 0) {
+        return;
+    }
+
+    const cores = coresDoTema();
+    const rotulos = projecaoAtual.map(function(linha) {
+        return `${MESES_ABREV[Number(linha.mes.slice(5, 7)) - 1]}/${linha.mes.slice(0, 4)}`;
+    });
+
+    const dados = {
+        labels: rotulos,
+        datasets: [
+            {
+                label: "Total aportado",
+                data: projecaoAtual.map(function(linha) { return linha.aportadoAcumulado; }),
+                borderColor: cores.textoSecundario,
+                backgroundColor: comTransparencia("#A1A1AA", 0.12),
+                fill: true,
+                tension: 0.3,
+                borderWidth: 2
+            },
+            {
+                label: "Juros acumulados",
+                data: projecaoAtual.map(function(linha) { return linha.jurosAcumulados; }),
+                borderColor: COR_RECEITA,
+                backgroundColor: comTransparencia(COR_RECEITA, 0.18),
+                fill: true,
+                tension: 0.3,
+                borderWidth: 2
+            }
+        ]
+    };
+
+    if (graficoSimulador) {
+        graficoSimulador.data = dados;
+        graficoSimulador.options = opcoesGraficoSimulador(cores);
+        graficoSimulador.update();
+    } else {
+        graficoSimulador = new Chart(document.getElementById("grafico-simulador"), {
+            type: "line",
+            data: dados,
+            options: opcoesGraficoSimulador(cores)
+        });
+    }
+}
+
+function montarTabelaSimulador() {
+    simTabela.innerHTML = "";
+
+    if (simTabelaWrap.hidden) {
+        return;
+    }
+
+    const cabecalho = document.createElement("thead");
+    const linhaCab = document.createElement("tr");
+
+    ["Mês", "Aporte", "Juros do mês", "Saldo"].forEach(function(texto) {
+        linhaCab.appendChild(criarCelula("th", texto));
+    });
+
+    cabecalho.appendChild(linhaCab);
+    simTabela.appendChild(cabecalho);
+
+    const corpo = document.createElement("tbody");
+
+    projecaoAtual.forEach(function(linha) {
+        const tr = document.createElement("tr");
+
+        tr.appendChild(criarCelula("td", `${MESES_ABREV[Number(linha.mes.slice(5, 7)) - 1]}/${linha.mes.slice(2, 4)}`));
+        tr.appendChild(criarCelula("td", formatarMoeda(linha.aporte)));
+        tr.appendChild(criarCelula("td", formatarMoeda(linha.jurosMes), "col-receita"));
+        tr.appendChild(criarCelula("td", formatarMoeda(linha.saldo)));
+
+        if (simMesSelect.value === linha.mes) {
+            tr.className = "linha-destacada";
+        }
+
+        corpo.appendChild(tr);
+    });
+
+    simTabela.appendChild(corpo);
+}
+
+function atualizarDetalheSimulador() {
+    if (simDetalhe.hidden) {
+        return;
+    }
+
+    montarOpcoesMesSimulador();
+
+    const linha = projecaoAtual.find(function(item) {
+        return item.mes === simMesSelect.value;
+    });
+
+    const zerar = !linha;
+
+    document.getElementById("sim-stat-juros-mes").textContent = formatarMoeda(zerar ? 0 : linha.jurosMes);
+    document.getElementById("sim-stat-saldo").textContent = formatarMoeda(zerar ? 0 : linha.saldo);
+    document.getElementById("sim-stat-aportado").textContent = formatarMoeda(zerar ? 0 : linha.aportadoAcumulado);
+    document.getElementById("sim-stat-juros-total").textContent = formatarMoeda(zerar ? 0 : linha.jurosAcumulados);
+
+    atualizarGraficoSimulador();
+    montarTabelaSimulador();
+}
+
+simAbrirDetalhe.addEventListener("click", function() {
+    simDetalhe.hidden = !simDetalhe.hidden;
+    simAbrirDetalhe.setAttribute("aria-expanded", String(!simDetalhe.hidden));
+    simAbrirDetalhe.querySelector("span").textContent = simDetalhe.hidden
+        ? "Ver rendimento detalhado por mês e ano"
+        : "Ocultar rendimento detalhado";
+
+    atualizarDetalheSimulador();
+});
+
+simAbrirTabela.addEventListener("click", function() {
+    simTabelaWrap.hidden = !simTabelaWrap.hidden;
+    simAbrirTabela.setAttribute("aria-expanded", String(!simTabelaWrap.hidden));
+    simAbrirTabela.querySelector("span").textContent = simTabelaWrap.hidden
+        ? "Ver tabela detalhada de todos os meses da projeção"
+        : "Ocultar tabela detalhada";
+
+    montarTabelaSimulador();
+});
+
+simMesSelect.addEventListener("change", atualizarDetalheSimulador);
+
+// 22.6 Preencher o saldo inicial com o total da reserva ao abrir o simulador
 function prepararSimulador() {
     if (!simSaldoEditado) {
-        const reserva = calcularTotalReserva();
+        const reserva = calcularReservaAtualizada();
         simSaldo.value = reserva > 0 ? reserva.toFixed(2) : "";
     }
 
@@ -3897,6 +5011,1252 @@ document.querySelectorAll('input[name="sim-prazo"]').forEach(function(opcao) {
 formSimulador.addEventListener("submit", function(evento) {
     evento.preventDefault();
 });
+
+
+
+// ==========================================================
+// 25. Início: vencimentos do mês e cotação de moedas
+// ==========================================================
+
+// 25.1 Vencimentos (contas recorrentes e parcelas do cartão)
+const listaVencimentos = document.getElementById("lista-vencimentos");
+const calendarioVencimentos = document.getElementById("calendario-vencimentos");
+const botaoCalendario = document.getElementById("botao-calendario");
+
+function ehConta(despesa) {
+    return Boolean(despesa.recorrente || despesa.parcela);
+}
+
+// Nome curto: "AliExpress (2/4)"
+function nomeDoVencimento(despesa) {
+    return despesa.parcela
+        ? `${despesa.descricao} (${despesa.parcela.numero}/${despesa.parcela.total})`
+        : despesa.descricao;
+}
+
+// Agrupa as contas do mês por dia de vencimento
+function vencimentosDoMes(mes) {
+    const grupos = {};
+
+    gastos.forEach(function(despesa) {
+        if (ehConta(despesa) && typeof despesa.data === "string" && despesa.data.startsWith(mes)) {
+            if (!grupos[despesa.data]) {
+                grupos[despesa.data] = [];
+            }
+
+            grupos[despesa.data].push(despesa);
+        }
+    });
+
+    return Object.keys(grupos).sort().map(function(data) {
+        const contas = grupos[data];
+        const total = contas.reduce(function(soma, conta) {
+            return soma + (Number(conta.valor) || 0);
+        }, 0);
+
+        return {
+            data: data,
+            contas: contas,
+            nome: contas.length > 1
+                ? `${nomeDoVencimento(contas[0])} + ${contas.length - 1} ${contas.length === 2 ? "conta" : "contas"}`
+                : nomeDoVencimento(contas[0]),
+            total: total,
+            paga: contas.every(function(conta) { return conta.paga; })
+        };
+    });
+}
+
+function atualizarVencimentos() {
+    const mes = filtroMes.value || mesAtual;
+    const grupos = vencimentosDoMes(mes);
+
+    listaVencimentos.innerHTML = "";
+
+    if (grupos.length === 0) {
+        const vazio = document.createElement("p");
+        vazio.className = "vazio";
+        vazio.textContent = "Nenhum vencimento neste mês.";
+        listaVencimentos.appendChild(vazio);
+    }
+
+    grupos.forEach(function(grupo) {
+        const cartao = document.createElement("div");
+        cartao.className = "vencimento";
+
+        const data = document.createElement("span");
+        data.className = "vencimento-data";
+        data.textContent = formatarDataBR(grupo.data);
+
+        const nome = document.createElement("strong");
+        nome.className = "vencimento-nome";
+        nome.textContent = grupo.nome;
+
+        const valor = document.createElement("span");
+        valor.className = "vencimento-valor sensivel " + (grupo.paga ? "venc-pago" : "venc-pendente");
+        valor.textContent = `${formatarMoeda(grupo.total)} · ${grupo.paga ? "Pago" : "Pendente"}`;
+
+        cartao.appendChild(data);
+        cartao.appendChild(nome);
+        cartao.appendChild(valor);
+        listaVencimentos.appendChild(cartao);
+    });
+
+    montarCalendario(mes, grupos);
+}
+
+// Calendário do mês, com os vencimentos nos dias
+function montarCalendario(mes, grupos) {
+    calendarioVencimentos.innerHTML = "";
+
+    const ano = Number(mes.slice(0, 4));
+    const mesNumero = Number(mes.slice(5, 7));
+    const primeiroDia = new Date(ano, mesNumero - 1, 1).getDay();
+    const diasNoMes = new Date(ano, mesNumero, 0).getDate();
+
+    ["D", "S", "T", "Q", "Q", "S", "S"].forEach(function(letra) {
+        const cabecalho = document.createElement("span");
+        cabecalho.className = "cal-semana";
+        cabecalho.textContent = letra;
+        calendarioVencimentos.appendChild(cabecalho);
+    });
+
+    for (let i = 0; i < primeiroDia; i++) {
+        calendarioVencimentos.appendChild(document.createElement("span"));
+    }
+
+    for (let dia = 1; dia <= diasNoMes; dia++) {
+        const data = `${mes}-${String(dia).padStart(2, "0")}`;
+        const grupo = grupos.find(function(item) { return item.data === data; });
+
+        const celula = document.createElement("div");
+        celula.className = "cal-dia" + (grupo ? " cal-tem" : "") + (data === dataDeHoje() ? " cal-hoje" : "");
+
+        const numero = document.createElement("span");
+        numero.className = "cal-numero";
+        numero.textContent = dia;
+        celula.appendChild(numero);
+
+        if (grupo) {
+            const marca = document.createElement("span");
+            marca.className = "cal-valor sensivel " + (grupo.paga ? "venc-pago" : "venc-pendente");
+            marca.textContent = formatarMoeda(grupo.total).replace("R$", "").trim();
+            celula.title = `${grupo.nome}: ${formatarMoeda(grupo.total)}`;
+            celula.appendChild(marca);
+        }
+
+        calendarioVencimentos.appendChild(celula);
+    }
+}
+
+botaoCalendario.addEventListener("click", function() {
+    calendarioVencimentos.hidden = !calendarioVencimentos.hidden;
+    botaoCalendario.setAttribute("aria-expanded", String(!calendarioVencimentos.hidden));
+    botaoCalendario.textContent = calendarioVencimentos.hidden ? "Expandir calendário" : "Recolher calendário";
+});
+
+// 25.2 Cotação de moedas e criptomoedas
+const MOEDAS = [
+    { cod: "BRL", nome: "Real", tipo: "fiat" },
+    { cod: "USD", nome: "Dólar", tipo: "fiat" },
+    { cod: "EUR", nome: "Euro", tipo: "fiat" },
+    { cod: "GBP", nome: "Libra", tipo: "fiat" },
+    { cod: "JPY", nome: "Iene", tipo: "fiat" },
+    { cod: "BTC", nome: "Bitcoin", tipo: "cripto", id: "bitcoin" },
+    { cod: "ETH", nome: "Ethereum", tipo: "cripto", id: "ethereum" },
+    { cod: "SOL", nome: "Solana", tipo: "cripto", id: "solana" },
+    { cod: "BNB", nome: "BNB", tipo: "cripto", id: "binancecoin" }
+];
+
+const cotBase = document.getElementById("cot-base");
+const cotAlvo = document.getElementById("cot-alvo");
+const cotValor = document.getElementById("cot-valor");
+const cotResultado = document.getElementById("cot-resultado");
+const cotTaxa = document.getElementById("cot-taxa");
+const cotSaldo = document.getElementById("cot-saldo");
+const cotSaldoRotulo = document.getElementById("cot-saldo-rotulo");
+const cotStatus = document.getElementById("cot-status");
+const cotVariacao = document.getElementById("cot-variacao");
+
+function moedaPorCodigo(codigo) {
+    return MOEDAS.find(function(moeda) { return moeda.cod === codigo; });
+}
+
+// Quanto vale 1 unidade da moeda, em dólares (null se ainda não há cotação)
+function valorEmDolar(codigo) {
+    const tabela = (cacheApi.moedas || {}).usd || {};
+
+    return tabela[codigo] > 0 ? tabela[codigo] : null;
+}
+
+async function atualizarCotacaoMoedas(forcar) {
+    const atual = cacheApi.moedas || {};
+
+    if (!forcar && atual.atualizadoEm && Date.now() - atual.atualizadoEm < 10 * 60 * 1000) {
+        return;
+    }
+
+    const ids = MOEDAS.filter(function(moeda) { return moeda.tipo === "cripto"; })
+        .map(function(moeda) { return moeda.id; }).join(",");
+
+    const resultados = await Promise.allSettled([
+        buscarJSON("https://open.er-api.com/v6/latest/USD"),
+        buscarJSON(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`)
+    ]);
+
+    const novo = {
+        usd: Object.assign({ USD: 1 }, atual.usd),
+        variacao: Object.assign({}, atual.variacao),
+        anterior: atual.anterior,
+        dia: atual.dia,
+        atualizadoEm: atual.atualizadoEm
+    };
+
+    // Guarda o dia anterior para calcular a variação das moedas comuns
+    if (novo.dia && novo.dia !== dataDeHoje()) {
+        novo.anterior = { dia: novo.dia, usd: Object.assign({}, novo.usd) };
+    }
+
+    let algumaOk = false;
+
+    if (resultados[0].status === "fulfilled" && resultados[0].value && resultados[0].value.rates) {
+        const taxas = resultados[0].value.rates;
+
+        MOEDAS.filter(function(moeda) { return moeda.tipo === "fiat"; }).forEach(function(moeda) {
+            if (taxas[moeda.cod] > 0) {
+                novo.usd[moeda.cod] = 1 / taxas[moeda.cod];
+            }
+        });
+
+        algumaOk = true;
+    }
+
+    if (resultados[1].status === "fulfilled" && resultados[1].value) {
+        MOEDAS.filter(function(moeda) { return moeda.tipo === "cripto"; }).forEach(function(moeda) {
+            const dados = resultados[1].value[moeda.id];
+
+            if (dados && dados.usd > 0) {
+                novo.usd[moeda.cod] = dados.usd;
+                novo.variacao[moeda.cod] = Number(dados.usd_24h_change) || 0;
+            }
+        });
+
+        algumaOk = true;
+    }
+
+    cacheApi.erroMoedas = !algumaOk;
+
+    if (algumaOk) {
+        novo.dia = dataDeHoje();
+        novo.atualizadoEm = Date.now();
+        cacheApi.moedas = novo;
+    }
+}
+
+// Variação do dia de uma moeda em relação ao dólar (%)
+function variacaoDaMoeda(codigo) {
+    const moedas = cacheApi.moedas || {};
+
+    if (moedas.variacao && moedas.variacao[codigo] != null) {
+        return moedas.variacao[codigo];
+    }
+
+    const anterior = moedas.anterior && moedas.anterior.usd && moedas.anterior.usd[codigo];
+    const atual = valorEmDolar(codigo);
+
+    return anterior > 0 && atual > 0 ? (atual / anterior - 1) * 100 : 0;
+}
+
+function formatarQuantia(valor, moeda) {
+    if (moeda.tipo === "fiat") {
+        return valor.toLocaleString("pt-BR", { style: "currency", currency: moeda.cod, maximumFractionDigits: valor < 1 ? 4 : 2 });
+    }
+
+    return `${valor.toLocaleString("pt-BR", { maximumFractionDigits: 8 })} ${moeda.cod}`;
+}
+
+function formatarTaxaMoeda(valor) {
+    return valor.toLocaleString("pt-BR", { maximumFractionDigits: valor < 1 ? 6 : 2 });
+}
+
+function atualizarCotacaoTela() {
+    const base = moedaPorCodigo(cotBase.value);
+    const alvo = moedaPorCodigo(cotAlvo.value);
+    const usdBase = valorEmDolar(base.cod);
+    const usdAlvo = valorEmDolar(alvo.cod);
+    const moedas = cacheApi.moedas || {};
+
+    cotSaldoRotulo.textContent = `Seu saldo total em ${alvo.cod}:`;
+
+    if (!usdBase || !usdAlvo) {
+        cotResultado.textContent = "—";
+        cotTaxa.textContent = "";
+        cotSaldo.textContent = "—";
+        cotVariacao.hidden = true;
+        cotStatus.textContent = cacheApi.erroMoedas
+            ? "Sem conexão com as APIs de cotação."
+            : "Carregando cotações…";
+        return;
+    }
+
+    const taxa = usdBase / usdAlvo;
+    const quantidade = Number(cotValor.value);
+
+    cotResultado.textContent = Number.isFinite(quantidade)
+        ? formatarQuantia(quantidade * taxa, alvo)
+        : "—";
+
+    cotTaxa.textContent = `1 ${base.cod} = ${formatarTaxaMoeda(taxa)} ${alvo.cod}  ·  1 ${alvo.cod} = ${formatarTaxaMoeda(1 / taxa)} ${base.cod}`;
+
+    // Saldo total do app (em reais) na moeda alvo
+    const usdReal = valorEmDolar("BRL");
+
+    cotSaldo.textContent = usdReal
+        ? formatarQuantia(calcularSaldoAcumulado() * usdReal / usdAlvo, alvo)
+        : "—";
+
+    // Variação da cotação (base em relação à moeda alvo)
+    const variacao = ((1 + variacaoDaMoeda(base.cod) / 100) / (1 + variacaoDaMoeda(alvo.cod) / 100) - 1) * 100;
+
+    cotVariacao.hidden = !Number.isFinite(variacao) || Math.abs(variacao) < 0.005;
+    cotVariacao.textContent = `${variacao >= 0 ? "+" : ""}${variacao.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`;
+    cotVariacao.className = "selo-variacao " + (variacao >= 0 ? "variacao-alta" : "variacao-baixa");
+
+    cotStatus.textContent = cacheApi.erroMoedas
+        ? `Sem conexão: última cotação salva às ${horaCurta(moedas.atualizadoEm)}.`
+        : `Atualizado às ${horaCurta(moedas.atualizadoEm)}`;
+}
+
+function montarSeletoresMoeda() {
+    let preferencias = {};
+
+    try {
+        preferencias = JSON.parse(localStorage.getItem("cotacaoPreferencias")) || {};
+    } catch (erro) {
+        preferencias = {};
+    }
+
+    [cotBase, cotAlvo].forEach(function(seletor) {
+        const moedasComuns = document.createElement("optgroup");
+        const criptos = document.createElement("optgroup");
+
+        moedasComuns.label = "Moedas";
+        criptos.label = "Criptomoedas";
+
+        MOEDAS.forEach(function(moeda) {
+            const opcao = document.createElement("option");
+
+            opcao.value = moeda.cod;
+            opcao.textContent = `${moeda.cod} (${moeda.nome})`;
+            (moeda.tipo === "fiat" ? moedasComuns : criptos).appendChild(opcao);
+        });
+
+        seletor.appendChild(moedasComuns);
+        seletor.appendChild(criptos);
+    });
+
+    cotBase.value = moedaPorCodigo(preferencias.base) ? preferencias.base : "BRL";
+    cotAlvo.value = moedaPorCodigo(preferencias.alvo) ? preferencias.alvo : "USD";
+
+    if (Number(preferencias.valor) >= 0 && preferencias.valor !== undefined) {
+        cotValor.value = preferencias.valor;
+    }
+}
+
+function salvarPreferenciasCotacao() {
+    try {
+        localStorage.setItem("cotacaoPreferencias", JSON.stringify({
+            base: cotBase.value,
+            alvo: cotAlvo.value,
+            valor: cotValor.value
+        }));
+    } catch (erro) {
+        // Sem armazenamento: apenas não lembra da escolha
+    }
+}
+
+[cotBase, cotAlvo, cotValor].forEach(function(campo) {
+    campo.addEventListener(campo === cotValor ? "input" : "change", function() {
+        salvarPreferenciasCotacao();
+        atualizarCotacaoTela();
+    });
+});
+
+document.getElementById("cot-atualizar").addEventListener("click", function() {
+    atualizarTudoApis(true);
+});
+
+montarSeletoresMoeda();
+
+
+
+// ==========================================================
+// 26. Cadastro de despesa: tipo de pagamento (avulsa, recorrente, cartão parcelado)
+// ==========================================================
+const camposParcelas = document.getElementById("campos-parcelas");
+const numParcelas = document.getElementById("num-parcelas");
+const valorParcela = document.getElementById("valor-parcela");
+const rotuloValorDespesa = document.getElementById("rotulo-valor");
+const rotuloDataDespesa = document.getElementById("rotulo-data");
+
+function tipoPagamentoAtual() {
+    return document.querySelector('input[name="tipo-pagamento"]:checked').value;
+}
+
+// "12x de R$ 416,67 / mês"
+function atualizarValorParcela() {
+    const total = Number(campoValor.value);
+    const parcelas = Math.floor(Number(numParcelas.value));
+
+    if (total > 0 && parcelas >= 2) {
+        valorParcela.textContent = `${parcelas}x de ${formatarMoeda(total / parcelas)} / mês`;
+    } else {
+        valorParcela.textContent = "—";
+    }
+}
+
+function aplicarTipoPagamento() {
+    const tipo = tipoPagamentoAtual();
+
+    // A recorrência usa a lógica que já existia (frequência e dia do vencimento)
+    despesaRecorrente.checked = tipo === "recorrente";
+    despesaRecorrente.dispatchEvent(new Event("change"));
+
+    camposParcelas.hidden = tipo !== "parcelado";
+    numParcelas.required = tipo === "parcelado";
+
+    rotuloValorDespesa.textContent = tipo === "parcelado" ? "Valor total da compra" : "Valor";
+    rotuloDataDespesa.textContent = tipo === "parcelado" ? "Data da 1ª parcela" : "Data do gasto";
+
+    atualizarValorParcela();
+}
+
+document.querySelectorAll('input[name="tipo-pagamento"]').forEach(function(opcao) {
+    opcao.addEventListener("change", aplicarTipoPagamento);
+});
+
+numParcelas.addEventListener("input", atualizarValorParcela);
+campoValor.addEventListener("input", atualizarValorParcela);
+
+// Soma meses a uma data AAAA-MM-DD (dia 31 + 1 mês cai no último dia do mês seguinte)
+function adicionarMeses(dataISO, quantidade) {
+    const partes = dataISO.split("-").map(Number);
+    const alvo = new Date(partes[0], partes[1] - 1 + quantidade, 1);
+    const ultimoDia = new Date(alvo.getFullYear(), alvo.getMonth() + 1, 0).getDate();
+
+    return `${alvo.getFullYear()}-` +
+        `${String(alvo.getMonth() + 1).padStart(2, "0")}-` +
+        `${String(Math.min(partes[2], ultimoDia)).padStart(2, "0")}`;
+}
+
+// Cria uma despesa para cada parcela (a última ajusta os centavos)
+function cadastrarCompraParcelada(descricao, valorTotal, data, categoria, totalParcelas) {
+    const idCompra = Date.now();
+    const centavosTotal = Math.round(valorTotal * 100);
+    const centavosParcela = Math.floor(centavosTotal / totalParcelas);
+
+    for (let numero = 1; numero <= totalParcelas; numero++) {
+        const centavos = numero === totalParcelas
+            ? centavosTotal - centavosParcela * (totalParcelas - 1)
+            : centavosParcela;
+
+        gastos.push({
+            id: `${idCompra}-${numero}`,
+            idCompra: idCompra,
+            parcela: { numero: numero, total: totalParcelas },
+            modeloRecorrencia: false,
+            descricao: descricao,
+            valor: centavos / 100,
+            data: adicionarMeses(data, numero - 1),
+            categoria: categoria,
+            paga: false,
+            recorrente: false
+        });
+    }
+}
+
+// Título de uma despesa: parcelas mostram "Nome (4× 2/4)" sem gravar isso na descrição
+function tituloDaDespesa(despesa) {
+    return despesa.parcela
+        ? `${despesa.descricao} (${despesa.parcela.total}× ${despesa.parcela.numero}/${despesa.parcela.total})`
+        : despesa.descricao;
+}
+
+
+
+// ==========================================================
+// 27. Seletor de datas minimalista (substitui os campos de data e de mês)
+// ==========================================================
+const NOMES_MESES_SELETOR = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+];
+const SIGLAS_MESES_SELETOR = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const DIAS_SEMANA_SELETOR = ["Do", "Se", "Te", "Qu", "Qu", "Se", "Sá"];
+
+// Anos disponíveis: do ano em que a pessoa começou a usar o site até 20 anos à frente do ano atual
+function limitesDeAnoSeletor(valorAtual) {
+    const anoAtual = new Date().getFullYear();
+    let inicio = anoAtual;
+
+    try {
+        const salvo = Number(localStorage.getItem("anoInicioUso"));
+
+        if (Number.isInteger(salvo) && salvo >= 2000 && salvo <= anoAtual) {
+            inicio = salvo;
+        } else {
+            localStorage.setItem("anoInicioUso", String(anoAtual));
+        }
+    } catch (erro) {
+        // Sem armazenamento: usa o ano atual como começo
+    }
+
+    // Um valor já salvo mais antigo continua aparecendo
+    if (valorAtual && valorAtual.ano < inicio) {
+        inicio = valorAtual.ano;
+    }
+
+    return { inicio: inicio, fim: anoAtual + 20 };
+}
+
+const ICONE_CALENDARIO_SELETOR =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/>' +
+    '<path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>';
+const ICONE_SETA_ESQUERDA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
+const ICONE_SETA_DIREITA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+const ICONE_SETA_BAIXO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+const descricaoValorOriginal = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
+
+// Seletor atualmente aberto (só existe um por vez)
+let seletorAberto = null;
+let janelaSeletor = null;
+
+function doisDigitos(numero) {
+    return String(numero).padStart(2, "0");
+}
+
+// "2026-11-02" -> { ano, mes, dia }  |  "2026-11" -> { ano, mes }
+function lerValorSeletor(valor, ehMes) {
+    const modelo = ehMes ? /^(\d{4})-(\d{2})$/ : /^(\d{4})-(\d{2})-(\d{2})$/;
+    const partes = modelo.exec(valor || "");
+
+    if (!partes) {
+        return null;
+    }
+
+    return { ano: Number(partes[1]), mes: Number(partes[2]) - 1, dia: Number(partes[3] || 1) };
+}
+
+function textoDoSeletor(valor, ehMes) {
+    const dados = lerValorSeletor(valor, ehMes);
+
+    if (!dados) {
+        return "";
+    }
+
+    return ehMes
+        ? `${NOMES_MESES_SELETOR[dados.mes]} de ${dados.ano}`
+        : `${doisDigitos(dados.dia)}/${doisDigitos(dados.mes + 1)}/${dados.ano}`;
+}
+
+function criarElementoSeletor(tag, classe, html) {
+    const elemento = document.createElement(tag);
+
+    elemento.className = classe;
+
+    if (html) {
+        elemento.innerHTML = html;
+    }
+
+    return elemento;
+}
+
+// Transforma um campo de data/mês em botão + calendário (o campo original continua guardando o valor)
+function melhorarCampoDeData(campo) {
+    const ehMes = campo.type === "month";
+    const envoltorio = criarElementoSeletor("div", "dp");
+    const botao = criarElementoSeletor("button", "dp-botao");
+    const texto = criarElementoSeletor("span", "dp-texto");
+
+    botao.type = "button";
+    botao.innerHTML = ICONE_CALENDARIO_SELETOR;
+    botao.appendChild(texto);
+
+    campo.parentNode.insertBefore(envoltorio, campo);
+    envoltorio.appendChild(campo);
+    envoltorio.appendChild(botao);
+
+    campo.classList.add("dp-nativo");
+    campo.tabIndex = -1;
+
+    function atualizarTexto() {
+        const formatado = textoDoSeletor(campo.value, ehMes);
+
+        texto.textContent = formatado || (ehMes ? "Selecionar mês" : "Selecionar data");
+        texto.classList.toggle("dp-vazio", !formatado);
+    }
+
+    // O JavaScript do app troca o valor do campo; o botão acompanha
+    Object.defineProperty(campo, "value", {
+        configurable: true,
+        get: function() {
+            return descricaoValorOriginal.get.call(campo);
+        },
+        set: function(novoValor) {
+            descricaoValorOriginal.set.call(campo, novoValor);
+            atualizarTexto();
+        }
+    });
+
+    if (campo.form) {
+        campo.form.addEventListener("reset", function() {
+            setTimeout(atualizarTexto, 0);
+        });
+    }
+
+    document.querySelectorAll(`label[for="${campo.id}"]`).forEach(function(rotulo) {
+        rotulo.addEventListener("click", function(evento) {
+            evento.preventDefault();
+            botao.click();
+        });
+    });
+
+    botao.addEventListener("click", function() {
+        if (seletorAberto && seletorAberto.campo === campo) {
+            fecharSeletor();
+            return;
+        }
+
+        abrirSeletor(campo, botao, ehMes);
+    });
+
+    campo.addEventListener("invalid", function() {
+        botao.classList.add("dp-invalido");
+    });
+
+    atualizarTexto();
+}
+
+function fecharSeletor() {
+    if (janelaSeletor) {
+        janelaSeletor.remove();
+        janelaSeletor = null;
+    }
+
+    if (seletorAberto) {
+        seletorAberto.botao.setAttribute("aria-expanded", "false");
+        seletorAberto = null;
+    }
+}
+
+function posicionarSeletor() {
+    if (!seletorAberto || !janelaSeletor) {
+        return;
+    }
+
+    const caixa = seletorAberto.botao.getBoundingClientRect();
+    const largura = janelaSeletor.offsetWidth;
+    const altura = janelaSeletor.offsetHeight;
+    const margem = 8;
+
+    let esquerda = Math.min(caixa.left, window.innerWidth - largura - margem);
+    esquerda = Math.max(margem, esquerda);
+
+    let topo = caixa.bottom + 6;
+
+    if (topo + altura > window.innerHeight - margem && caixa.top - altura - 6 > margem) {
+        topo = caixa.top - altura - 6;
+    }
+
+    janelaSeletor.style.left = `${esquerda}px`;
+    janelaSeletor.style.top = `${Math.max(margem, topo)}px`;
+}
+
+function abrirSeletor(campo, botao, ehMes) {
+    fecharSeletor();
+    fecharSelecao();
+
+    const atual = lerValorSeletor(campo.value, ehMes);
+    const hoje = new Date();
+
+    const estado = {
+        campo: campo,
+        botao: botao,
+        ehMes: ehMes,
+        // "dias" (calendário) ou "meses" (ano + mês)
+        visao: ehMes ? "meses" : "dias",
+        ano: atual ? atual.ano : hoje.getFullYear(),
+        mes: atual ? atual.mes : hoje.getMonth()
+    };
+
+    seletorAberto = estado;
+    janelaSeletor = criarElementoSeletor("div", "dp-janela");
+    janelaSeletor.setAttribute("role", "dialog");
+    janelaSeletor.setAttribute("aria-label", ehMes ? "Escolher mês" : "Escolher data");
+    botao.setAttribute("aria-expanded", "true");
+    document.body.appendChild(janelaSeletor);
+
+    desenharSeletor();
+}
+
+function escolherNoSeletor(valor) {
+    const estado = seletorAberto;
+
+    if (!estado) {
+        return;
+    }
+
+    estado.campo.value = valor;
+    estado.botao.classList.remove("dp-invalido");
+    estado.campo.dispatchEvent(new Event("input", { bubbles: true }));
+    estado.campo.dispatchEvent(new Event("change", { bubbles: true }));
+
+    fecharSeletor();
+}
+
+function desenharSeletor() {
+    const estado = seletorAberto;
+
+    if (!estado || !janelaSeletor) {
+        return;
+    }
+
+    const atual = lerValorSeletor(estado.campo.value, estado.ehMes);
+    const limites = limitesDeAnoSeletor(atual);
+    const hoje = new Date();
+    const janela = janelaSeletor;
+
+    janela.innerHTML = "";
+
+    // Cabeçalho: setas e título (o título troca entre calendário e ano/mês)
+    const cabecalho = criarElementoSeletor("div", "dp-cabecalho");
+    const titulo = criarElementoSeletor("button", "dp-titulo");
+    titulo.type = "button";
+
+    if (estado.visao === "dias") {
+        const anterior = criarElementoSeletor("button", "dp-seta", ICONE_SETA_ESQUERDA);
+        const proximo = criarElementoSeletor("button", "dp-seta", ICONE_SETA_DIREITA);
+
+        anterior.type = "button";
+        proximo.type = "button";
+        anterior.setAttribute("aria-label", "Mês anterior");
+        proximo.setAttribute("aria-label", "Próximo mês");
+
+        anterior.disabled = estado.ano <= limites.inicio && estado.mes === 0;
+        proximo.disabled = estado.ano >= limites.fim && estado.mes === 11;
+
+        function mudarMes(delta) {
+            const novo = new Date(estado.ano, estado.mes + delta, 1);
+
+            estado.ano = novo.getFullYear();
+            estado.mes = novo.getMonth();
+            desenharSeletor();
+        }
+
+        anterior.addEventListener("click", function() { mudarMes(-1); });
+        proximo.addEventListener("click", function() { mudarMes(1); });
+
+        titulo.textContent = `${NOMES_MESES_SELETOR[estado.mes]} ${estado.ano}`;
+        titulo.addEventListener("click", function() {
+            estado.visao = "meses";
+            desenharSeletor();
+        });
+
+        cabecalho.appendChild(anterior);
+        cabecalho.appendChild(titulo);
+        cabecalho.appendChild(proximo);
+        janela.appendChild(cabecalho);
+
+        const semana = criarElementoSeletor("div", "dp-semana");
+
+        DIAS_SEMANA_SELETOR.forEach(function(sigla) {
+            semana.appendChild(criarElementoSeletor("span", "dp-sigla", sigla));
+        });
+
+        janela.appendChild(semana);
+
+        const grade = criarElementoSeletor("div", "dp-dias");
+        const primeiroDia = new Date(estado.ano, estado.mes, 1).getDay();
+        const totalDias = new Date(estado.ano, estado.mes + 1, 0).getDate();
+
+        for (let i = 0; i < primeiroDia; i++) {
+            grade.appendChild(criarElementoSeletor("span", "dp-vazio-dia"));
+        }
+
+        for (let dia = 1; dia <= totalDias; dia++) {
+            const botaoDia = criarElementoSeletor("button", "dp-dia", String(dia));
+            botaoDia.type = "button";
+
+            if (atual && atual.ano === estado.ano && atual.mes === estado.mes && atual.dia === dia) {
+                botaoDia.classList.add("dp-escolhido");
+            }
+
+            if (hoje.getFullYear() === estado.ano && hoje.getMonth() === estado.mes && hoje.getDate() === dia) {
+                botaoDia.classList.add("dp-hoje");
+            }
+
+            botaoDia.addEventListener("click", function() {
+                escolherNoSeletor(`${estado.ano}-${doisDigitos(estado.mes + 1)}-${doisDigitos(dia)}`);
+            });
+
+            grade.appendChild(botaoDia);
+        }
+
+        janela.appendChild(grade);
+    } else {
+        titulo.innerHTML = `<span>${NOMES_MESES_SELETOR[estado.mes]} de ${estado.ano}</span>${ICONE_SETA_BAIXO}`;
+        titulo.classList.add("dp-titulo-aberto");
+
+        // Em um campo de data, tocar no título volta para o calendário
+        if (!estado.ehMes) {
+            titulo.addEventListener("click", function() {
+                estado.visao = "dias";
+                desenharSeletor();
+            });
+        } else {
+            titulo.disabled = true;
+        }
+
+        cabecalho.appendChild(titulo);
+        janela.appendChild(cabecalho);
+
+        const listaAnos = criarElementoSeletor("div", "dp-anos");
+
+        for (let ano = limites.inicio; ano <= limites.fim; ano++) {
+            const botaoAno = criarElementoSeletor("button", "dp-ano", String(ano));
+            botaoAno.type = "button";
+
+            if (ano === estado.ano) {
+                botaoAno.classList.add("dp-escolhido");
+            }
+
+            botaoAno.addEventListener("click", function() {
+                estado.ano = ano;
+                desenharSeletor();
+            });
+
+            listaAnos.appendChild(botaoAno);
+        }
+
+        suavizarRolagem(listaAnos);
+        janela.appendChild(listaAnos);
+
+        const gradeMeses = criarElementoSeletor("div", "dp-meses");
+
+        SIGLAS_MESES_SELETOR.forEach(function(sigla, indice) {
+            const botaoMes = criarElementoSeletor("button", "dp-mes", sigla);
+            botaoMes.type = "button";
+
+            if (atual && atual.ano === estado.ano && atual.mes === indice) {
+                botaoMes.classList.add("dp-escolhido");
+            } else if (hoje.getFullYear() === estado.ano && hoje.getMonth() === indice) {
+                botaoMes.classList.add("dp-hoje");
+            }
+
+            botaoMes.addEventListener("click", function() {
+                if (estado.ehMes) {
+                    escolherNoSeletor(`${estado.ano}-${doisDigitos(indice + 1)}`);
+                } else {
+                    estado.mes = indice;
+                    estado.visao = "dias";
+                    desenharSeletor();
+                }
+            });
+
+            gradeMeses.appendChild(botaoMes);
+        });
+
+        janela.appendChild(gradeMeses);
+
+        // Deixa o ano escolhido visível na lista
+        const escolhido = listaAnos.querySelector(".dp-escolhido");
+
+        if (escolhido) {
+            listaAnos.scrollTop = Math.max(0, escolhido.offsetTop - listaAnos.offsetTop - 2);
+        }
+    }
+
+    // Rodapé: atalho para hoje e (se o campo não for obrigatório) limpar
+    const rodape = criarElementoSeletor("div", "dp-rodape");
+    const atalhoHoje = criarElementoSeletor("button", "dp-atalho", estado.ehMes ? "Este mês" : "Hoje");
+    atalhoHoje.type = "button";
+
+    atalhoHoje.addEventListener("click", function() {
+        escolherNoSeletor(estado.ehMes
+            ? `${hoje.getFullYear()}-${doisDigitos(hoje.getMonth() + 1)}`
+            : `${hoje.getFullYear()}-${doisDigitos(hoje.getMonth() + 1)}-${doisDigitos(hoje.getDate())}`);
+    });
+
+    rodape.appendChild(atalhoHoje);
+
+    if (!estado.campo.required) {
+        const limpar = criarElementoSeletor("button", "dp-atalho dp-atalho-limpar", "Limpar");
+        limpar.type = "button";
+
+        limpar.addEventListener("click", function() {
+            escolherNoSeletor("");
+        });
+
+        rodape.appendChild(limpar);
+    }
+
+    janela.appendChild(rodape);
+
+    posicionarSeletor();
+}
+
+document.addEventListener("pointerdown", function(evento) {
+    if (!seletorAberto) {
+        return;
+    }
+
+    if (janelaSeletor && janelaSeletor.contains(evento.target)) {
+        return;
+    }
+
+    if (seletorAberto.botao.contains(evento.target)) {
+        return;
+    }
+
+    fecharSeletor();
+});
+
+document.addEventListener("keydown", function(evento) {
+    if (evento.key === "Escape" && seletorAberto) {
+        const botao = seletorAberto.botao;
+
+        fecharSeletor();
+        botao.focus();
+    }
+});
+
+window.addEventListener("resize", posicionarSeletor);
+window.addEventListener("scroll", posicionarSeletor, true);
+
+document.querySelectorAll('input[type="date"], input[type="month"]').forEach(melhorarCampoDeData);
+
+// ==========================================================
+// 27.1 Listas de opções estilizadas (substituem a lista padrão dos campos de seleção)
+// ==========================================================
+const ICONE_SETA_SELECT = '<svg class="cs-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+// Campos de seleção que mostram um ícone de calendário (períodos)
+const SELECTS_COM_CALENDARIO = ["comp-ano", "comp-comparar"];
+
+let listaAberta = null;
+let janelaLista = null;
+
+function fecharSelecao() {
+    if (janelaLista) {
+        janelaLista.remove();
+        janelaLista = null;
+    }
+
+    if (listaAberta) {
+        listaAberta.botao.setAttribute("aria-expanded", "false");
+        listaAberta = null;
+    }
+}
+
+// Rolagem mais suave com a roda do mouse (um item por vez)
+function suavizarRolagem(elemento) {
+    elemento.addEventListener("wheel", function(evento) {
+        if (elemento.scrollHeight <= elemento.clientHeight) {
+            return;
+        }
+
+        evento.preventDefault();
+        elemento.scrollTop += Math.sign(evento.deltaY) * Math.min(Math.abs(evento.deltaY), 36);
+    }, { passive: false });
+}
+
+function posicionarLista() {
+    if (!listaAberta || !janelaLista) {
+        return;
+    }
+
+    const caixa = listaAberta.botao.getBoundingClientRect();
+    const margem = 8;
+    const larguraMinima = listaAberta.plano ? 210 : 160;
+    const largura = Math.min(Math.max(caixa.width, larguraMinima), window.innerWidth - margem * 2);
+
+    const rolagem = janelaLista.scrollTop;
+
+    janelaLista.style.width = `${largura}px`;
+    janelaLista.style.maxHeight = "none";
+
+    const alturaTotal = janelaLista.scrollHeight + 2;
+    const abaixo = window.innerHeight - caixa.bottom - margem - 6;
+    const acima = caixa.top - margem - 6;
+    const emCima = alturaTotal > abaixo && acima > abaixo;
+    const espaco = Math.max(120, Math.min(300, emCima ? acima : abaixo));
+    const altura = Math.min(alturaTotal, espaco);
+
+    janelaLista.style.maxHeight = `${espaco}px`;
+    janelaLista.scrollTop = rolagem;
+
+    let esquerda = Math.min(caixa.left, window.innerWidth - largura - margem);
+    esquerda = Math.max(margem, esquerda);
+
+    janelaLista.style.left = `${esquerda}px`;
+    janelaLista.style.top = `${emCima ? caixa.top - altura - 6 : caixa.bottom + 6}px`;
+}
+
+function desenharLista(focarEscolhida) {
+    const estado = listaAberta;
+
+    if (!estado || !janelaLista) {
+        return;
+    }
+
+    const select = estado.select;
+    const janela = janelaLista;
+
+    janela.innerHTML = "";
+
+    function criarItem(opcao) {
+        const item = criarElementoSeletor("button", "cs-item");
+
+        item.type = "button";
+        item.setAttribute("role", "option");
+        item.textContent = opcao.textContent;
+        item.disabled = opcao.disabled;
+
+        const escolhido = opcao.value === select.value && select.selectedIndex >= 0 && opcao === select.options[select.selectedIndex];
+
+        if (escolhido) {
+            item.classList.add("cs-escolhido");
+            item.setAttribute("aria-selected", "true");
+        }
+
+        item.addEventListener("click", function() {
+            select.value = opcao.value;
+            select.dispatchEvent(new Event("input", { bubbles: true }));
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+
+            const botao = estado.botao;
+
+            fecharSelecao();
+            botao.focus();
+        });
+
+        return item;
+    }
+
+    Array.from(select.children).forEach(function(filho) {
+        if (filho.tagName === "OPTGROUP") {
+            janela.appendChild(criarElementoSeletor("div", "cs-grupo", filho.label));
+
+            Array.from(filho.children).forEach(function(opcao) {
+                janela.appendChild(criarItem(opcao));
+            });
+        } else if (filho.tagName === "OPTION") {
+            janela.appendChild(criarItem(filho));
+        }
+    });
+
+    posicionarLista();
+
+    // Com o mouse a lista começa pelo topo; pelo teclado, já mostra a opção atual
+    janela.scrollTop = 0;
+
+    if (focarEscolhida) {
+        const alvo = janela.querySelector(".cs-escolhido") || janela.querySelector(".cs-item:not(:disabled)");
+
+        if (alvo) {
+            alvo.focus();
+        }
+    }
+}
+
+function abrirLista(select, botao, plano, focarEscolhida) {
+    fecharSelecao();
+    fecharSeletor();
+
+    listaAberta = { select: select, botao: botao, plano: plano };
+    janelaLista = criarElementoSeletor("div", "cs-janela");
+    janelaLista.setAttribute("role", "listbox");
+    botao.setAttribute("aria-expanded", "true");
+    document.body.appendChild(janelaLista);
+
+    suavizarRolagem(janelaLista);
+
+    janelaLista.addEventListener("keydown", function(evento) {
+        const itens = Array.from(janelaLista.querySelectorAll(".cs-item:not(:disabled)"));
+        const posicao = itens.indexOf(document.activeElement);
+
+        if (evento.key === "ArrowDown" || evento.key === "ArrowUp") {
+            evento.preventDefault();
+
+            const proximo = evento.key === "ArrowDown"
+                ? Math.min(posicao + 1, itens.length - 1)
+                : Math.max(posicao - 1, 0);
+
+            itens[proximo].focus();
+        } else if (evento.key === "Home" || evento.key === "End") {
+            evento.preventDefault();
+            itens[evento.key === "Home" ? 0 : itens.length - 1].focus();
+        } else if (evento.key === "Tab") {
+            fecharSelecao();
+        }
+    });
+
+    desenharLista(focarEscolhida);
+}
+
+function melhorarSelect(select) {
+    const envoltorio = criarElementoSeletor("div", "cs");
+    const botao = criarElementoSeletor("button", "cs-botao");
+    const texto = criarElementoSeletor("span", "cs-texto");
+    const plano = Boolean(select.closest(".seletor-mes, .sim-mes-box"));
+
+    if (plano) {
+        envoltorio.classList.add("cs-plano");
+    } else if (select.classList.contains("select-ano")) {
+        envoltorio.classList.add("cs-compacto");
+    }
+
+    botao.type = "button";
+    botao.setAttribute("aria-haspopup", "listbox");
+    botao.setAttribute("aria-expanded", "false");
+
+    if (select.getAttribute("aria-label")) {
+        botao.setAttribute("aria-label", select.getAttribute("aria-label"));
+    }
+
+    if (SELECTS_COM_CALENDARIO.includes(select.id)) {
+        botao.innerHTML = ICONE_CALENDARIO_SELETOR;
+    }
+
+    botao.appendChild(texto);
+    botao.insertAdjacentHTML("beforeend", ICONE_SETA_SELECT);
+
+    select.parentNode.insertBefore(envoltorio, select);
+    envoltorio.appendChild(select);
+    envoltorio.appendChild(botao);
+
+    select.classList.add("cs-nativo");
+    select.tabIndex = -1;
+
+    function atualizarTexto() {
+        const opcao = select.options[select.selectedIndex];
+
+        texto.textContent = opcao ? opcao.textContent : "";
+        texto.classList.toggle("dp-vazio", Boolean(opcao) && opcao.value === "");
+        botao.disabled = select.disabled;
+    }
+
+    Object.defineProperty(select, "value", {
+        configurable: true,
+        get: function() {
+            return descricaoValorSelect.get.call(select);
+        },
+        set: function(novoValor) {
+            descricaoValorSelect.set.call(select, novoValor);
+            atualizarTexto();
+
+            if (listaAberta && listaAberta.select === select) {
+                desenharLista(false);
+            }
+        }
+    });
+
+    new MutationObserver(function() {
+        atualizarTexto();
+
+        if (listaAberta && listaAberta.select === select) {
+            desenharLista(false);
+        }
+    }).observe(select, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled"] });
+
+    select.addEventListener("change", atualizarTexto);
+
+    if (select.form) {
+        select.form.addEventListener("reset", function() {
+            setTimeout(atualizarTexto, 0);
+        });
+    }
+
+    document.querySelectorAll(`label[for="${select.id}"]`).forEach(function(rotulo) {
+        rotulo.addEventListener("click", function(evento) {
+            if (botao.contains(evento.target)) {
+                return;
+            }
+
+            evento.preventDefault();
+            botao.click();
+        });
+    });
+
+    // .seletor-mes é um rótulo que envolve o campo
+    const rotuloPai = select.closest("label");
+
+    if (rotuloPai) {
+        rotuloPai.addEventListener("click", function(evento) {
+            if (!botao.contains(evento.target)) {
+                evento.preventDefault();
+                botao.click();
+            }
+        });
+    }
+
+    botao.addEventListener("click", function() {
+        if (listaAberta && listaAberta.select === select) {
+            fecharSelecao();
+            return;
+        }
+
+        abrirLista(select, botao, plano, false);
+    });
+
+    botao.addEventListener("keydown", function(evento) {
+        if (evento.key === "ArrowDown" || evento.key === "ArrowUp") {
+            evento.preventDefault();
+            abrirLista(select, botao, plano, true);
+        }
+    });
+
+    select.addEventListener("invalid", function() {
+        botao.classList.add("dp-invalido");
+    });
+
+    atualizarTexto();
+}
+
+const descricaoValorSelect = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+
+document.addEventListener("pointerdown", function(evento) {
+    if (!listaAberta) {
+        return;
+    }
+
+    if ((janelaLista && janelaLista.contains(evento.target)) || listaAberta.botao.contains(evento.target)) {
+        return;
+    }
+
+    fecharSelecao();
+});
+
+document.addEventListener("keydown", function(evento) {
+    if (evento.key === "Escape" && listaAberta) {
+        const botao = listaAberta.botao;
+
+        fecharSelecao();
+        botao.focus();
+    }
+});
+
+window.addEventListener("resize", posicionarLista);
+window.addEventListener("scroll", function(evento) {
+    if (janelaLista && evento.target instanceof Node && janelaLista.contains(evento.target)) {
+        return;
+    }
+
+    posicionarLista();
+}, true);
+
+document.querySelectorAll("select").forEach(melhorarSelect);
+
 
 
 // ==========================================================
@@ -3928,6 +6288,12 @@ atualizarHistorico();
 atualizarResumoMensal();
 atualizarOpcoesInvestimentos();
 atualizarSaldo();
+atualizarCamposApi();
+atualizarResumoReserva();
+aplicarTipoPagamento();
+atualizarVencimentos();
+atualizarCotacaoTela();
+atualizarStatusApis();
 
 // 21.3 Menus e seção inicial
 construirMenus();
@@ -3941,3 +6307,6 @@ try {
 }
 
 abrirSecao(secaoSalva, true);
+
+// 21.4 Buscar cotações e taxas (sem internet, usa o último valor salvo)
+atualizarTudoApis(false);

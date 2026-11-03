@@ -274,11 +274,6 @@ function criarBotaoIcone(icone, rotulo, aoClicar) {
 
     botao.type = "button";
     botao.className = "botao-icone";
-
-    // Editar e excluir ganham um estilo próprio (cor do ícone e da borda)
-    if (icone === "editar" || icone === "excluir") {
-        botao.classList.add("botao-icone-" + icone);
-    }
     botao.title = rotulo;
     botao.setAttribute("aria-label", rotulo);
     botao.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONES[icone]}</svg>`;
@@ -5142,6 +5137,20 @@ function vencimentosDoMes(mes) {
     });
 }
 
+function statusDoGrupo(grupo) {
+    const pagas = grupo.contas.filter(function(conta) { return conta.paga; }).length;
+
+    if (pagas === grupo.contas.length) {
+        return { texto: "Pago", classe: "venc-pago" };
+    }
+
+    if (pagas === 0) {
+        return { texto: "Pendente", classe: "venc-pendente" };
+    }
+
+    return { texto: `${pagas} de ${grupo.contas.length} pagas`, classe: "venc-pendente" };
+}
+
 function atualizarVencimentos() {
     const mes = filtroMes.value || mesAtual;
     const grupos = vencimentosDoMes(mes);
@@ -5157,31 +5166,183 @@ function atualizarVencimentos() {
 
     grupos.forEach(function(grupo) {
         const cartao = document.createElement("div");
+        const status = statusDoGrupo(grupo);
+
         cartao.className = "vencimento";
+
+        // Data e situação do dia
+        const topo = document.createElement("div");
+        topo.className = "vencimento-topo";
 
         const data = document.createElement("span");
         data.className = "vencimento-data";
         data.textContent = formatarDataBR(grupo.data);
 
-        const nome = document.createElement("strong");
-        nome.className = "vencimento-nome";
-        nome.textContent = grupo.nome;
+        const selo = document.createElement("span");
+        selo.className = "vencimento-status " + status.classe;
+        selo.textContent = status.texto;
 
-        const valor = document.createElement("span");
-        valor.className = "vencimento-valor sensivel " + (grupo.paga ? "venc-pago" : "venc-pendente");
-        valor.textContent = `${formatarMoeda(grupo.total)} · ${grupo.paga ? "Pago" : "Pendente"}`;
+        topo.appendChild(data);
+        topo.appendChild(selo);
+        cartao.appendChild(topo);
 
-        cartao.appendChild(data);
-        cartao.appendChild(nome);
-        cartao.appendChild(valor);
+        // Uma conta embaixo da outra
+        const contas = document.createElement("ul");
+        contas.className = "vencimento-contas";
+
+        grupo.contas.forEach(function(conta) {
+            const linha = document.createElement("li");
+            const ponto = document.createElement("span");
+            const nome = document.createElement("span");
+            const valor = document.createElement("span");
+
+            ponto.className = "vc-ponto " + (conta.paga ? "venc-pago" : "venc-pendente");
+            nome.className = "vc-nome";
+            nome.textContent = nomeDoVencimento(conta);
+            nome.title = nome.textContent;
+            valor.className = "vc-valor sensivel";
+            valor.textContent = formatarMoeda(Number(conta.valor) || 0);
+
+            linha.appendChild(ponto);
+            linha.appendChild(nome);
+            linha.appendChild(valor);
+            contas.appendChild(linha);
+        });
+
+        cartao.appendChild(contas);
+
+        if (grupo.contas.length > 1) {
+            const total = document.createElement("div");
+            const rotulo = document.createElement("span");
+            const valorTotal = document.createElement("strong");
+
+            total.className = "vencimento-total";
+            rotulo.textContent = "Total do dia";
+            valorTotal.className = "sensivel";
+            valorTotal.textContent = formatarMoeda(grupo.total);
+
+            total.appendChild(rotulo);
+            total.appendChild(valorTotal);
+            cartao.appendChild(total);
+        }
+
         listaVencimentos.appendChild(cartao);
     });
 
     montarCalendario(mes, grupos);
 }
 
+// Janelinha com as contas do dia (aparece ao passar o mouse, focar ou tocar no dia)
+let dicaCalendario = null;
+let celulaDaDica = null;
+
+function esconderDicaCalendario() {
+    if (dicaCalendario) {
+        dicaCalendario.remove();
+        dicaCalendario = null;
+    }
+
+    if (celulaDaDica) {
+        celulaDaDica.classList.remove("cal-ativa");
+        celulaDaDica = null;
+    }
+}
+
+function mostrarDicaCalendario(celula, grupo) {
+    if (celulaDaDica === celula) {
+        return;
+    }
+
+    esconderDicaCalendario();
+
+    const dia = Number(grupo.data.slice(8, 10));
+    const nomeMes = NOMES_MESES_SELETOR[Number(grupo.data.slice(5, 7)) - 1].toLowerCase();
+    const dica = document.createElement("div");
+    const titulo = document.createElement("div");
+    const lista = document.createElement("ul");
+
+    dica.className = "cal-dica";
+    dica.setAttribute("role", "tooltip");
+    titulo.className = "cal-dica-titulo";
+    titulo.textContent = `${dia} de ${nomeMes}`;
+    lista.className = "cal-dica-lista";
+
+    grupo.contas.forEach(function(conta) {
+        const linha = document.createElement("li");
+        const ponto = document.createElement("span");
+        const textos = document.createElement("span");
+        const nome = document.createElement("strong");
+        const situacao = document.createElement("small");
+        const valor = document.createElement("span");
+
+        ponto.className = "vc-ponto " + (conta.paga ? "venc-pago" : "venc-pendente");
+        textos.className = "cal-dica-textos";
+        nome.textContent = nomeDoVencimento(conta);
+        situacao.textContent = `${conta.parcela ? "Cartão" : "Recorrente"} · ${conta.paga ? "Paga" : "Pendente"}`;
+        valor.className = "cal-dica-valor sensivel";
+        valor.textContent = formatarMoeda(Number(conta.valor) || 0);
+
+        textos.appendChild(nome);
+        textos.appendChild(situacao);
+        linha.appendChild(ponto);
+        linha.appendChild(textos);
+        linha.appendChild(valor);
+        lista.appendChild(linha);
+    });
+
+    dica.appendChild(titulo);
+    dica.appendChild(lista);
+
+    if (grupo.contas.length > 1) {
+        const total = document.createElement("div");
+        const rotulo = document.createElement("span");
+        const valorTotal = document.createElement("strong");
+
+        total.className = "cal-dica-total";
+        rotulo.textContent = "Total do dia";
+        valorTotal.className = "sensivel";
+        valorTotal.textContent = formatarMoeda(grupo.total);
+        total.appendChild(rotulo);
+        total.appendChild(valorTotal);
+        dica.appendChild(total);
+    }
+
+    document.body.appendChild(dica);
+
+    // Posição: acima do dia (ou abaixo, se não couber), sempre dentro da tela
+    const caixa = celula.getBoundingClientRect();
+    const largura = dica.offsetWidth;
+    const altura = dica.offsetHeight;
+    const margem = 8;
+    let esquerda = caixa.left + caixa.width / 2 - largura / 2;
+
+    esquerda = Math.max(margem, Math.min(esquerda, window.innerWidth - largura - margem));
+
+    let topo = caixa.top - altura - 8;
+
+    if (topo < margem) {
+        topo = caixa.bottom + 8;
+    }
+
+    dica.style.left = `${esquerda}px`;
+    dica.style.top = `${topo}px`;
+
+    celula.classList.add("cal-ativa");
+    dicaCalendario = dica;
+    celulaDaDica = celula;
+}
+
+document.addEventListener("pointerdown", function(evento) {
+    if (celulaDaDica && !celulaDaDica.contains(evento.target)) {
+        esconderDicaCalendario();
+    }
+});
+
+window.addEventListener("scroll", esconderDicaCalendario, true);
+
 // Calendário do mês, com os vencimentos nos dias
 function montarCalendario(mes, grupos) {
+    esconderDicaCalendario();
     calendarioVencimentos.innerHTML = "";
 
     const ano = Number(mes.slice(0, 4));
@@ -5213,11 +5374,39 @@ function montarCalendario(mes, grupos) {
         celula.appendChild(numero);
 
         if (grupo) {
+            const status = statusDoGrupo(grupo);
+            const resumo = document.createElement("span");
+            const nome = document.createElement("span");
             const marca = document.createElement("span");
-            marca.className = "cal-valor sensivel " + (grupo.paga ? "venc-pago" : "venc-pendente");
+
+            // Nome da conta (ou quantas contas) e o valor do dia
+            resumo.className = "cal-resumo";
+            nome.className = "cal-nome";
+            nome.textContent = grupo.contas.length > 1
+                ? `${grupo.contas.length} Contas`
+                : nomeDoVencimento(grupo.contas[0]);
+            marca.className = "cal-valor sensivel " + status.classe;
             marca.textContent = formatarMoeda(grupo.total).replace("R$", "").trim();
-            celula.title = `${grupo.nome}: ${formatarMoeda(grupo.total)}`;
-            celula.appendChild(marca);
+
+            resumo.appendChild(nome);
+            resumo.appendChild(marca);
+            celula.appendChild(resumo);
+
+            celula.tabIndex = 0;
+            celula.setAttribute("role", "button");
+            celula.setAttribute("aria-label", `${dia}: ${grupo.nome}, ${formatarMoeda(grupo.total)}`);
+
+            celula.addEventListener("mouseenter", function() { mostrarDicaCalendario(celula, grupo); });
+            celula.addEventListener("mouseleave", esconderDicaCalendario);
+            celula.addEventListener("focus", function() { mostrarDicaCalendario(celula, grupo); });
+            celula.addEventListener("blur", esconderDicaCalendario);
+            celula.addEventListener("click", function() {
+                if (celulaDaDica === celula) {
+                    esconderDicaCalendario();
+                } else {
+                    mostrarDicaCalendario(celula, grupo);
+                }
+            });
         }
 
         calendarioVencimentos.appendChild(celula);
@@ -6344,6 +6533,8 @@ const ICONES_DIALOGO = {
     aviso: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
     erro: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
     sucesso: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    receita: '<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>',
+    despesa: '<path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/>',
     pausar: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
     retomar: '<polygon points="6 3 20 12 6 21 6 3"/>',
     editar: '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
@@ -6483,6 +6674,14 @@ function mostrarProximoDialogo() {
     topo.appendChild(icone);
     topo.appendChild(textos);
     caixa.appendChild(topo);
+
+    if (config.classe) {
+        caixa.classList.add(config.classe);
+    }
+
+    if (config.corpo) {
+        caixa.appendChild(config.corpo);
+    }
 
     // Campos (para perguntas e edições)
     const camposCriados = {};
@@ -6801,6 +7000,230 @@ async function alternarPausaRecorrencia(despesa) {
 
 
 // ==========================================================
+// 30. Detalhes de receitas e despesas do mês (ao clicar nos cartões do Início)
+// ==========================================================
+const ICONE_SETA_DIREITA_CARTAO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+const ICONE_RECEITA_DETALHE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>';
+const ICONE_DESPESA_DETALHE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>';
+
+function criarLinhaDetalhe(opcoes) {
+    const linha = document.createElement("li");
+    const icone = document.createElement("span");
+    const textos = document.createElement("span");
+    const titulo = document.createElement("span");
+    const nome = document.createElement("strong");
+    const meta = document.createElement("small");
+    const valor = document.createElement("span");
+
+    linha.className = "detalhe-item" + (opcoes.apagado ? " detalhe-apagado" : "");
+    icone.className = `detalhe-icone ${opcoes.tom}`;
+    icone.innerHTML = opcoes.icone;
+    textos.className = "detalhe-textos";
+    titulo.className = "detalhe-titulo";
+    nome.textContent = opcoes.nome;
+    titulo.appendChild(nome);
+
+    (opcoes.selos || []).forEach(function(selo) {
+        const elemento = document.createElement("span");
+
+        elemento.className = `detalhe-selo ${selo.classe}`;
+        elemento.textContent = selo.texto;
+        titulo.appendChild(elemento);
+    });
+
+    meta.textContent = opcoes.meta || "";
+    valor.className = `detalhe-valor sensivel ${opcoes.tomValor}`;
+    valor.textContent = opcoes.valor;
+
+    textos.appendChild(titulo);
+
+    if (opcoes.meta) {
+        textos.appendChild(meta);
+    }
+
+    linha.appendChild(icone);
+    linha.appendChild(textos);
+    linha.appendChild(valor);
+
+    return linha;
+}
+
+function criarCorpoDetalhes(linhas, rotuloTotal, total, vazio) {
+    const corpo = document.createElement("div");
+
+    corpo.className = "detalhe-corpo";
+
+    if (linhas.length === 0) {
+        const aviso = document.createElement("p");
+
+        aviso.className = "detalhe-vazio";
+        aviso.textContent = vazio;
+        corpo.appendChild(aviso);
+
+        return corpo;
+    }
+
+    const lista = document.createElement("ul");
+    const rodape = document.createElement("div");
+    const rotulo = document.createElement("span");
+    const valor = document.createElement("strong");
+
+    lista.className = "detalhe-lista";
+    linhas.forEach(function(linha) { lista.appendChild(linha); });
+
+    rodape.className = "detalhe-total";
+    rotulo.textContent = rotuloTotal;
+    valor.className = "sensivel";
+    valor.textContent = formatarMoeda(total);
+    rodape.appendChild(rotulo);
+    rodape.appendChild(valor);
+
+    corpo.appendChild(lista);
+    corpo.appendChild(rodape);
+
+    return corpo;
+}
+
+function abrirDetalhesDoMes(tipo) {
+    const mes = filtroMes.value;
+
+    if (!mes) {
+        mostrarAviso("Selecione um mês para ver os detalhes.");
+        return;
+    }
+
+    if (tipo === "receitas") {
+        const receita = receitas.find(function(item) { return item.mes === mes; });
+        const linhas = [];
+        let somaLancamentos = 0;
+
+        if (receita) {
+            lancamentosDaReceita(receita).forEach(function(lancamento) {
+                const valor = Number(lancamento.valor) || 0;
+
+                somaLancamentos += valor;
+
+                linhas.push(criarLinhaDetalhe({
+                    icone: ICONE_RECEITA_DETALHE,
+                    tom: "tom-receita",
+                    nome: lancamento.descricao || "Receita",
+                    meta: lancamento.registradoEm
+                        ? `Lançada em ${new Date(lancamento.registradoEm).toLocaleDateString("pt-BR")}`
+                        : "",
+                    valor: formatarMoeda(valor),
+                    tomValor: "valor-receita"
+                }));
+            });
+
+            // Quando o saldo do mês foi ajustado, mostra a diferença
+            const diferenca = Number(receita.valor) - somaLancamentos;
+
+            if (Math.abs(diferenca) >= 0.005) {
+                linhas.push(criarLinhaDetalhe({
+                    icone: ICONE_RECEITA_DETALHE,
+                    tom: "tom-receita",
+                    nome: "Ajuste de saldo",
+                    meta: "Correção feita no valor do mês",
+                    valor: formatarComSinal(diferenca),
+                    tomValor: "valor-receita"
+                }));
+            }
+        }
+
+        abrirDialogo({
+            icone: "receita",
+            tom: "sucesso",
+            titulo: "Receitas do mês",
+            mensagem: nomeDoMes(mes),
+            corpo: criarCorpoDetalhes(linhas, "Total de receitas", receita ? Number(receita.valor) : 0, "Nenhuma receita registrada neste mês."),
+            classe: "dialogo-largo",
+            textoConfirmar: "Fechar",
+            textoCancelar: null
+        });
+
+        return;
+    }
+
+    const doMes = gastos
+        .filter(function(despesa) {
+            return typeof despesa.data === "string" && despesa.data.startsWith(mes);
+        })
+        .sort(function(a, b) {
+            return String(a.data).localeCompare(String(b.data));
+        });
+
+    // Pausadas aparecem apagadas no fim e não entram no total
+    const ordenadas = doMes.filter(despesaAtiva).concat(doMes.filter(function(despesa) { return !despesaAtiva(despesa); }));
+    const linhas = ordenadas.map(function(despesa) {
+        const selos = [];
+        const partesMeta = [formatarDataBR(despesa.data).slice(0, 5), despesa.categoria || "Sem categoria"];
+
+        if (despesa.parcela) {
+            selos.push({ classe: "selo-cartao", texto: `Cartão ${despesa.parcela.numero}/${despesa.parcela.total}` });
+            partesMeta.push(`${despesa.parcela.total}× de ${formatarMoeda(Number(despesa.valor) || 0)}`);
+        } else if (despesa.recorrente) {
+            selos.push({ classe: "selo-recorrente", texto: "Recorrente" });
+        }
+
+        if (!despesaAtiva(despesa)) {
+            selos.push({ classe: despesa.pausada ? "selo-pausada" : "selo-pulada", texto: despesa.pausada ? "Pausada" : "Pulada" });
+        } else if (despesa.recorrente || despesa.parcela) {
+            selos.push({ classe: despesa.paga ? "selo-paga" : "selo-pendente", texto: despesa.paga ? "Paga" : "Pendente" });
+        }
+
+        return criarLinhaDetalhe({
+            icone: ICONE_DESPESA_DETALHE,
+            tom: "tom-despesa",
+            nome: despesa.descricao,
+            selos: selos,
+            meta: partesMeta.join(" · "),
+            valor: formatarMoeda(Number(despesa.valor) || 0),
+            tomValor: "valor-despesa",
+            apagado: !despesaAtiva(despesa)
+        });
+    });
+
+    abrirDialogo({
+        icone: "despesa",
+        tom: "pergunta",
+        titulo: "Despesas do mês",
+        mensagem: nomeDoMes(mes),
+        corpo: criarCorpoDetalhes(linhas, "Total de despesas", somarDespesasDoMes(mes), "Nenhuma despesa registrada neste mês."),
+        classe: "dialogo-largo",
+        textoConfirmar: "Fechar",
+        textoCancelar: null
+    });
+}
+
+// Os cartões "Receitas do mês" e "Despesas do mês" viram botões
+[[totalReceita, "receitas", "Ver receitas do mês"], [totalDespesa, "despesas", "Ver despesas do mês"]].forEach(function(item) {
+    const cartao = item[0].closest(".card-resumo");
+    const seta = document.createElement("span");
+
+    cartao.classList.add("card-clicavel");
+    cartao.tabIndex = 0;
+    cartao.setAttribute("role", "button");
+    cartao.setAttribute("aria-label", item[2]);
+    cartao.title = item[2];
+
+    seta.className = "card-seta";
+    seta.innerHTML = ICONE_SETA_DIREITA_CARTAO;
+    cartao.appendChild(seta);
+
+    cartao.addEventListener("click", function() {
+        abrirDetalhesDoMes(item[1]);
+    });
+
+    cartao.addEventListener("keydown", function(evento) {
+        if (evento.key === "Enter" || evento.key === " ") {
+            evento.preventDefault();
+            abrirDetalhesDoMes(item[1]);
+        }
+    });
+});
+
+
+// ==========================================================
 // 21. Início do aplicativo
 // ==========================================================
 
@@ -6839,15 +7262,55 @@ atualizarStatusApis();
 // 21.3 Menus e seção inicial
 construirMenus();
 
-let secaoSalva = "inicio";
+// Chuva de notinhas ao passar o mouse no emoji de dinheiro (cabeçalho da lateral)
+(function () {
+    const cifrao = document.querySelector(".menu-marca-cifrao");
+    const marca = document.querySelector(".menu-marca");
+    if (!cifrao || !marca) return;
+    let intervalo = null;
 
-try {
-    secaoSalva = localStorage.getItem("secaoAtual") || "inicio";
-} catch (erro) {
-    // Sem armazenamento: começa no Início
-}
+    function soltarNota() {
+        const caixaMarca = marca.getBoundingClientRect();
+        const caixaEmoji = cifrao.getBoundingClientRect();
+        const topo = caixaEmoji.top - caixaMarca.top + 4;
+        // A nota cai só até antes da divisória (não passa do texto "Painel")
+        const queda = Math.max(12, caixaMarca.height - topo - 22);
+        const nota = document.createElement("span");
+        nota.className = "nota-chuva";
+        nota.textContent = Math.random() < 0.75 ? "💵" : "💸";
+        nota.style.left = (caixaEmoji.left - caixaMarca.left + Math.random() * 14 - 4) + "px";
+        nota.style.top = topo + "px";
+        nota.style.setProperty("--desvio", (Math.random() * 44 - 22) + "px");
+        nota.style.setProperty("--giro", (Math.random() * 120 - 60) + "deg");
+        nota.style.setProperty("--queda", queda + "px");
+        nota.addEventListener("animationend", () => nota.remove());
+        marca.appendChild(nota);
+    }
 
-abrirSecao(secaoSalva, true);
+    function parar() {
+        clearInterval(intervalo);
+        intervalo = null;
+        marca.querySelectorAll(".nota-chuva").forEach(n => {
+            n.classList.add("sumindo");
+            setTimeout(() => n.remove(), 220);
+        });
+    }
+
+    function iniciar() {
+        if (intervalo) return;
+        soltarNota();
+        intervalo = setInterval(soltarNota, 420);
+    }
+
+    cifrao.addEventListener("mouseenter", iniciar);
+    cifrao.addEventListener("mouseleave", parar);
+    // Segurança: se o mouse sair do cabeçalho por qualquer motivo, para também
+    marca.addEventListener("mouseleave", parar);
+    window.addEventListener("blur", parar);
+})();
+
+// Sempre que a página é aberta ou recarregada (F5), começa no Início
+abrirSecao("inicio", true);
 
 // 21.4 Buscar cotações e taxas (sem internet, usa o último valor salvo)
 atualizarTudoApis(false);

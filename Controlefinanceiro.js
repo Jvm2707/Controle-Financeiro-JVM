@@ -38,14 +38,14 @@ function salvarReceita(modo) {
     const receitaNumero = Number(campoReceita.value);
 
     if (!Number.isFinite(receitaNumero) || receitaNumero <= 0) {
-        alert("Informe uma receita válida maior que zero.");
+        mostrarAviso("Informe uma receita válida maior que zero.");
         return;
     }
 
     const mesReceita = campoMesReceita.value;
 
     if (!mesReceita) {
-        alert("Selecione o mês da receita.");
+        mostrarAviso("Selecione o mês da receita.");
         return;
     }
 
@@ -159,13 +159,13 @@ formGasto.onsubmit = function(event) {
     // 4.2 Guardar a despesa como número
     gastoValor = Number(gastoValor);
     if (!Number.isFinite(gastoValor) || gastoValor <= 0) {
-        alert("Informe um valor válido maior que zero.");
+        mostrarAviso("Informe um valor válido maior que zero.");
         return;
     }
 
     // 4.2.1 Validar a descrição e a data da despesa
     if (!descricao.trim() || !data || !categoria.trim()) {
-        alert("Informe a descrição, a data e a categoria da despesa.");
+        mostrarAviso("Informe a descrição, a data e a categoria da despesa.");
         return;
     }
 
@@ -174,7 +174,7 @@ formGasto.onsubmit = function(event) {
         const totalParcelas = Math.floor(Number(numParcelas.value));
 
         if (!(totalParcelas >= 2 && totalParcelas <= 60)) {
-            alert("Informe o número de parcelas (de 2 a 60).");
+            mostrarAviso("Informe o número de parcelas (de 2 a 60).");
             return;
         }
 
@@ -264,7 +264,9 @@ const filtroHistoricoCategoria = document.getElementById("filtro-historico-categ
 const ICONES = {
     editar: '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
     excluir: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
-    orcamento: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'
+    orcamento: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    pausar: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+    retomar: '<polygon points="6 3 20 12 6 21 6 3"/>'
 };
 
 function criarBotaoIcone(icone, rotulo, aoClicar) {
@@ -272,6 +274,11 @@ function criarBotaoIcone(icone, rotulo, aoClicar) {
 
     botao.type = "button";
     botao.className = "botao-icone";
+
+    // Editar e excluir ganham um estilo próprio (cor do ícone e da borda)
+    if (icone === "editar" || icone === "excluir") {
+        botao.classList.add("botao-icone-" + icone);
+    }
     botao.title = rotulo;
     botao.setAttribute("aria-label", rotulo);
     botao.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONES[icone]}</svg>`;
@@ -409,7 +416,7 @@ formCategoria.addEventListener("submit", function(event) {
     let orcamento = Number(campoOrcamentoCategoria.value);
 
     if (nomeCategoria === "") {
-        alert("Digite um nome para a categoria.");
+        mostrarAviso("Digite um nome para a categoria.");
         return;
     }
 
@@ -418,7 +425,7 @@ formCategoria.addEventListener("submit", function(event) {
     });
 
     if (categoriaExistente) {
-        alert("Essa categoria já existe.");
+        mostrarAviso("Essa categoria já existe.");
         return;
     }
 
@@ -436,15 +443,19 @@ formCategoria.addEventListener("submit", function(event) {
 });
 
 // 4.10.8 Definir (ou remover) o orçamento mensal de uma categoria
-function definirOrcamento(nomeCategoria) {
+async function definirOrcamento(nomeCategoria) {
     let atual = Number(orcamentos[nomeCategoria]) > 0
         ? orcamentos[nomeCategoria]
         : "";
 
-    let resposta = prompt(
-        `Orçamento mensal para "${nomeCategoria}" (deixe vazio para remover):`,
-        atual
-    );
+    let resposta = await perguntar({
+        icone: "meta",
+        titulo: "Orçamento mensal",
+        mensagem: `Quanto você quer gastar por mês em "${nomeCategoria}"? Deixe vazio para remover o limite.`,
+        rotulo: "Valor (R$)",
+        placeholder: "Ex.: 600",
+        valor: atual
+    });
 
     if (resposta === null) {
         return;
@@ -458,7 +469,7 @@ function definirOrcamento(nomeCategoria) {
         let valor = Number(resposta);
 
         if (!Number.isFinite(valor) || valor <= 0) {
-            alert("Informe um valor maior que zero.");
+            mostrarAviso("Informe um valor maior que zero.");
             return;
         }
 
@@ -471,11 +482,14 @@ function definirOrcamento(nomeCategoria) {
 }
 
 // 4.10.9 Editar uma categoria
-function editarCategoria(categoriaSelecionada) {
-    let novoNome = prompt(
-        "Digite o novo nome da categoria:",
-        categoriaSelecionada
-    );
+async function editarCategoria(categoriaSelecionada) {
+    let novoNome = await perguntar({
+        titulo: "Editar categoria",
+        mensagem: "Digite o novo nome da categoria.",
+        rotulo: "Nome",
+        tipo: "text",
+        valor: categoriaSelecionada
+    });
 
     if (novoNome === null) {
         return;
@@ -484,7 +498,7 @@ function editarCategoria(categoriaSelecionada) {
     novoNome = novoNome.trim();
 
     if (novoNome === "") {
-        alert("O nome da categoria não pode ficar vazio.");
+        mostrarAviso("O nome da categoria não pode ficar vazio.");
         return;
     }
 
@@ -494,14 +508,14 @@ function editarCategoria(categoriaSelecionada) {
     });
 
     if (nomeExistente) {
-        alert("Já existe uma categoria com esse nome.");
+        mostrarAviso("Já existe uma categoria com esse nome.");
         return;
     }
 
     let indice = categorias.indexOf(categoriaSelecionada);
 
     if (indice === -1) {
-        alert("Categoria não encontrada.");
+        mostrarAviso("Categoria não encontrada.");
         return;
     }
 
@@ -537,20 +551,25 @@ function editarCategoria(categoriaSelecionada) {
 }
 
 // 4.10.10 Excluir uma categoria
-function excluirCategoria(categoriaSelecionada) {
+async function excluirCategoria(categoriaSelecionada) {
     let categoriaEmUso = gastos.some(function(despesa) {
         return despesa.categoria === categoriaSelecionada;
     });
 
     if (categoriaEmUso) {
-        alert(
+        mostrarAviso(
             "Essa categoria está sendo usada em despesas. " +
             "Edite ou exclua essas despesas antes de excluir a categoria."
         );
         return;
     }
 
-    if (!confirm(`Deseja excluir a categoria "${categoriaSelecionada}"?`)) {
+    if (!await confirmar({
+        titulo: "Excluir categoria",
+        mensagem: `Deseja excluir a categoria "${categoriaSelecionada}"?`,
+        textoConfirmar: "Excluir",
+        perigo: true
+    })) {
         return;
     }
 
@@ -650,7 +669,7 @@ function criarLinhaDespesa(despesa, comAcoes) {
     direita.appendChild(valor);
 
     // O status de pagamento existe nas despesas recorrentes e nas parcelas do cartão
-    if (despesa.recorrente || despesa.parcela) {
+    if ((despesa.recorrente || despesa.parcela) && despesaAtiva(despesa)) {
         let selo;
 
         if (comAcoes) {
@@ -686,12 +705,38 @@ function criarLinhaDespesa(despesa, comAcoes) {
         direita.appendChild(selo);
     }
 
+    if (!despesaAtiva(despesa)) {
+        const seloPausa = document.createElement("span");
+
+        seloPausa.classList.add("selo");
+        seloPausa.classList.add(despesa.pausada ? "selo-pausada" : "selo-pulada");
+        seloPausa.textContent = despesa.pausada ? "Pausada" : "Pulada";
+
+        direita.appendChild(seloPausa);
+        item.classList.add("linha-pausada");
+    }
+
     item.appendChild(info);
     item.appendChild(direita);
 
     if (comAcoes) {
         let acoes = document.createElement("div");
         acoes.className = "linha-acoes";
+
+        // Só as despesas recorrentes pendentes podem ser pausadas (e as pausadas, retomadas)
+        if (despesa.recorrente && !despesa.pulada && (despesa.pausada || !despesa.paga)) {
+            const serieParada = Boolean(despesa.pausada);
+            const botaoPausa = criarBotaoIcone(
+                serieParada ? "retomar" : "pausar",
+                serieParada ? "Retomar despesa recorrente" : "Pausar despesa recorrente",
+                function() {
+                    alternarPausaRecorrencia(despesa);
+                }
+            );
+
+            botaoPausa.classList.add("botao-pausa", serieParada ? "botao-retomar" : "botao-pausar-ativo");
+            acoes.appendChild(botaoPausa);
+        }
 
         acoes.appendChild(
             criarBotaoIcone("editar", "Editar despesa", function() {
@@ -777,7 +822,7 @@ function mostrarHistoricoCompleto() {
         grupos[chave].forEach(function(despesa) {
             const valor = Number(despesa.valor);
 
-            if (Number.isFinite(valor)) {
+            if (Number.isFinite(valor) && despesaAtiva(despesa)) {
                 totalMes += valor;
             }
         });
@@ -816,7 +861,7 @@ function mostrarHistoricoCompleto() {
 // 4.11.5 Contar as contas recorrentes que ainda não foram pagas
 function atualizarContasPendentes(lista) {
     let pendentes = lista.filter(function(despesa) {
-        return (despesa.recorrente || despesa.parcela) && !despesa.paga;
+        return (despesa.recorrente || despesa.parcela) && !despesa.paga && despesaAtiva(despesa);
     }).length;
 
     contasPendentes.textContent = pendentes;
@@ -843,7 +888,7 @@ function atualizarHistorico() {
     gastosFiltrados.forEach(function(despesa) {
         const valor = Number(despesa.valor);
 
-        if (Number.isFinite(valor)) {
+        if (Number.isFinite(valor) && despesaAtiva(despesa)) {
             totalPeriodo += valor;
         }
     });
@@ -960,6 +1005,7 @@ function somarDespesasDoMes(mes) {
 
     gastos.forEach(function(despesa) {
         if (
+            despesaAtiva(despesa) &&
             typeof despesa.data === "string" &&
             despesa.data.startsWith(mes)
         ) {
@@ -1249,7 +1295,8 @@ function atualizarGraficos(mesSelecionado, receita, despesas) {
 
     // Separar as despesas por categoria do mês selecionado
     const despesasFiltradas = gastos.filter(function(despesa) {
-        return typeof despesa.data === "string" &&
+        return despesaAtiva(despesa) &&
+            typeof despesa.data === "string" &&
             despesa.data.startsWith(mesSelecionado);
     });
 
@@ -1432,7 +1479,7 @@ formPlanejamento.onsubmit = function(event) {
     // 6.2.2 Guardar o valor da meta como número
     valorMeta = Number(valorMeta);
     if (!nomeMeta || !Number.isFinite(valorMeta) || valorMeta <= 0) {
-        alert("Informe um nome e um valor válido para a meta, maior que zero.");
+        mostrarAviso("Informe um nome e um valor válido para a meta, maior que zero.");
         return;
     }
 
@@ -1600,12 +1647,12 @@ formAporte.onsubmit = function(event) {
 
     // 8.2 Validar os dados do aporte
     if (indiceMeta === "") {
-        alert("Selecione uma meta para registrar o aporte.");
+        mostrarAviso("Selecione uma meta para registrar o aporte.");
         return;
     }
 
     if (!Number.isFinite(valor) || valor <= 0) {
-        alert("O valor do aporte deve ser maior que zero.");
+        mostrarAviso("O valor do aporte deve ser maior que zero.");
         return;
     }
 
@@ -1616,7 +1663,7 @@ formAporte.onsubmit = function(event) {
         Number.isNaN(dataTeste.getTime()) ||
         dataTeste.toISOString().slice(0, 10) !== data
     ) {
-        alert("Informe uma data válida.");
+        mostrarAviso("Informe uma data válida.");
         return;
     }
 
@@ -1625,7 +1672,7 @@ formAporte.onsubmit = function(event) {
 
     // 8.3.1 Impedir que o aporte seja associado a uma meta inexistente
     if (!metaSelecionada) {
-        alert("A meta selecionada não foi encontrada.");
+        mostrarAviso("A meta selecionada não foi encontrada.");
         return;
     }
 
@@ -1674,12 +1721,17 @@ function calcularTotalAportes(meta) {
 }
 
 // 10. Excluir metas
-function excluirMeta(indice) {
+async function excluirMeta(indice) {
     if (indice < 0 || indice >= metas.length) {
         return;
     }
 
-    if (!confirm("Tem certeza de que deseja excluir esta meta?")) {
+    if (!await confirmar({
+        titulo: "Excluir meta",
+        mensagem: "Tem certeza de que deseja excluir esta meta? Os aportes dela também serão apagados.",
+        textoConfirmar: "Excluir",
+        perigo: true
+    })) {
         return;
     }
 
@@ -1696,12 +1748,17 @@ function excluirMeta(indice) {
 }
 
 // 11. Excluir despesas
-function excluirGasto(indice) {
+async function excluirGasto(indice) {
     if (indice < 0 || indice >= gastos.length) {
         return;
     }
 
-    if (!confirm("Tem certeza de que deseja excluir esta despesa?")) {
+    if (!await confirmar({
+        titulo: "Excluir despesa",
+        mensagem: `Tem certeza de que deseja excluir "${gastos[indice].descricao}"?`,
+        textoConfirmar: "Excluir",
+        perigo: true
+    })) {
         return;
     }
 
@@ -1729,58 +1786,56 @@ function excluirGasto(indice) {
 }
 
 // 12. Editar despesas
-function editarGasto(despesa) {
-    let novaDescricao = prompt("Digite a nova descrição:", despesa.descricao);
+async function editarGasto(despesa) {
+    const opcoesCategoria = categorias.slice();
 
-    if (novaDescricao === null) {
+    if (despesa.categoria && !opcoesCategoria.includes(despesa.categoria)) {
+        opcoesCategoria.push(despesa.categoria);
+    }
+
+    const resultado = await abrirFormulario({
+        icone: "editar",
+        titulo: "Editar despesa",
+        mensagem: "Altere os dados que quiser e salve.",
+        textoConfirmar: "Salvar",
+        campos: [
+            { id: "descricao", rotulo: "Descrição", tipo: "text", valor: despesa.descricao },
+            { id: "valor", rotulo: "Valor (R$)", tipo: "decimal", valor: String(despesa.valor).replace(".", ",") },
+            { id: "data", rotulo: "Data", tipo: "date", valor: despesa.data },
+            { id: "categoria", rotulo: "Categoria", tipo: "select", valor: despesa.categoria, opcoes: opcoesCategoria }
+        ],
+        validar: function(valores) {
+            const valorDigitado = Number(valores.valor.trim().replace(",", "."));
+            const dataTeste = new Date(`${valores.data}T00:00:00`);
+
+            if (valores.descricao.trim() === "" || !Number.isFinite(valorDigitado) || valorDigitado <= 0) {
+                return "Informe uma descrição e um valor válido maior que zero.";
+            }
+
+            if (
+                !/^\d{4}-\d{2}-\d{2}$/.test(valores.data) ||
+                Number.isNaN(dataTeste.getTime()) ||
+                dataTeste.toISOString().slice(0, 10) !== valores.data
+            ) {
+                return "Informe uma data válida.";
+            }
+
+            if (valores.categoria.trim() === "") {
+                return "A categoria não pode ficar vazia.";
+            }
+
+            return null;
+        }
+    });
+
+    if (!resultado) {
         return;
     }
 
-    let novoValor = prompt("Digite o novo valor:", despesa.valor);
-
-    if (novoValor === null) {
-        return;
-    }
-
-    novoValor = Number(novoValor);
-
-    if (
-        novaDescricao.trim() === "" ||
-        !Number.isFinite(novoValor) ||
-        novoValor <= 0
-    ) {
-        alert("Informe uma descrição e um valor válido maior que zero.");
-        return;
-    }
-
-    let novaData = prompt("Digite a nova data (AAAA-MM-DD):", despesa.data);
-
-    if (novaData === null) {
-        return;
-    }
-
-    // Validar o formato e a existência da data
-    let dataTeste = new Date(`${novaData}T00:00:00`);
-
-    if (
-        !/^\d{4}-\d{2}-\d{2}$/.test(novaData) ||
-        Number.isNaN(dataTeste.getTime()) ||
-        dataTeste.toISOString().slice(0, 10) !== novaData
-    ) {
-        alert("Informe uma data válida no formato AAAA-MM-DD.");
-        return;
-    }
-
-    let novaCategoria = prompt("Digite a nova categoria:", despesa.categoria);
-
-    if (novaCategoria === null) {
-        return;
-    }
-
-    if (novaCategoria.trim() === "") {
-        alert("A categoria não pode ficar vazia.");
-        return;
-    }
+    const novaDescricao = resultado.descricao;
+    const novoValor = Number(resultado.valor.trim().replace(",", "."));
+    const novaData = resultado.data;
+    const novaCategoria = resultado.categoria;
 
     despesa.descricao = novaDescricao.trim();
     despesa.valor = novoValor;
@@ -1798,7 +1853,7 @@ function editarGasto(despesa) {
 }
 
 // 13. Excluir a receita do mês selecionado
-function excluirReceitaDoMes() {
+async function excluirReceitaDoMes() {
     let mesSelecionado = campoMesReceita.value;
 
     let indice = receitas.findIndex(function(receita) {
@@ -1806,11 +1861,16 @@ function excluirReceitaDoMes() {
     });
 
     if (indice === -1) {
-        alert("Não existe receita cadastrada para esse mês.");
+        mostrarAviso("Não existe receita cadastrada para esse mês.");
         return;
     }
 
-    if (!confirm("Tem certeza de que deseja excluir a receita deste mês?")) {
+    if (!await confirmar({
+        titulo: "Excluir receita",
+        mensagem: "Tem certeza de que deseja excluir a receita deste mês?",
+        textoConfirmar: "Excluir",
+        perigo: true
+    })) {
         return;
     }
 
@@ -1825,7 +1885,7 @@ function excluirReceitaDoMes() {
     atualizarSaldo();
     fecharModalReceita();
 
-    alert("Receita excluída com sucesso.");
+    mostrarAviso("Receita excluída com sucesso.");
 }
 
 // 14. Reserva de emergência e investimentos
@@ -2604,7 +2664,7 @@ formReserva.addEventListener("submit", function(event) {
     let nome = nomeInvestimento.value.trim();
 
     if (!tipo || !data) {
-        alert("Preencha o tipo e o mês de início do investimento.");
+        mostrarAviso("Preencha o tipo e o mês de início do investimento.");
         return;
     }
 
@@ -2619,12 +2679,12 @@ formReserva.addEventListener("submit", function(event) {
         const provedor = apiProvedor.value;
 
         if (!ticker) {
-            alert("Informe o ticker ou o endpoint da API.");
+            mostrarAviso("Informe o ticker ou o endpoint da API.");
             return;
         }
 
         if (provedor === "endpoint" && !/^https?:\/\//i.test(ticker)) {
-            alert("O endpoint precisa começar com http:// ou https://.");
+            mostrarAviso("O endpoint precisa começar com http:// ou https://.");
             return;
         }
 
@@ -2682,7 +2742,7 @@ formReserva.addEventListener("submit", function(event) {
     atualizarCamposApi();
     abrirTela(secaoReserva, "menu");
 
-    alert(registrouAporte
+    mostrarAviso(registrouAporte
         ? "Investimento cadastrado com sucesso!"
         : "Investimento cadastrado com sucesso! Agora você pode registrar um aporte.");
 
@@ -2907,7 +2967,7 @@ function preencherCotacoesDosAportes() {
 }
 
 // 14.6.2 Definir (ou remover) a meta de um investimento
-function definirMetaInvestimento(id) {
+async function definirMetaInvestimento(id) {
     const investimento = investimentos.find(function(item) {
         return item.id === id;
     });
@@ -2916,10 +2976,14 @@ function definirMetaInvestimento(id) {
         return;
     }
 
-    const resposta = prompt(
-        `Meta em R$ para "${investimento.nome || investimento.tipo}" (deixe vazio para remover):`,
-        Number(investimento.meta) > 0 ? investimento.meta : ""
-    );
+    const resposta = await perguntar({
+        icone: "meta",
+        titulo: "Meta do investimento",
+        mensagem: `Quanto você quer juntar em "${investimento.nome || investimento.tipo}"? Deixe vazio para remover a meta.`,
+        rotulo: "Meta (R$)",
+        placeholder: "Ex.: 10000",
+        valor: Number(investimento.meta) > 0 ? investimento.meta : ""
+    });
 
     if (resposta === null) {
         return;
@@ -2933,7 +2997,7 @@ function definirMetaInvestimento(id) {
         const valor = Number(texto);
 
         if (!Number.isFinite(valor) || valor <= 0) {
-            alert("Informe um valor maior que zero.");
+            mostrarAviso("Informe um valor maior que zero.");
             return;
         }
 
@@ -2978,7 +3042,7 @@ formAporteReserva.addEventListener("submit", function(event) {
     });
 
     if (!investimentoAporteReserva.value || !investimentoExiste) {
-        alert("Cadastre ou selecione um investimento válido.");
+        mostrarAviso("Cadastre ou selecione um investimento válido.");
         return;
     }
 
@@ -2992,7 +3056,7 @@ formAporteReserva.addEventListener("submit", function(event) {
         Number.isNaN(dataTeste.getTime()) ||
         dataTeste.toISOString().slice(0, 10) !== data
     ) {
-        alert("Informe um valor positivo e uma data válida.");
+        mostrarAviso("Informe um valor positivo e uma data válida.");
         return;
     }
 
@@ -3023,19 +3087,22 @@ formAporteReserva.addEventListener("submit", function(event) {
 });
 
 // 14.10 Excluir investimentos
-function excluirInvestimento(id) {
+async function excluirInvestimento(id) {
     const investimento = investimentos.find(function(item) {
         return item.id === id;
     });
 
     if (!investimento) {
-        alert("Investimento não encontrado.");
+        mostrarAviso("Investimento não encontrado.");
         return;
     }
 
-    if (!confirm(
-        `Tem certeza de que deseja excluir o investimento "${investimento.nome || investimento.tipo}" e todos os aportes associados a ele?`
-    )) {
+    if (!await confirmar({
+        titulo: "Excluir investimento",
+        mensagem: `Tem certeza de que deseja excluir "${investimento.nome || investimento.tipo}" e todos os aportes associados a ele?`,
+        textoConfirmar: "Excluir",
+        perigo: true
+    })) {
         return;
     }
 
@@ -3073,7 +3140,7 @@ function excluirInvestimento(id) {
     atualizarResumoReserva();
     atualizarPainel();
 
-    alert("Investimento excluído com sucesso.");
+    mostrarAviso("Investimento excluído com sucesso.");
 }
 
 // 15. Backup e restauração dos dados
@@ -3129,7 +3196,7 @@ arquivoBackup.addEventListener("change", function() {
 
     let leitor = new FileReader();
 
-    leitor.onload = function(event) {
+    leitor.onload = async function(event) {
         try {
             let dadosBackup = JSON.parse(event.target.result);
 
@@ -3190,14 +3257,18 @@ arquivoBackup.addEventListener("change", function() {
                 });
 
             if (!backupValido) {
-                alert("O arquivo selecionado não é um backup válido.");
+                mostrarAviso("O arquivo selecionado não é um backup válido.");
                 arquivoBackup.value = "";
                 return;
             }
 
-            if (!confirm(
-                "Restaurar este backup substituirá os dados atuais. Deseja continuar?"
-            )) {
+            if (!await confirmar({
+                icone: "restaurar",
+                titulo: "Restaurar backup",
+                mensagem: "Restaurar este backup substituirá os dados atuais. Deseja continuar?",
+                textoConfirmar: "Restaurar",
+                perigo: true
+            })) {
                 arquivoBackup.value = "";
                 return;
             }
@@ -3264,9 +3335,9 @@ arquivoBackup.addEventListener("change", function() {
             atualizarOpcoesInvestimentos();
             atualizarSaldo();
 
-            alert("Backup restaurado com sucesso!");
+            mostrarAviso("Backup restaurado com sucesso!");
         } catch (erro) {
-            alert("Não foi possível restaurar o backup. Verifique se o arquivo é válido e tente novamente.");
+            mostrarAviso("Não foi possível restaurar o backup. Verifique se o arquivo é válido e tente novamente.");
         }
 
         arquivoBackup.value = "";
@@ -3445,7 +3516,7 @@ function calcularSaldoAcumulado() {
     gastos.forEach(function(despesa) {
         const valor = Number(despesa.valor);
 
-        if (typeof despesa.data === "string" && despesa.data.slice(0, 7) <= mesAtual && Number.isFinite(valor)) {
+        if (despesaAtiva(despesa) && typeof despesa.data === "string" && despesa.data.slice(0, 7) <= mesAtual && Number.isFinite(valor)) {
             total -= valor;
         }
     });
@@ -3496,7 +3567,7 @@ function atualizarOrcamento() {
     let totalMes = 0;
 
     gastos.forEach(function(despesa) {
-        if (typeof despesa.data === "string" && despesa.data.startsWith(mesSelecionado)) {
+        if (despesaAtiva(despesa) && typeof despesa.data === "string" && despesa.data.startsWith(mesSelecionado)) {
             const nome = despesa.categoria || "Sem categoria";
             const valor = Number(despesa.valor);
 
@@ -3743,6 +3814,10 @@ function coletarMovimentacoes() {
             return;
         }
 
+        if (!despesaAtiva(despesa)) {
+            return;
+        }
+
         if (despesa.recorrente || despesa.parcela) {
             // Conta recorrente ou parcela: só entra aqui quando é marcada como paga
             if (!despesa.paga) {
@@ -3972,7 +4047,8 @@ function totaisDoAno(anoEscolhido) {
     gastos.forEach(function(despesa) {
         const valor = Number(despesa.valor);
 
-        if (typeof despesa.data === "string" &&
+        if (despesaAtiva(despesa) &&
+            typeof despesa.data === "string" &&
             despesa.data.startsWith(`${anoEscolhido}-`) &&
             Number.isFinite(valor)) {
             despMes[Number(despesa.data.slice(5, 7)) - 1] += valor;
@@ -5039,7 +5115,7 @@ function vencimentosDoMes(mes) {
     const grupos = {};
 
     gastos.forEach(function(despesa) {
-        if (ehConta(despesa) && typeof despesa.data === "string" && despesa.data.startsWith(mes)) {
+        if (ehConta(despesa) && despesaAtiva(despesa) && typeof despesa.data === "string" && despesa.data.startsWith(mes)) {
             if (!grupos[despesa.data]) {
                 grupos[despesa.data] = [];
             }
@@ -6257,6 +6333,471 @@ window.addEventListener("scroll", function(evento) {
 
 document.querySelectorAll("select").forEach(melhorarSelect);
 
+
+
+// ==========================================================
+// 28. Janelas de aviso, confirmação e pergunta (no estilo do site)
+// ==========================================================
+const ICONES_DIALOGO = {
+    pergunta: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+    perigo: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    aviso: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    erro: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+    sucesso: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    pausar: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+    retomar: '<polygon points="6 3 20 12 6 21 6 3"/>',
+    editar: '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
+    meta: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    restaurar: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>'
+};
+
+const filaDialogos = [];
+let dialogoAberto = false;
+
+// Escolhe o tipo do aviso pelo texto (sucesso, erro ou atenção)
+function tipoDoAviso(mensagem) {
+    if (/sucesso/i.test(mensagem)) {
+        return "sucesso";
+    }
+
+    if (/não foi possível|não é um backup|erro/i.test(mensagem)) {
+        return "erro";
+    }
+
+    return "aviso";
+}
+
+const TITULOS_AVISO = { sucesso: "Tudo certo!", erro: "Algo deu errado", aviso: "Atenção" };
+
+// Substitui o alert(): mostra um aviso com o botão "Entendi"
+function mostrarAviso(mensagem, tipo) {
+    const tipoFinal = tipo || tipoDoAviso(String(mensagem));
+
+    return abrirDialogo({
+        icone: tipoFinal,
+        tom: tipoFinal,
+        titulo: TITULOS_AVISO[tipoFinal],
+        mensagem: String(mensagem),
+        textoConfirmar: "Entendi",
+        textoCancelar: null
+    }).then(function() {
+        return undefined;
+    });
+}
+
+// Substitui o confirm(): devolve true ou false
+function confirmar(opcoes) {
+    return abrirDialogo({
+        icone: opcoes.icone || (opcoes.perigo ? "perigo" : "pergunta"),
+        tom: opcoes.perigo ? "perigo" : (opcoes.tom || "pergunta"),
+        titulo: opcoes.titulo,
+        mensagem: opcoes.mensagem,
+        textoConfirmar: opcoes.textoConfirmar || "Confirmar",
+        textoCancelar: opcoes.textoCancelar || "Cancelar",
+        perigo: Boolean(opcoes.perigo)
+    }).then(function(resultado) {
+        return Boolean(resultado);
+    });
+}
+
+// Substitui o prompt() com um campo: devolve o texto ou null
+function perguntar(opcoes) {
+    return abrirDialogo({
+        icone: opcoes.icone || "editar",
+        tom: "pergunta",
+        titulo: opcoes.titulo,
+        mensagem: opcoes.mensagem,
+        textoConfirmar: opcoes.textoConfirmar || "Salvar",
+        textoCancelar: "Cancelar",
+        campos: [{
+            id: "resposta",
+            rotulo: opcoes.rotulo || "",
+            tipo: opcoes.tipo || "decimal",
+            valor: opcoes.valor === undefined || opcoes.valor === null ? "" : String(opcoes.valor),
+            placeholder: opcoes.placeholder || ""
+        }]
+    }).then(function(resultado) {
+        return resultado ? resultado.resposta : null;
+    });
+}
+
+// Janela com vários campos: devolve um objeto com os valores ou null
+function abrirFormulario(opcoes) {
+    return abrirDialogo({
+        icone: opcoes.icone || "editar",
+        tom: "pergunta",
+        titulo: opcoes.titulo,
+        mensagem: opcoes.mensagem,
+        textoConfirmar: opcoes.textoConfirmar || "Salvar",
+        textoCancelar: "Cancelar",
+        campos: opcoes.campos,
+        validar: opcoes.validar
+    });
+}
+
+function abrirDialogo(configuracao) {
+    return new Promise(function(resolver) {
+        filaDialogos.push({ configuracao: configuracao, resolver: resolver });
+        mostrarProximoDialogo();
+    });
+}
+
+function mostrarProximoDialogo() {
+    if (dialogoAberto || filaDialogos.length === 0) {
+        return;
+    }
+
+    const item = filaDialogos.shift();
+    const config = item.configuracao;
+    const anterior = document.activeElement;
+
+    dialogoAberto = true;
+
+    const fundo = criarElementoSeletor("div", "dialogo-fundo");
+    const caixa = criarElementoSeletor("div", "dialogo");
+    const topo = criarElementoSeletor("div", "dialogo-topo");
+    const icone = criarElementoSeletor("div", `dialogo-icone tom-${config.tom || "pergunta"}`);
+    const textos = criarElementoSeletor("div", "dialogo-textos");
+    const titulo = criarElementoSeletor("h3", "dialogo-titulo");
+    const formulario = criarElementoSeletor("form", "dialogo-campos");
+    const erro = criarElementoSeletor("p", "dialogo-erro");
+    const acoes = criarElementoSeletor("div", "dialogo-acoes");
+
+    caixa.setAttribute("role", config.textoCancelar === null ? "alertdialog" : "dialog");
+    caixa.setAttribute("aria-modal", "true");
+    caixa.setAttribute("aria-labelledby", "dialogo-titulo-texto");
+
+    icone.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONES_DIALOGO[config.icone] || ICONES_DIALOGO.pergunta}</svg>`;
+
+    titulo.id = "dialogo-titulo-texto";
+    titulo.textContent = config.titulo || "";
+    textos.appendChild(titulo);
+
+    if (config.mensagem) {
+        const mensagem = criarElementoSeletor("p", "dialogo-mensagem");
+
+        mensagem.textContent = config.mensagem;
+        textos.appendChild(mensagem);
+    }
+
+    topo.appendChild(icone);
+    topo.appendChild(textos);
+    caixa.appendChild(topo);
+
+    // Campos (para perguntas e edições)
+    const camposCriados = {};
+
+    (config.campos || []).forEach(function(campo) {
+        const idCampo = `dialogo-campo-${campo.id}`;
+        let elemento;
+
+        if (campo.rotulo) {
+            const rotulo = criarElementoSeletor("label", "");
+
+            rotulo.htmlFor = idCampo;
+            rotulo.textContent = campo.rotulo;
+            formulario.appendChild(rotulo);
+        }
+
+        if (campo.tipo === "select") {
+            elemento = document.createElement("select");
+
+            campo.opcoes.forEach(function(opcao) {
+                const item = document.createElement("option");
+
+                item.value = opcao;
+                item.textContent = opcao;
+                elemento.appendChild(item);
+            });
+
+            elemento.value = campo.valor;
+        } else {
+            elemento = document.createElement("input");
+            elemento.type = campo.tipo === "date" ? "date" : "text";
+            elemento.required = campo.tipo === "date";
+
+            if (campo.tipo === "decimal") {
+                elemento.inputMode = "decimal";
+            }
+
+            elemento.value = campo.valor || "";
+            elemento.placeholder = campo.placeholder || "";
+            elemento.autocomplete = "off";
+        }
+
+        elemento.id = idCampo;
+        formulario.appendChild(elemento);
+        camposCriados[campo.id] = elemento;
+    });
+
+    if ((config.campos || []).length > 0) {
+        formulario.appendChild(erro);
+        caixa.appendChild(formulario);
+    }
+
+    const botaoCancelar = criarElementoSeletor("button", "dialogo-botao dialogo-cancelar", config.textoCancelar || "");
+    const botaoConfirmar = criarElementoSeletor("button", "dialogo-botao dialogo-confirmar" + (config.perigo ? " perigo" : ""), config.textoConfirmar || "OK");
+
+    botaoCancelar.type = "button";
+    botaoConfirmar.type = "button";
+
+    if (config.textoCancelar !== null) {
+        acoes.appendChild(botaoCancelar);
+    }
+
+    acoes.appendChild(botaoConfirmar);
+    caixa.appendChild(acoes);
+    fundo.appendChild(caixa);
+    document.body.appendChild(fundo);
+    document.body.classList.add("dialogo-ativo");
+
+    // Os campos de data e de seleção ganham o mesmo visual do restante do site
+    Object.keys(camposCriados).forEach(function(chave) {
+        const elemento = camposCriados[chave];
+
+        if (elemento.tagName === "SELECT") {
+            melhorarSelect(elemento);
+        } else if (elemento.type === "date") {
+            melhorarCampoDeData(elemento);
+        }
+    });
+
+    function coletar() {
+        const valores = {};
+
+        Object.keys(camposCriados).forEach(function(chave) {
+            valores[chave] = camposCriados[chave].value;
+        });
+
+        return valores;
+    }
+
+    function fechar(resultado) {
+        fecharSeletor();
+        fecharSelecao();
+        document.removeEventListener("keydown", aoTeclar, true);
+        fundo.remove();
+        document.body.classList.remove("dialogo-ativo");
+        dialogoAberto = false;
+
+        if (anterior && typeof anterior.focus === "function" && document.contains(anterior)) {
+            anterior.focus();
+        }
+
+        item.resolver(resultado);
+        mostrarProximoDialogo();
+    }
+
+    function confirmarDialogo() {
+        if ((config.campos || []).length === 0) {
+            fechar(true);
+            return;
+        }
+
+        const valores = coletar();
+        const mensagemErro = config.validar ? config.validar(valores) : null;
+
+        if (mensagemErro) {
+            erro.textContent = mensagemErro;
+            erro.classList.add("visivel");
+            return;
+        }
+
+        fechar(valores);
+    }
+
+    function cancelarDialogo() {
+        fechar(config.textoCancelar === null ? true : ((config.campos || []).length > 0 ? null : false));
+    }
+
+    function aoTeclar(evento) {
+        // Se um calendário ou lista estiver aberto, o Esc fecha só ele
+        if (evento.key === "Escape") {
+            if (seletorAberto || listaAberta) {
+                return;
+            }
+
+            evento.preventDefault();
+            cancelarDialogo();
+            return;
+        }
+
+        if (evento.key === "Tab") {
+            const focaveis = Array.from(caixa.querySelectorAll("button:not(:disabled), input:not(.dp-nativo), select:not(.cs-nativo)"))
+                .filter(function(elemento) { return elemento.offsetParent !== null; });
+
+            if (focaveis.length === 0) {
+                return;
+            }
+
+            const primeiro = focaveis[0];
+            const ultimo = focaveis[focaveis.length - 1];
+
+            if (evento.shiftKey && document.activeElement === primeiro) {
+                evento.preventDefault();
+                ultimo.focus();
+            } else if (!evento.shiftKey && document.activeElement === ultimo) {
+                evento.preventDefault();
+                primeiro.focus();
+            }
+        }
+    }
+
+    botaoConfirmar.addEventListener("click", confirmarDialogo);
+    botaoCancelar.addEventListener("click", cancelarDialogo);
+
+    formulario.addEventListener("submit", function(evento) {
+        evento.preventDefault();
+        confirmarDialogo();
+    });
+
+    formulario.addEventListener("keydown", function(evento) {
+        if (evento.key === "Enter" && evento.target.tagName === "INPUT" && !evento.target.classList.contains("dp-nativo")) {
+            evento.preventDefault();
+            confirmarDialogo();
+        }
+    });
+
+    fundo.addEventListener("pointerdown", function(evento) {
+        if (evento.target === fundo) {
+            cancelarDialogo();
+        }
+    });
+
+    document.addEventListener("keydown", aoTeclar, true);
+
+    // Foco inicial: no primeiro campo; em ações perigosas, no "Cancelar" (mais seguro)
+    const primeiroCampo = formulario.querySelector("input:not(.dp-nativo), select:not(.cs-nativo)");
+
+    if (primeiroCampo && primeiroCampo.type !== "date") {
+        primeiroCampo.focus();
+
+        if (typeof primeiroCampo.select === "function") {
+            primeiroCampo.select();
+        }
+    } else if (config.perigo && config.textoCancelar !== null) {
+        botaoCancelar.focus();
+    } else {
+        botaoConfirmar.focus();
+    }
+}
+
+
+// ==========================================================
+// 29. Pausar e retomar despesas recorrentes
+// ==========================================================
+
+// Todas as ocorrências de uma recorrência (mensal, semanal...) têm a mesma chave
+function chaveDaSerie(despesa) {
+    return despesa.idRecorrencia || despesa.id;
+}
+
+// Despesas pausadas ou "puladas" não entram em somas, saldo, orçamento nem vencimentos
+function despesaAtiva(despesa) {
+    return !despesa.pausada && !despesa.pulada;
+}
+
+function serieDaDespesa(despesa) {
+    const chave = chaveDaSerie(despesa);
+
+    return gastos.filter(function(item) {
+        return item.recorrente && chaveDaSerie(item) === chave;
+    });
+}
+
+function serieEstaPausada(despesa) {
+    return serieDaDespesa(despesa).some(function(item) {
+        return item.pausada;
+    });
+}
+
+function atualizarTelasDeDespesas() {
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+
+    atualizarHistorico();
+    atualizarResumoMensal();
+    atualizarSaldo();
+    atualizarPainel();
+}
+
+async function alternarPausaRecorrencia(despesa) {
+    const serie = serieDaDespesa(despesa);
+    const nome = despesa.descricao;
+
+    if (despesa.pausada) {
+        const retomar = await confirmar({
+            icone: "retomar",
+            tom: "sucesso",
+            titulo: "Retomar despesa?",
+            mensagem: `"${nome}" volta a contar nas suas despesas.\n\nOs meses anteriores em que ficou pausada continuam de fora.`,
+            textoConfirmar: "Retomar"
+        });
+
+        if (!retomar) {
+            return;
+        }
+
+        serie.forEach(function(item) {
+            if (item.pausada) {
+                delete item.pausada;
+
+                // Meses que já passaram durante a pausa ficam de fora para sempre
+                if (item.data.slice(0, 7) < mesAtual) {
+                    item.pulada = true;
+                }
+            }
+        });
+
+        atualizarTelasDeDespesas();
+        return;
+    }
+
+    // A pausa vale para o que ainda está pendente, do mês atual em diante
+    const inicio = `${mesAtual}-01`;
+    const alvo = serie.filter(function(item) {
+        return !item.pulada && !item.paga && item.data >= inicio;
+    });
+
+    if (alvo.length === 0) {
+        mostrarAviso("Não há ocorrências pendentes desta despesa para pausar.");
+        return;
+    }
+
+    // Mostra o efeito no mês atual antes de confirmar
+    const doMesAtual = alvo.filter(function(item) {
+        return item.data.startsWith(mesAtual);
+    });
+    const descontoMes = doMesAtual.reduce(function(soma, item) {
+        return soma + (Number(item.valor) || 0);
+    }, 0);
+    let efeito = "";
+
+    if (descontoMes > 0) {
+        const totalAtual = somarDespesasDoMes(mesAtual);
+
+        efeito = `Este mês: -${formatarMoeda(descontoMes)} (suas despesas passam de ${formatarMoeda(totalAtual)} para ${formatarMoeda(totalAtual - descontoMes)}).`;
+
+        efeito += "\n\n";
+    }
+
+    const pausar = await confirmar({
+        icone: "pausar",
+        tom: "pergunta",
+        titulo: "Pausar despesa recorrente?",
+        mensagem: `Deseja pausar "${nome}"?\n\n${efeito}Enquanto estiver pausada, ela não conta nas despesas, no saldo nem nos vencimentos. Você pode retomar quando quiser.`,
+        textoConfirmar: "Pausar"
+    });
+
+    if (!pausar) {
+        return;
+    }
+
+    alvo.forEach(function(item) {
+        item.pausada = true;
+    });
+
+    atualizarTelasDeDespesas();
+}
 
 
 // ==========================================================

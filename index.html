@@ -52,7 +52,8 @@
                     <p>Acompanhe seus gastos, cuide dos seus planos.</p>
                 </div>
 
-                <button type="button" class="botao-tema" aria-label="Alternar modo claro/escuro">
+                <div class="header-acoes">
+                    <button type="button" class="botao-tema" aria-label="Alternar modo claro/escuro">
                     <svg class="icone-sol" viewBox="0 0 24 24" aria-hidden="true">
                         <circle cx="12" cy="12" r="4"/>
                         <path d="M12 2v2"/><path d="M12 20v2"/>
@@ -65,6 +66,7 @@
                     </svg>
                     <span class="texto-tema">Modo claro</span>
                 </button>
+                </div>
             </header>
 
             <main>
@@ -1336,6 +1338,180 @@
                         accept=".json,application/json"
                     >
                 </label>
+
+            </div>
+        </section>
+
+            
+        <!-- 6. SOBRE -->
+        <section id="sobre" class="painel-largo" hidden>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <h2><svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Sobre o app</h2>
+                    <p>Conheça o projeto, sua privacidade e as novidades</p>
+                </div>
+                <span class="periodo-despesas" data-versao-texto></span>
+            </div>
+
+            <div class="sb-hero">
+                <div class="sb-hero-mascote" data-mascote="acenar"></div>
+                <div class="sb-hero-texto">
+                    <span class="sb-selo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"/><path d="M7 7h.01"/></svg><span data-versao-texto></span></span>
+                    <h3>Seu dinheiro, em ordem!</h3>
+                    <p>Um app simples para acompanhar receitas, despesas, metas e investimentos, tudo em um só lugar e só seu.</p>
+                    <div class="sb-hero-acoes">
+                        <button type="button" class="sb-botao" id="botao-rever-tutorial">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            Rever tutorial
+                        </button>
+                        <button type="button" class="sb-botao sb-botao-sec" data-rolar="sb-contato">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            Enviar feedback
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sb-atalhos" role="navigation" aria-label="Atalhos do painel Sobre">
+                <button type="button" data-rolar="sb-proposta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>Proposta</button>
+                <button type="button" data-rolar="sb-privacidade"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Privacidade</button>
+                <button type="button" data-rolar="sb-faq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Dúvidas</button>
+                <button type="button" data-rolar="sb-glossario"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Glossário</button>
+                <button type="button" data-rolar="sb-dev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>Desenvolvimento</button>
+                <button type="button" data-rolar="sb-changelog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>Novidades</button>
+                <button type="button" data-rolar="sb-contato"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Contato</button>
+            </div>
+
+            <div class="painel-grade">
+
+                <!-- Nossa proposta -->
+                <div class="painel-card col-2" id="sb-proposta">
+                    <div class="painel-titulo">
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        <h3>Nossa proposta</h3>
+                    </div>
+                    <p>Ajudar pessoas a controlar suas finanças, organizar os gastos e construir uma vida financeira melhor, de um jeito simples, bonito e sem complicação.</p>
+                    <div class="sb-trio">
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span><strong>Controlar</strong><span>Saiba para onde o dinheiro vai</span></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span><strong>Organizar</strong><span>Contas, parcelas e vencimentos</span></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><strong>Planejar</strong><span>Metas, reserva e investimentos</span></div>
+                    </div>
+                    <div class="sb-historia">
+                        <svg class="icone-roxo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 4.9L20 8l-4 3.9.9 5.6L12 14.8 7.1 17.5 8 11.9 4 8l5.6-1.1Z"/></svg>
+                        <div>
+                            <strong>Por que eu criei isso?</strong>
+                            <p>Fiz este site porque sou jovem e quero organizar o meu futuro. Comecei pelo controle do dia a dia e quis dividir a ferramenta com quem está no mesmo caminho.</p>
+                            <blockquote>“Quem cuida bem dos pequenos valores de hoje constrói as grandes conquistas de amanhã.”<cite>JVM</cite></blockquote>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacidade e segurança -->
+                <div class="painel-card col-2" id="sb-privacidade">
+                    <div class="painel-titulo">
+                        <svg class="icone-verde" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                        <h3>Privacidade e segurança</h3>
+                    </div>
+                    <ul class="sb-lista">
+                        <li><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span><div><strong>Tudo fica no seu aparelho</strong><span>Seus dados são salvos no armazenamento local do navegador (localStorage), dentro do seu próprio dispositivo.</span></div></li>
+                        <li><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3-7 10-7a9.8 9.8 0 0 1 5.3 1.5"/><path d="m2 2 20 20"/><path d="M6.7 6.7C3.7 8.6 2 12 2 12s3 7 10 7a9.7 9.7 0 0 0 4.3-1"/></svg></span><div><strong>Eu não tenho acesso a nada</strong><span>Não existe servidor, cadastro nem conta. Suas informações financeiras são privadas e só você consegue vê-las.</span></div></li>
+                        <li><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><div><strong>O que sai da sua máquina</strong><span>Só consultas públicas de cotações e taxas (Banco Central, Brapi, CoinGecko e Yahoo Finance), além de fontes e gráficos. Nenhum dado financeiro seu é enviado; só o que você escrever no formulário de feedback, se decidir enviar.</span></div></li>
+                        <li><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span><div><strong>Cuidado ao limpar o navegador</strong><span>Apagar os dados do site apaga tudo. Faça backups de vez em quando, é rápido.</span></div></li>
+                    </ul>
+                    <button type="button" class="painel-link" data-ir="backup">Ir para Backup e restauração</button>
+                </div>
+
+                <!-- Dúvidas frequentes -->
+                <div class="painel-card" id="sb-faq">
+                    <div class="painel-titulo">
+                        <svg class="icone-roxo" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                        <h3>Dúvidas frequentes</h3>
+                    </div>
+                    <div class="sb-acordeao">
+                        <details><summary>Meus dados somem se eu fechar o site?</summary><p>Não. Eles ficam salvos no navegador. Só somem se você limpar os dados do site ou usar uma janela anônima.</p></details>
+                        <details><summary>Como uso em outro aparelho?</summary><p>Faça um backup em Backup e restauração, envie o arquivo .json para o outro aparelho e use "Restaurar backup".</p></details>
+                        <details><summary>O que acontece quando pauso uma despesa recorrente?</summary><p>As cobranças ainda não pagas, do mês atual em diante, deixam de entrar nas somas. Ao retomar, elas voltam a valer; os meses que passaram durante a pausa ficam de fora.</p></details>
+                        <details><summary>As cotações não atualizam. E agora?</summary><p>Elas precisam de internet. Sem conexão, o app mostra o último valor salvo e atualiza quando você voltar a ficar online.</p></details>
+                        <details><summary>Os valores do simulador são garantidos?</summary><p>Não. São estimativas com base nas taxas informadas e não representam recomendação de investimento.</p></details>
+                    </div>
+                </div>
+
+                <!-- Glossário financeiro -->
+                <div class="painel-card" id="sb-glossario">
+                    <div class="painel-titulo">
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+                        <h3>Glossário financeiro</h3>
+                    </div>
+                    <input type="search" id="busca-glossario" placeholder="Buscar termo (ex.: CDI)" autocomplete="off" aria-label="Buscar termo no glossário">
+                    <div class="sb-acordeao" id="lista-glossario">
+                        <details><summary>Selic</summary><p>Taxa básica de juros da economia brasileira, definida pelo Copom do Banco Central. Serve de referência para financiamentos, empréstimos e investimentos.</p></details>
+                        <details><summary>CDI</summary><p>Taxa de referência usada nas operações entre bancos e que acompanha de perto a Selic. É o parâmetro de rentabilidade da renda fixa: "100% do CDI" significa render igual a ela.</p></details>
+                        <details><summary>IPCA</summary><p>Índice de Preços ao Consumidor Amplo, calculado pelo IBGE. É a inflação oficial do país e mostra o quanto os preços subiram em um período.</p></details>
+                        <details><summary>Inflação</summary><p>Aumento geral dos preços ao longo do tempo. Com ela, o mesmo dinheiro compra cada vez menos coisas.</p></details>
+                        <details><summary>Liquidez</summary><p>Facilidade de transformar um investimento em dinheiro, sem perder valor. Quanto mais rápido o resgate, maior a liquidez.</p></details>
+                        <details><summary>Rentabilidade</summary><p>Quanto um investimento rendeu em um período, em porcentagem. A rentabilidade real é a que sobra depois de descontar a inflação.</p></details>
+                        <details><summary>Juros compostos</summary><p>Juros que incidem sobre o valor investido mais os juros já acumulados: o famoso "juros sobre juros".</p></details>
+                        <details><summary>Renda fixa e renda variável</summary><p>Na renda fixa, a regra de remuneração é conhecida na hora da aplicação. Na renda variável (como ações), o retorno muda conforme o mercado e pode ser negativo.</p></details>
+                        <details><summary>CDB</summary><p>Título de renda fixa em que você empresta dinheiro a um banco e recebe juros em troca, geralmente atrelados ao CDI.</p></details>
+                        <details><summary>Tesouro Direto</summary><p>Programa em que você empresta dinheiro ao governo federal comprando títulos públicos, como o Tesouro Selic, o IPCA+ e o prefixado.</p></details>
+                        <details><summary>Reserva de emergência</summary><p>Dinheiro guardado para imprevistos, com alta liquidez e baixo risco. Uma referência comum é de 3 a 6 meses das despesas essenciais.</p></details>
+                    </div>
+                    <p class="vazio" id="glossario-vazio" hidden>Nenhum termo encontrado.</p>
+                </div>
+
+                <!-- Desenvolvimento -->
+                <div class="painel-card col-2" id="sb-dev">
+                    <div class="painel-titulo">
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+                        <h3>Desenvolvimento</h3>
+                    </div>
+                    <p>Feito do zero, sem framework e sem servidor. Estas são as tecnologias por trás do app:</p>
+                    <div class="sb-tecnologias">
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span><div><strong>HTML5</strong><span>Estrutura das páginas</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></span><div><strong>CSS3</strong><span>Visual, temas claro e escuro</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/></svg></span><div><strong>JavaScript</strong><span>Toda a lógica do app</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span><div><strong>Chart.js</strong><span>Gráficos</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg></span><div><strong>localStorage</strong><span>Armazenamento no aparelho</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span><div><strong>APIs públicas</strong><span>BCB, Brapi, CoinGecko e Yahoo Finance</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg></span><div><strong>Fonte Inter</strong><span>Google Fonts</span></div></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg></span><div><strong>Ícones SVG</strong><span>Estilo Lucide, embutidos</span></div></div>
+                    </div>
+                    <p class="sb-aviso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>As cotações, taxas e simulações são informativas e não substituem a orientação de um profissional.</p>
+                </div>
+
+                <!-- Novidades / changelog -->
+                <div class="painel-card col-2" id="sb-changelog">
+                    <div class="painel-titulo">
+                        <svg class="icone-roxo" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+                        <h3>Novidades e histórico</h3>
+                        <span class="painel-extra" data-versao-texto></span>
+                    </div>
+                    <div class="sb-linha-tempo" id="lista-changelog"></div>
+                </div>
+
+                <!-- Contato e feedback -->
+                <div class="painel-card col-2" id="sb-contato">
+                    <div class="painel-titulo">
+                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <h3>Contato e feedback</h3>
+                    </div>
+                    <p class="painel-subtitulo">Teve uma ideia ou encontrou um problema? Me conte!</p>
+                    <form id="form-feedback">
+                        <p class="rotulo-campo">Sobre o que você quer falar?</p>
+                        <div class="chips-prazo">
+                            <label class="chip"><input type="radio" name="tipo-feedback" value="Sugestão" checked><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>Sugestão</label>
+                            <label class="chip"><input type="radio" name="tipo-feedback" value="Problema"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/></svg>Problema</label>
+                            <label class="chip"><input type="radio" name="tipo-feedback" value="Elogio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>Elogio</label>
+                        </div>
+                        <label for="mensagem-feedback">Sua mensagem</label>
+                        <textarea id="mensagem-feedback" rows="4" maxlength="1000" placeholder="Escreva aqui..."></textarea>
+                        <button type="submit" class="botao-com-icone">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                            Enviar mensagem
+                        </button>
+                        <p class="receita-dica">Sua mensagem vai direto para o criador do app. Não pedimos nome nem e-mail.</p>
+                    </form>
+                </div>
 
             </div>
         </section>

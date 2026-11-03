@@ -7267,12 +7267,13 @@ atualizarStatusApis();
 // 21.3 Menus e seção inicial
 construirMenus();
 
-// Chuva de notinhas ao passar o mouse no emoji de dinheiro (cabeçalho da lateral)
+// Easter egg: chuva de notinhas ao CLICAR no emoji de dinheiro (cabeçalho da lateral)
 (function () {
     const cifrao = document.querySelector(".menu-marca-cifrao");
     const marca = document.querySelector(".menu-marca");
     if (!cifrao || !marca) return;
     let intervalo = null;
+    let limite = null;
 
     function soltarNota() {
         const caixaMarca = marca.getBoundingClientRect();
@@ -7294,7 +7295,9 @@ construirMenus();
 
     function parar() {
         clearInterval(intervalo);
+        clearTimeout(limite);
         intervalo = null;
+        cifrao.classList.remove("ativo");
         marca.querySelectorAll(".nota-chuva").forEach(n => {
             n.classList.add("sumindo");
             setTimeout(() => n.remove(), 220);
@@ -7303,15 +7306,727 @@ construirMenus();
 
     function iniciar() {
         if (intervalo) return;
+        cifrao.classList.add("ativo");
         soltarNota();
         intervalo = setInterval(soltarNota, 420);
+        // No celular não existe "tirar o mouse": para sozinho depois de 3 segundos
+        if (!window.matchMedia("(hover: hover)").matches) {
+            limite = setTimeout(parar, 3000);
+        }
     }
 
-    cifrao.addEventListener("mouseenter", iniciar);
+    // Só começa com um clique; para ao tirar o mouse de cima do emoji
+    cifrao.addEventListener("click", iniciar);
     cifrao.addEventListener("mouseleave", parar);
     // Segurança: se o mouse sair do cabeçalho por qualquer motivo, para também
     marca.addEventListener("mouseleave", parar);
     window.addEventListener("blur", parar);
+})();
+
+// ==========================================================
+// 22. Sobre, mascote e tutorial de boas-vindas
+// ==========================================================
+
+// 22.1 Versão e histórico de atualizações
+// A cada atualização do app, adicione um item NO TOPO desta lista (ex.: "1.1").
+// A versão mostrada no site é sempre a do primeiro item.
+const CHANGELOG = [
+    {
+        versao: "1.0",
+        data: "03/11/2026",
+        titulo: "Lançamento",
+        itens: [
+            "Início com saldo, receitas e despesas do mês, vencimentos e cotação de moedas",
+            "Despesas avulsas, recorrentes e parceladas no cartão, com pausa de recorrências",
+            "Receitas por mês com histórico de lançamentos e ajuste de saldo",
+            "Metas, Reserva e Investimentos com cotações e simulador por período",
+            "Relatórios e Comparativo de períodos com gráficos",
+            "Backup e restauração dos dados, modo claro e escuro e ocultar valores",
+            "Novo: tutorial de boas-vindas com o mascote Bufunfa, painel Sobre e envio de feedback"
+        ]
+    }
+];
+
+const VERSAO_APP = CHANGELOG[0].versao;
+
+// Feedback: as mensagens chegam em um canal do seu Discord.
+// Cole aqui o link do webhook do canal (Discord > Editar canal > Integrações > Webhooks > Copiar URL).
+// Enquanto estiver vazio, o formulário avisa que ainda não foi configurado.
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1567312389039329410/1i4FVekQxoJJq0W6-YQlsk7hyIbnq-cIVmO9BHrUuT37GMUsA3NB_7O6i3N9_NvGr7no";
+
+// 22.2 Mascote Bufunfa: leão-marinho de cartola e gravata borboleta (SVG animado)
+// poses: acenar, apontar, moeda, sentado
+function criarMascote(pose) {
+    return `
+<svg class="mascote m-${pose}" viewBox="-12 -12 184 214" aria-hidden="true">
+    <ellipse cx="80" cy="191" rx="50" ry="6" fill="rgba(0,0,0,.35)"/>
+    <ellipse cx="40" cy="183" rx="32" ry="6" transform="rotate(-8 40 183)" fill="#4f4336"/>
+    <ellipse cx="120" cy="183" rx="32" ry="6" transform="rotate(8 120 183)" fill="#4f4336"/>
+    <g class="m-corpo">
+        <path d="M52 80 Q38 132 46 177 Q80 192 114 177 Q122 132 108 80 Z" fill="#6a5c4b"/>
+        <ellipse cx="80" cy="136" rx="27" ry="42" fill="#a99371"/>
+        <ellipse cx="80" cy="128" rx="19" ry="30" fill="#bda684" opacity=".55"/>
+    </g>
+    <g class="m-braco-e" style="transform-origin:54px 100px">
+        <path d="M54 98 Q34 112 38 152 Q41 165 50 160 Q60 132 64 108 Z" fill="#5a4d3e"/>
+    </g>
+    <g class="m-braco-d" style="transform-origin:106px 100px">
+        <path d="M106 98 Q126 112 122 152 Q119 165 110 160 Q100 132 96 108 Z" fill="#5a4d3e"/>
+        <g class="m-tablet" transform="rotate(14 118 160)">
+            <rect x="106" y="140" width="28" height="36" rx="3" fill="#d4dae3" stroke="#8c95a3" stroke-width="1.5"/>
+            <rect x="109.5" y="143.5" width="21" height="27" rx="1.5" fill="#1d3b5c"/>
+            <path d="M113 165 l5 -6 l4 3 l6 -8" fill="none" stroke="#F0B93B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g class="m-moeda">
+            <circle cx="117" cy="162" r="11" fill="#F0B93B" stroke="#b9860f" stroke-width="2"/>
+            <path d="M111 167 l4 -5 l3 3 l5 -7" fill="none" stroke="#7a5608" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+    </g>
+    <g class="m-cabeca" style="transform-origin:80px 92px">
+        <ellipse cx="49" cy="60" rx="5" ry="7" fill="#5a4d3e"/>
+        <ellipse cx="111" cy="60" rx="5" ry="7" fill="#5a4d3e"/>
+        <ellipse cx="80" cy="64" rx="28" ry="30" fill="#6a5c4b"/>
+        <ellipse cx="80" cy="78" rx="15" ry="14" fill="#8d7b64"/>
+        <ellipse cx="80" cy="71" rx="6.5" ry="4.6" fill="#1d2024"/>
+        <path class="m-boca" d="M80 75 v5" stroke="#2a2825" stroke-width="2" stroke-linecap="round"/>
+        <path class="m-boca" d="M72 86 Q80 81 88 86" fill="none" stroke="#2a2825" stroke-width="2.2" stroke-linecap="round"/>
+        <g class="m-sorriso">
+            <path d="M80 75 v4" stroke="#2a2825" stroke-width="2" stroke-linecap="round"/>
+            <path d="M70 83 Q80 95 90 83 Q80 88 70 83 Z" fill="#2a2825" stroke="#2a2825" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M74 86 Q80 90 86 86" fill="none" stroke="#f4efe6" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="55" cy="72" rx="5" ry="3" fill="#e0866f" opacity=".55"/>
+            <ellipse cx="105" cy="72" rx="5" ry="3" fill="#e0866f" opacity=".55"/>
+        </g>
+        <g stroke="#e4dccd" stroke-width="1" stroke-linecap="round" opacity=".8">
+            <path d="M64 74 L44 70"/><path d="M64 77 L43 78"/><path d="M65 80 L47 86"/>
+            <path d="M96 74 L116 70"/><path d="M96 77 L117 78"/><path d="M95 80 L113 86"/>
+        </g>
+        <g class="m-olhos" style="transform-origin:80px 56px">
+            <ellipse cx="66" cy="56" rx="4.4" ry="4.8" fill="#16181b"/>
+            <ellipse cx="94" cy="56" rx="4.4" ry="4.8" fill="#16181b"/>
+            <circle cx="67.4" cy="54.5" r="1.4" fill="#fff"/><circle cx="95.4" cy="54.5" r="1.4" fill="#fff"/>
+        </g>
+        <path class="m-sobr" d="M59 52 Q66 47 73 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
+        <path class="m-sobr" d="M87 52 Q94 47 101 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
+        <g class="m-oculos">
+            <path d="M52 53 L58 53 M102 53 L108 53" stroke="#0c0d10" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M58 49 H76 a2 2 0 0 1 2 2 v4 a8 8 0 0 1 -8 8 h-4 a8 8 0 0 1 -8 -8 v-4 a2 2 0 0 1 2 -2 Z" fill="#0c0d10"/>
+            <path d="M82 49 H100 a2 2 0 0 1 2 2 v4 a8 8 0 0 1 -8 8 h-4 a8 8 0 0 1 -8 -8 v-4 a2 2 0 0 1 2 -2 Z" fill="#0c0d10"/>
+            <path d="M78 52 Q80 50.5 82 52" fill="none" stroke="#0c0d10" stroke-width="2.4"/>
+            <path d="M61 52 l5 -0.5 M85 52 l5 -0.5" stroke="#F0B93B" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
+            <path d="M63 56 l3 -.3 M87 56 l3 -.3" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+        </g>
+        <ellipse cx="80" cy="40" rx="42" ry="9" fill="#0f1114"/>
+        <rect x="54" y="6" width="52" height="34" rx="4" fill="#15181c"/>
+        <ellipse cx="80" cy="7" rx="26" ry="5.5" fill="#20242a"/>
+        <rect x="54" y="29" width="52" height="7" fill="#c8322f"/>
+        <text x="80" y="24" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="7.6" textLength="42" lengthAdjust="spacingAndGlyphs" fill="#F0B93B">BUFUNFA</text>
+        <path d="M95 13 l4 -4 l3 3 l5 -6" fill="none" stroke="#F0B93B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g class="m-gravata">
+        <path d="M80 100 L61 91 L61 109 Z" fill="#101215"/>
+        <path d="M80 100 L99 91 L99 109 Z" fill="#101215"/>
+        <rect x="75" y="94" width="10" height="12" rx="3" fill="#1b1e23"/>
+    </g>
+    <g class="m-malabarismo">
+        <g class="m-mo m-mo1"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"/><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+        <g class="m-mo m-mo2"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"/><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+        <g class="m-mo m-mo3"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"/><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+    </g>
+</svg>`;
+}
+
+// Coloca o mascote em todo elemento marcado com data-mascote="pose"
+document.querySelectorAll("[data-mascote]").forEach(function(el) {
+    el.innerHTML = criarMascote(el.dataset.mascote);
+});
+
+// Confetes: soltos a partir de um ponto da tela (x, y em pixels)
+// opcoes: direcao (graus, -90 = para cima), abertura (graus) e potencia
+function soltarConfetes(x, y, quantidade, opcoes) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+    }
+
+    const config = Object.assign({ direcao: -90, abertura: 80, potencia: 1 }, opcoes || {});
+    const cores = ["#F0B93B", "#34D399", "#FB7185", "#8B7CF6", "#60A5FA", "#F4F4F5"];
+    const camada = document.createElement("div");
+    let maiorDuracao = 0;
+
+    camada.className = "confetes";
+    document.body.appendChild(camada);
+
+    for (let i = 0; i < quantidade; i++) {
+        const el = document.createElement("i");
+        const angulo = (config.direcao + (Math.random() - 0.5) * config.abertura) * Math.PI / 180;
+        const forca = (240 + Math.random() * 380) * config.potencia;
+        const dx = Math.cos(angulo) * forca;
+        const dy = Math.sin(angulo) * forca;
+        const queda = 280 + Math.random() * 360;
+        const giro = (Math.random() - 0.5) * 1080;
+        const duracao = 1500 + Math.random() * 1100;
+
+        maiorDuracao = Math.max(maiorDuracao, duracao);
+        el.className = "confete" + (Math.random() < 0.3 ? " redondo" : "");
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.style.backgroundColor = cores[i % cores.length];
+
+        el.animate([
+            { transform: "translate(0, 0) rotate(0deg)", opacity: 1 },
+            { transform: `translate(${dx * 0.55}px, ${dy * 0.55}px) rotate(${giro * 0.4}deg)`, opacity: 1, offset: 0.35 },
+            { transform: `translate(${dx}px, ${dy + queda}px) rotate(${giro}deg)`, opacity: 0 }
+        ], {
+            duration: duracao,
+            easing: "cubic-bezier(0.2, 0.7, 0.4, 1)",
+            fill: "forwards"
+        });
+
+        camada.appendChild(el);
+    }
+
+    setTimeout(function() {
+        camada.remove();
+    }, maiorDuracao + 100);
+}
+
+// Fim do modo feliz: espera o fim do ciclo do pulinho (sem tranco), volta à pose suavemente e solta confetes
+function encerrarFeliz(mascote) {
+    if (!mascote.classList.contains("m-feliz") || mascote.classList.contains("m-saindo")) {
+        return;
+    }
+
+    function iniciarSaida() {
+        const caixa = mascote.getBoundingClientRect();
+
+        mascote.removeEventListener("animationiteration", aoCicloCompleto);
+        clearTimeout(mascote.temporizadorEspera);
+        mascote.classList.add("m-saindo");
+        soltarConfetes(caixa.left + caixa.width / 2, caixa.top + caixa.height * 0.3, 36, { direcao: -90, abertura: 110 });
+
+        mascote.temporizadorSaida = setTimeout(function() {
+            mascote.classList.remove("m-feliz", "m-saindo");
+        }, 480);
+    }
+
+    function aoCicloCompleto(evento) {
+        if (evento.target === mascote && evento.animationName === "m-pulinho") {
+            iniciarSaida();
+        }
+    }
+
+    mascote.cancelarEspera = function() {
+        mascote.removeEventListener("animationiteration", aoCicloCompleto);
+        clearTimeout(mascote.temporizadorEspera);
+    };
+
+    mascote.addEventListener("animationiteration", aoCicloCompleto);
+    mascote.temporizadorEspera = setTimeout(iniciarSaida, 900);
+}
+
+// Clique no mascote: ele fica feliz, de óculos escuros, e faz malabarismo com moedinhas
+document.addEventListener("click", function(evento) {
+    const mascote = evento.target.closest(".mascote");
+
+    if (!mascote) {
+        return;
+    }
+
+    if (mascote.cancelarEspera) {
+        mascote.cancelarEspera();
+    }
+
+    clearTimeout(mascote.temporizadorSaida);
+    mascote.classList.remove("m-saindo");
+    mascote.classList.add("m-feliz");
+    clearTimeout(mascote.temporizadorFeliz);
+    mascote.temporizadorFeliz = setTimeout(function() {
+        encerrarFeliz(mascote);
+    }, 6000);
+});
+
+// 22.3 Painel Sobre: versão, atalhos, histórico, glossário e feedback
+document.querySelectorAll("[data-versao-texto]").forEach(function(el) {
+    el.textContent = "Versão " + VERSAO_APP;
+});
+
+(function montarChangelog() {
+    const lista = document.getElementById("lista-changelog");
+
+    CHANGELOG.forEach(function(versao, indice) {
+        const bloco = document.createElement("div");
+        bloco.className = "sb-versao" + (indice === 0 ? " atual" : "");
+
+        const topo = document.createElement("div");
+        topo.className = "sb-versao-topo";
+        topo.innerHTML = `<strong>v${versao.versao}</strong><span>${versao.titulo}</span><small>${versao.data}</small>`;
+
+        const itens = document.createElement("ul");
+        versao.itens.forEach(function(texto) {
+            const li = document.createElement("li");
+            li.textContent = texto;
+            itens.appendChild(li);
+        });
+
+        bloco.appendChild(topo);
+        bloco.appendChild(itens);
+        lista.appendChild(bloco);
+    });
+})();
+
+document.addEventListener("click", function(evento) {
+    const botao = evento.target.closest("[data-rolar]");
+
+    if (!botao) {
+        return;
+    }
+
+    const alvo = document.getElementById(botao.dataset.rolar);
+
+    if (alvo) {
+        alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+});
+
+document.getElementById("busca-glossario").addEventListener("input", function(evento) {
+    const termo = evento.target.value.trim().toLowerCase();
+    let achou = 0;
+
+    document.querySelectorAll("#lista-glossario details").forEach(function(item) {
+        const bate = item.textContent.toLowerCase().includes(termo);
+
+        item.hidden = !bate;
+
+        if (termo && bate) {
+            item.open = true;
+        } else if (!termo) {
+            item.open = false;
+        }
+
+        if (bate) {
+            achou++;
+        }
+    });
+
+    document.getElementById("glossario-vazio").hidden = achou > 0;
+});
+
+const formFeedback = document.getElementById("form-feedback");
+const botaoEnviarFeedback = formFeedback.querySelector('button[type="submit"]');
+const COR_FEEDBACK = { "Sugestão": 0xF0B93B, "Problema": 0xFB7185, "Elogio": 0x34D399 };
+
+formFeedback.addEventListener("submit", async function(evento) {
+    evento.preventDefault();
+
+    const mensagem = document.getElementById("mensagem-feedback").value.trim();
+    const tipo = document.querySelector('input[name="tipo-feedback"]:checked').value;
+
+    if (!mensagem) {
+        mostrarAviso("Escreva uma mensagem antes de enviar.");
+        return;
+    }
+
+    if (!DISCORD_WEBHOOK) {
+        mostrarAviso("O envio de feedback ainda não foi configurado. Cole o link do webhook do Discord em DISCORD_WEBHOOK no arquivo JavaScript.");
+        return;
+    }
+
+    // Evita spam: no máximo 1 mensagem por minuto neste aparelho
+    let ultimoEnvio = 0;
+
+    try {
+        ultimoEnvio = Number(localStorage.getItem("ultimoFeedback")) || 0;
+    } catch (erro) {
+        ultimoEnvio = 0;
+    }
+
+    if (Date.now() - ultimoEnvio < 60000) {
+        mostrarAviso("Você acabou de enviar uma mensagem. Aguarde um minuto para enviar outra.");
+        return;
+    }
+
+    botaoEnviarFeedback.disabled = true;
+
+    try {
+        const resposta = await fetch(DISCORD_WEBHOOK, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: "Feedback do app",
+                embeds: [{
+                    title: `${tipo} • v${VERSAO_APP}`,
+                    description: mensagem.slice(0, 1000),
+                    color: COR_FEEDBACK[tipo],
+                    fields: [{
+                        name: "Aparelho",
+                        value: window.matchMedia("(max-width: 899px)").matches ? "Celular" : "Computador",
+                        inline: true
+                    }],
+                    timestamp: new Date().toISOString()
+                }]
+            })
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Falha no envio");
+        }
+
+        try {
+            localStorage.setItem("ultimoFeedback", String(Date.now()));
+        } catch (erro) {
+            // Sem armazenamento: apenas não limita os envios
+        }
+
+        formFeedback.reset();
+        mostrarAviso("Mensagem enviada com sucesso! Obrigado por ajudar a melhorar o app.", "sucesso");
+    } catch (erro) {
+        mostrarAviso("Não foi possível enviar agora. Verifique a internet e tente de novo.", "erro");
+    } finally {
+        botaoEnviarFeedback.disabled = false;
+    }
+});
+
+// 22.4 Botões "Sobre" (menu lateral e cabeçalho do celular)
+(function criarBotoesSobre() {
+    const item = {
+        id: "sobre",
+        rotulo: "Sobre",
+        icone: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'
+    };
+
+    const rodape = document.querySelector(".menu-rodape");
+    const botaoMenu = criarBotaoMenu(item, "menu-item menu-sobre");
+
+    rodape.insertBefore(botaoMenu, rodape.firstChild);
+
+    const cabecalho = document.querySelector("header");
+    const botaoCabecalho = criarBotaoMenu(item, "botao-tema botao-sobre");
+
+    botaoCabecalho.setAttribute("aria-label", "Sobre o app");
+    cabecalho.querySelector(".header-acoes").insertBefore(botaoCabecalho, cabecalho.querySelector(".botao-tema"));
+})();
+
+// 22.5 Tutorial de boas-vindas (abre sozinho na primeira visita)
+const PASSOS_TUTORIAL = [
+    {
+        pose: "acenar",
+        titulo: "Oi! Eu sou o Bufunfa 👋",
+        texto: "Vou te mostrar o app em menos de 1 minuto. É rapidinho, prometo!"
+    },
+    {
+        alvo: "#inicio .painel-card.col-2",
+        pose: "apontar",
+        titulo: "Seu saldo, num relance",
+        texto: "Aqui você vê o saldo acumulado e o que sobra no mês. O olhinho esconde os valores quando tiver gente por perto."
+    },
+    {
+        alvo: "#botao-abrir-receita",
+        pose: "moeda",
+        titulo: "Registre o que entra",
+        texto: "Use este botão sempre que receber dinheiro. Dá para ajustar o valor do mês depois."
+    },
+    {
+        alvo: "#inicio .resumo-despesas",
+        pose: "apontar",
+        titulo: "Receitas e despesas",
+        texto: "Toque em um dos dois cards para ver, item por item, o que forma o total do mês."
+    },
+    {
+        alvo: "#card-vencimentos",
+        pose: "apontar",
+        titulo: "Nada de esquecer conta",
+        texto: "Os vencimentos do mês aparecem aqui, com o status de pago ou pendente. Dá para expandir o calendário."
+    },
+    {
+        alvo: "#card-cotacao",
+        pose: "apontar",
+        titulo: "Cotação de moedas",
+        texto: "Acompanhe o dólar, o euro e outras moedas sem sair do app."
+    },
+    {
+        menu: "gastos",
+        pose: "apontar",
+        titulo: "Suas despesas",
+        texto: "Cadastre gastos avulsos, recorrentes ou parcelados no cartão, e pause as recorrentes quando precisar."
+    },
+    {
+        menu: "planejamento",
+        pose: "apontar",
+        titulo: "Metas",
+        texto: "Defina objetivos e acompanhe o progresso de cada um."
+    },
+    {
+        menu: "reserva-emergencia",
+        pose: "apontar",
+        titulo: "Reserva e investimentos",
+        texto: "Guarde para os imprevistos, cadastre seus investimentos e simule quanto eles podem render."
+    },
+    {
+        menu: "relatorios",
+        pose: "apontar",
+        titulo: "Relatórios e comparativo",
+        texto: "Veja gráficos do seu mês e compare períodos para entender como o dinheiro anda."
+    },
+    {
+        menu: "backup",
+        pose: "apontar",
+        titulo: "Guarde seus dados",
+        texto: "Tudo fica salvo neste aparelho. Faça backup de vez em quando para não perder nada."
+    },
+    {
+        menu: "sobre",
+        pose: "acenar",
+        final: true,
+        titulo: "Pronto! Qualquer dúvida…",
+        texto: "Se quiser rever este tutorial, é só abrir o painel Sobre. Lá também tem a nossa história, o glossário e as novidades."
+    }
+];
+
+const tutorial = {
+    indice: 0,
+    aberto: false,
+    origemSobre: false,
+    fechando: false,
+    raiz: null
+};
+
+function alvoVisivel(seletor) {
+    return Array.from(document.querySelectorAll(seletor)).find(function(el) {
+        const caixa = el.getBoundingClientRect();
+        return caixa.width > 0 && caixa.height > 0;
+    }) || null;
+}
+
+function elementoDoPasso(passo) {
+    if (passo.menu) {
+        return alvoVisivel(`[data-secao="${passo.menu}"]`);
+    }
+
+    return passo.alvo ? alvoVisivel(passo.alvo) : null;
+}
+
+function montarTutorial() {
+    const raiz = document.createElement("div");
+
+    raiz.id = "tutorial";
+    raiz.hidden = true;
+    raiz.setAttribute("role", "dialog");
+    raiz.setAttribute("aria-modal", "true");
+    raiz.setAttribute("aria-label", "Tutorial de boas-vindas");
+    raiz.innerHTML = `
+        <div class="tut-foco" id="tut-foco"></div>
+        <div class="tut-balao" id="tut-balao">
+            <div class="tut-corpo">
+                <div class="tut-mascote" id="tut-mascote"></div>
+                <div class="tut-texto">
+                    <span class="tut-passo" id="tut-passo"></span>
+                    <h3 id="tut-titulo"></h3>
+                    <p id="tut-conteudo"></p>
+                </div>
+            </div>
+            <div class="tut-pontos" id="tut-pontos"></div>
+            <div class="tut-acoes">
+                <button type="button" class="tut-pular" id="tut-pular">Pular</button>
+                <span class="tut-espaco"></span>
+                <button type="button" class="tut-voltar" id="tut-voltar">Voltar</button>
+                <button type="button" class="tut-proximo" id="tut-proximo">Próximo</button>
+            </div>
+        </div>`;
+
+    document.body.appendChild(raiz);
+    tutorial.raiz = raiz;
+
+    document.getElementById("tut-pular").addEventListener("click", function() {
+        fecharTutorial(false);
+    });
+    document.getElementById("tut-voltar").addEventListener("click", function() {
+        if (tutorial.indice > 0) {
+            tutorial.indice--;
+            mostrarPassoTutorial();
+        }
+    });
+    document.getElementById("tut-proximo").addEventListener("click", function() {
+        if (tutorial.indice >= PASSOS_TUTORIAL.length - 1) {
+            fecharTutorial(true);
+        } else {
+            tutorial.indice++;
+            mostrarPassoTutorial();
+        }
+    });
+}
+
+function mostrarPassoTutorial() {
+    const passo = PASSOS_TUTORIAL[tutorial.indice];
+    const total = PASSOS_TUTORIAL.length - 1;
+    const balao = document.getElementById("tut-balao");
+    const foco = document.getElementById("tut-foco");
+    const alvo = elementoDoPasso(passo);
+    const centralizado = !alvo;
+
+    document.getElementById("tut-titulo").textContent = passo.titulo;
+    document.getElementById("tut-conteudo").textContent = passo.texto;
+    document.getElementById("tut-passo").textContent = tutorial.indice === 0 || passo.final ? "" : `Passo ${tutorial.indice} de ${total - 1}`;
+    document.getElementById("tut-passo").hidden = tutorial.indice === 0 || passo.final;
+    document.getElementById("tut-voltar").style.visibility = tutorial.indice > 0 ? "visible" : "hidden";
+    document.getElementById("tut-pular").style.visibility = passo.final ? "hidden" : "visible";
+    document.getElementById("tut-proximo").textContent = passo.final ? "Concluir" : (tutorial.indice === 0 ? "Vamos lá!" : "Próximo");
+    document.getElementById("tut-pontos").innerHTML = PASSOS_TUTORIAL.map(function(_, i) {
+        return `<i class="${i === tutorial.indice ? "ativo" : ""}"></i>`;
+    }).join("");
+
+    document.getElementById("tut-mascote").innerHTML = criarMascote(passo.pose);
+    balao.classList.toggle("centro", centralizado);
+    foco.classList.toggle("sem", centralizado);
+
+    const largura = window.innerWidth;
+    const altura = window.innerHeight;
+
+    if (centralizado) {
+        foco.style.cssText = "left:50%;top:50%;width:0;height:0";
+        balao.style.left = Math.max(12, (largura - balao.offsetWidth) / 2) + "px";
+        balao.style.top = Math.max(12, (altura - balao.offsetHeight) / 2) + "px";
+        return;
+    }
+
+    alvo.scrollIntoView({ block: "center", behavior: "auto" });
+
+    const caixa = alvo.getBoundingClientRect();
+    const folga = 6;
+
+    foco.style.left = (caixa.left - folga) + "px";
+    foco.style.top = (caixa.top - folga) + "px";
+    foco.style.width = (caixa.width + folga * 2) + "px";
+    foco.style.height = (caixa.height + folga * 2) + "px";
+
+    const larguraBalao = balao.offsetWidth;
+    const alturaBalao = balao.offsetHeight;
+    let x = caixa.right + 18;
+    let y = caixa.top + caixa.height / 2 - alturaBalao / 2;
+
+    if (x + larguraBalao > largura - 12) {
+        // Não cabe ao lado: tenta embaixo, depois em cima, senão fixa no rodapé
+        x = Math.min(largura - larguraBalao - 12, Math.max(12, caixa.left));
+        y = caixa.bottom + 18;
+
+        if (y + alturaBalao > altura - 12) {
+            y = caixa.top - alturaBalao - 18;
+        }
+
+        if (y < 12) {
+            y = altura - alturaBalao - 16;
+        }
+    }
+
+    x = Math.max(12, x);
+    y = Math.max(12, Math.min(y, altura - alturaBalao - 12));
+    balao.style.left = x + "px";
+    balao.style.top = y + "px";
+
+    // O flipper do mascote aponta na direção do elemento destacado
+    const dx = (caixa.left + caixa.width / 2) - (x + 45);
+    const dy = (caixa.top + caixa.height / 2) - (y + 55);
+    const graus = Math.max(25, Math.min(170, Math.atan2(-dx, dy) * 180 / Math.PI));
+
+    balao.style.setProperty("--ang-braco", graus + "deg");
+}
+
+function abrirTutorial(aPartirDoSobre) {
+    if (!tutorial.raiz) {
+        montarTutorial();
+    }
+
+    tutorial.origemSobre = !!aPartirDoSobre;
+    tutorial.indice = 0;
+    tutorial.aberto = true;
+    tutorial.fechando = false;
+    tutorial.raiz.classList.remove("saindo");
+
+    abrirSecao("inicio", true);
+    tutorial.raiz.hidden = false;
+    document.body.classList.add("tutorial-aberto");
+    mostrarPassoTutorial();
+    document.getElementById("tut-proximo").focus();
+}
+
+function fecharTutorial(comConfete) {
+    if (tutorial.fechando || !tutorial.aberto) {
+        return;
+    }
+
+    const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    tutorial.fechando = true;
+    tutorial.aberto = false;
+
+    try {
+        localStorage.setItem("tutorialVisto", "1");
+    } catch (erro) {
+        // Sem armazenamento: o tutorial pode aparecer de novo na próxima visita
+    }
+
+    if (comConfete === true) {
+        const caixa = document.getElementById("tut-balao").getBoundingClientRect();
+        const largura = window.innerWidth;
+        const altura = window.innerHeight;
+
+        soltarConfetes(caixa.left + caixa.width / 2, caixa.top + caixa.height * 0.25, 60, { direcao: -90, abertura: 120 });
+        soltarConfetes(0, altura, 45, { direcao: -55, abertura: 50, potencia: 1.5 });
+        soltarConfetes(largura, altura, 45, { direcao: -125, abertura: 50, potencia: 1.5 });
+    }
+
+    tutorial.raiz.classList.add("saindo");
+
+    setTimeout(function() {
+        tutorial.raiz.hidden = true;
+        tutorial.raiz.classList.remove("saindo");
+        tutorial.fechando = false;
+        document.body.classList.remove("tutorial-aberto");
+
+        if (tutorial.origemSobre) {
+            abrirSecao("sobre", true);
+        }
+    }, reduzido ? 0 : 400);
+}
+
+document.getElementById("botao-rever-tutorial").addEventListener("click", function() {
+    abrirTutorial(true);
+});
+
+window.addEventListener("resize", function() {
+    if (tutorial.aberto) {
+        mostrarPassoTutorial();
+    }
+});
+
+document.addEventListener("keydown", function(evento) {
+    if (!tutorial.aberto) {
+        return;
+    }
+
+    if (evento.key === "Escape") {
+        fecharTutorial(false);
+    } else if (evento.key === "ArrowRight" || evento.key === "Enter") {
+        document.getElementById("tut-proximo").click();
+    } else if (evento.key === "ArrowLeft") {
+        document.getElementById("tut-voltar").click();
+    }
+});
+
+// Primeira visita: o tutorial abre sozinho (depois só pelo botão do Sobre)
+(function iniciarTutorialNaPrimeiraVisita() {
+    let visto = false;
+
+    try {
+        visto = localStorage.getItem("tutorialVisto") === "1";
+    } catch (erro) {
+        visto = false;
+    }
+
+    if (!visto) {
+        setTimeout(function() {
+            abrirTutorial(false);
+        }, 700);
+    }
 })();
 
 // Sempre que a página é aberta ou recarregada (F5), começa no Início

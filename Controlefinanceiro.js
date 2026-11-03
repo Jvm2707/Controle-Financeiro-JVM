@@ -274,6 +274,11 @@ function criarBotaoIcone(icone, rotulo, aoClicar) {
 
     botao.type = "button";
     botao.className = "botao-icone";
+
+    // Editar e excluir ganham um estilo próprio (cor do ícone e da borda)
+    if (icone === "editar" || icone === "excluir") {
+        botao.classList.add("botao-icone-" + icone);
+    }
     botao.title = rotulo;
     botao.setAttribute("aria-label", rotulo);
     botao.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONES[icone]}</svg>`;

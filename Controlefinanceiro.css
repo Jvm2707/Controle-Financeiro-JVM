@@ -3590,20 +3590,38 @@ body.modo-claro .selo-pausada { color: #2563eb; }
     text-decoration: line-through;
 }
 
+/* Botões de ação: fundo cinza, ícone e borda em uma cor própria */
 .botao-icone.botao-pausar-ativo {
-    color: var(--dourado);
-    background-color: rgba(240, 185, 59, 0.1);
-    border: 1px solid rgba(240, 185, 59, 0.45);
+    --cor-acao: var(--texto-2);
 }
 
 .botao-icone.botao-retomar {
-    color: var(--sucesso);
-    background-color: rgba(52, 211, 153, 0.1);
-    border: 1px solid rgba(52, 211, 153, 0.45);
+    --cor-acao: var(--sucesso);
+}
+
+.botao-icone.botao-icone-editar {
+    --cor-acao: var(--dourado);
+}
+
+.botao-icone.botao-icone-excluir {
+    --cor-acao: var(--erro);
+}
+
+.botao-icone.botao-pausar-ativo,
+.botao-icone.botao-retomar,
+.botao-icone.botao-icone-editar,
+.botao-icone.botao-icone-excluir {
+    color: var(--cor-acao);
+    background-color: var(--icone);
+    border: 1px solid var(--cor-acao);
 }
 
 .botao-icone.botao-pausar-ativo:hover,
-.botao-icone.botao-retomar:hover {
+.botao-icone.botao-retomar:hover,
+.botao-icone.botao-icone-editar:hover,
+.botao-icone.botao-icone-excluir:hover {
+    color: var(--cor-acao);
+    background-color: var(--borda);
     filter: brightness(1.2);
 }
 

@@ -3331,3 +3331,260 @@ select.cs-nativo {
 .barra-progresso-preenchimento {
     background: linear-gradient(90deg, #5b21b6 0%, #7c3aed 30%, #a855f7 58%, var(--dourado) 100%);
 }
+
+
+/* ==========================================================
+   26. Janelas de aviso, confirmação e edição
+   ========================================================== */
+.dialogo-fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 3500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    background-color: rgba(0, 0, 0, 0.62);
+    backdrop-filter: blur(3px);
+
+    animation: dialogo-fundo-entrada 0.18s ease;
+}
+
+body.dialogo-ativo {
+    overflow: hidden;
+}
+
+.dialogo {
+    width: min(420px, 100%);
+    max-height: calc(100vh - 32px);
+    padding: 20px;
+
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+
+    overflow-y: auto;
+    animation: dialogo-entrada 0.2s ease;
+}
+
+.dialogo-topo {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.dialogo-icone {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+
+    color: var(--dourado);
+    background-color: rgba(240, 185, 59, 0.1);
+    border: 1px solid rgba(240, 185, 59, 0.4);
+    border-radius: 12px;
+}
+
+.dialogo-icone svg {
+    width: 22px;
+    height: 22px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
+.dialogo-icone.tom-perigo,
+.dialogo-icone.tom-erro {
+    color: var(--erro);
+    background-color: rgba(251, 113, 133, 0.1);
+    border-color: rgba(251, 113, 133, 0.4);
+}
+
+.dialogo-icone.tom-sucesso {
+    color: var(--sucesso);
+    background-color: rgba(52, 211, 153, 0.1);
+    border-color: rgba(52, 211, 153, 0.4);
+}
+
+.dialogo-icone.tom-pausa {
+    color: var(--roxo);
+    background-color: rgba(139, 124, 246, 0.12);
+    border-color: rgba(139, 124, 246, 0.45);
+}
+
+.dialogo-textos {
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.dialogo-titulo {
+    margin: 0 0 6px;
+
+    color: var(--texto);
+    font-size: 1.05rem;
+}
+
+.dialogo-mensagem {
+    margin: 0;
+
+    color: var(--texto-2);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.dialogo-campos {
+    margin: 16px 0 0;
+    padding: 0;
+
+    border: 0;
+}
+
+.dialogo-campos label {
+    margin: 4px 0 6px;
+
+    font-size: 0.8rem;
+}
+
+.dialogo-campos input,
+.dialogo-campos select,
+.dialogo-campos .dp-botao,
+.dialogo-campos .cs-botao {
+    margin-bottom: 12px;
+
+    background-color: var(--fundo);
+}
+
+.dialogo-erro {
+    display: none;
+    margin: 0 0 4px;
+
+    color: var(--erro);
+    font-size: 0.8rem;
+}
+
+.dialogo-erro.visivel {
+    display: block;
+}
+
+.dialogo-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.dialogo-botao {
+    width: auto;
+    min-height: 42px;
+    margin: 0;
+    padding: 10px 20px;
+
+    border-radius: 10px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.dialogo-cancelar {
+    color: var(--texto);
+    background-color: transparent;
+    border: 1px solid var(--borda);
+}
+
+.dialogo-cancelar:hover {
+    background-color: var(--fundo);
+    filter: none;
+}
+
+.dialogo-confirmar {
+    color: var(--texto-botao);
+    background-color: var(--dourado);
+    border: 1px solid var(--dourado);
+}
+
+.dialogo-confirmar.perigo {
+    color: #2a0710;
+    background-color: var(--erro);
+    border-color: var(--erro);
+}
+
+@media (max-width: 420px) {
+    .dialogo-acoes {
+        flex-direction: column-reverse;
+    }
+
+    .dialogo-botao {
+        width: 100%;
+    }
+}
+
+@keyframes dialogo-fundo-entrada {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes dialogo-entrada {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ==========================================================
+   27. Despesas pausadas
+   ========================================================== */
+.selo-pausada { color: #60a5fa; }
+body.modo-claro .selo-pausada { color: #2563eb; }
+.selo-pulada { color: var(--texto-2); }
+
+.linha-pausada .linha-info,
+.linha-pausada .linha-direita .linha-valor {
+    opacity: 0.55;
+}
+
+.linha-pausada .linha-valor {
+    text-decoration: line-through;
+}
+
+/* Botões de ação: fundo cinza, ícone e borda em uma cor própria */
+.botao-icone.botao-pausar-ativo {
+    --cor-acao: var(--texto-2);
+}
+
+.botao-icone.botao-retomar {
+    --cor-acao: var(--sucesso);
+}
+
+.botao-icone.botao-icone-editar {
+    --cor-acao: var(--dourado);
+}
+
+.botao-icone.botao-icone-excluir {
+    --cor-acao: var(--erro);
+}
+
+.botao-icone.botao-pausar-ativo,
+.botao-icone.botao-retomar,
+.botao-icone.botao-icone-editar,
+.botao-icone.botao-icone-excluir {
+    color: var(--cor-acao);
+    background-color: var(--icone);
+    border: 1px solid var(--cor-acao);
+}
+
+.botao-icone.botao-pausar-ativo:hover,
+.botao-icone.botao-retomar:hover,
+.botao-icone.botao-icone-editar:hover,
+.botao-icone.botao-icone-excluir:hover {
+    color: var(--cor-acao);
+    background-color: var(--borda);
+    filter: brightness(1.2);
+}

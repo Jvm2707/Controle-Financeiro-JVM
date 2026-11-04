@@ -4942,17 +4942,17 @@ header .header-acoes {
 }
 
 .mascote.m-feliz.m-saindo .m-braco-e {
-    animation: m-sai-e 0.45s ease-in-out forwards;
+    animation: m-sai-e 1s ease-in-out forwards;
 }
 
 .mascote.m-feliz.m-saindo .m-braco-d {
-    animation: m-sai-d 0.45s ease-in-out forwards;
+    animation: m-sai-d 1s ease-in-out forwards;
 }
 
 .mascote.m-feliz.m-saindo .m-oculos,
 .mascote.m-feliz.m-saindo .m-sorriso,
 .mascote.m-feliz.m-saindo .m-malabarismo {
-    animation: m-some 0.4s ease-out forwards;
+    animation: m-some 0.5s ease-out forwards;
 }
 
 @keyframes m-sai-e {
@@ -4968,6 +4968,30 @@ header .header-acoes {
 @keyframes m-some {
     from { opacity: 1; }
     to   { opacity: 0; }
+}
+
+/* Animações do mascote (giro, olhar curioso, dança e palmas) */
+.mascote .m-interroga,
+.mascote .m-boca-seria,
+.mascote .m-topo,
+.mascote .m-dab-e,
+.mascote .m-dab-d,
+.mascote .m-moicano,
+.mascote .m-lingua,
+.mascote .m-lingua-fora,
+.mascote .m-tontura {
+    opacity: 0;
+}
+
+.mascote.m-a-danca .m-sorriso {
+    display: block;
+    opacity: 0;
+}
+
+.mascote.m-anim:not(.m-feliz) .m-tablet,
+.mascote.m-anim:not(.m-feliz) .m-moeda {
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 /* Confetes */

@@ -7359,9 +7359,10 @@ const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1567312389039329410/1i
 function criarMascote(pose) {
     return `
 <svg class="mascote m-${pose}" viewBox="-12 -12 184 214" aria-hidden="true">
-    <ellipse cx="80" cy="191" rx="50" ry="6" fill="rgba(0,0,0,.35)"/>
-    <ellipse cx="40" cy="183" rx="32" ry="6" transform="rotate(-8 40 183)" fill="#4f4336"/>
-    <ellipse cx="120" cy="183" rx="32" ry="6" transform="rotate(8 120 183)" fill="#4f4336"/>
+    <g class="m-w-tudo" style="transform-origin:80px 188px">
+    <ellipse class="m-sombra" cx="80" cy="191" rx="50" ry="6" fill="rgba(0,0,0,.35)"/>
+    <g class="m-pe-e" style="transform-origin:40px 183px"><ellipse cx="40" cy="183" rx="32" ry="6" transform="rotate(-8 40 183)" fill="#4f4336"/></g>
+    <g class="m-pe-d" style="transform-origin:120px 183px"><ellipse cx="120" cy="183" rx="32" ry="6" transform="rotate(8 120 183)" fill="#4f4336"/></g>
     <g class="m-corpo">
         <path d="M52 80 Q38 132 46 177 Q80 192 114 177 Q122 132 108 80 Z" fill="#6a5c4b"/>
         <ellipse cx="80" cy="136" rx="27" ry="42" fill="#a99371"/>
@@ -7382,6 +7383,7 @@ function criarMascote(pose) {
             <path d="M111 167 l4 -5 l3 3 l5 -7" fill="none" stroke="#7a5608" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
     </g>
+    <g class="m-w-cabeca" style="transform-origin:80px 92px">
     <g class="m-cabeca" style="transform-origin:80px 92px">
         <ellipse cx="49" cy="60" rx="5" ry="7" fill="#5a4d3e"/>
         <ellipse cx="111" cy="60" rx="5" ry="7" fill="#5a4d3e"/>
@@ -7389,7 +7391,8 @@ function criarMascote(pose) {
         <ellipse cx="80" cy="78" rx="15" ry="14" fill="#8d7b64"/>
         <ellipse cx="80" cy="71" rx="6.5" ry="4.6" fill="#1d2024"/>
         <path class="m-boca" d="M80 75 v5" stroke="#2a2825" stroke-width="2" stroke-linecap="round"/>
-        <path class="m-boca" d="M72 86 Q80 81 88 86" fill="none" stroke="#2a2825" stroke-width="2.2" stroke-linecap="round"/>
+        <path class="m-boca m-boca-curva" d="M72 86 Q80 81 88 86" fill="none" stroke="#2a2825" stroke-width="2.2" stroke-linecap="round"/>
+        <path class="m-boca-seria" d="M72 87.5 Q80 83 88 87.5" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
         <g class="m-sorriso">
             <path d="M80 75 v4" stroke="#2a2825" stroke-width="2" stroke-linecap="round"/>
             <path d="M70 83 Q80 95 90 83 Q80 88 70 83 Z" fill="#2a2825" stroke="#2a2825" stroke-width="2" stroke-linejoin="round"/>
@@ -7401,13 +7404,15 @@ function criarMascote(pose) {
             <path d="M64 74 L44 70"/><path d="M64 77 L43 78"/><path d="M65 80 L47 86"/>
             <path d="M96 74 L116 70"/><path d="M96 77 L117 78"/><path d="M95 80 L113 86"/>
         </g>
+        <g class="m-w-olhos" style="transform-origin:80px 56px">
         <g class="m-olhos" style="transform-origin:80px 56px">
             <ellipse cx="66" cy="56" rx="4.4" ry="4.8" fill="#16181b"/>
             <ellipse cx="94" cy="56" rx="4.4" ry="4.8" fill="#16181b"/>
             <circle cx="67.4" cy="54.5" r="1.4" fill="#fff"/><circle cx="95.4" cy="54.5" r="1.4" fill="#fff"/>
         </g>
-        <path class="m-sobr" d="M59 52 Q66 47 73 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
-        <path class="m-sobr" d="M87 52 Q94 47 101 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
+        </g>
+        <path class="m-sobr" style="transform-origin:66px 50px" d="M59 52 Q66 47 73 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
+        <path class="m-sobr" style="transform-origin:94px 50px" d="M87 52 Q94 47 101 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"/>
         <g class="m-oculos">
             <path d="M52 53 L58 53 M102 53 L108 53" stroke="#0c0d10" stroke-width="2.4" stroke-linecap="round"/>
             <path d="M58 49 H76 a2 2 0 0 1 2 2 v4 a8 8 0 0 1 -8 8 h-4 a8 8 0 0 1 -8 -8 v-4 a2 2 0 0 1 2 -2 Z" fill="#0c0d10"/>
@@ -7416,17 +7421,93 @@ function criarMascote(pose) {
             <path d="M61 52 l5 -0.5 M85 52 l5 -0.5" stroke="#F0B93B" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
             <path d="M63 56 l3 -.3 M87 56 l3 -.3" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
         </g>
+        <g class="m-moicano" fill="none" stroke-linecap="round" style="transform-origin:80px 36px">
+            <path d="M69 37 Q67 30 63 26" stroke="#8B5CF6" stroke-width="2.4"/>
+            <path d="M73 35.5 Q72 27 70 20" stroke="#A78BFA" stroke-width="2.2"/>
+            <path d="M77 34.5 Q77 25 76 17" stroke="#7C3AED" stroke-width="2.4"/>
+            <path d="M81 34 Q82 24 84 16" stroke="#8B5CF6" stroke-width="2.4"/>
+            <path d="M85 34.5 Q88 27 91 21" stroke="#A78BFA" stroke-width="2.2"/>
+            <path d="M89 36 Q93 31 97 29" stroke="#7C3AED" stroke-width="2.2"/>
+            <path d="M75 40 l1 -4 M83 41 l-1 -4 M79 45 l0 -3 M71 44 l-1.5 -2.5 M88 43 l1.5 -2.5" stroke="#9F7AEA" stroke-width="1.6"/>
+        </g>
+        <g class="m-lingua" style="transform-origin:80px 88px">
+            <path d="M80 75 V83" stroke="#2a2825" stroke-width="2" stroke-linecap="round"/>
+            <path d="M61 81 Q80 114 99 81 Q80 90 61 81 Z" fill="#2a1a1a" stroke="#2a2825" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M73 87 Q80 90 87 87" fill="none" stroke="#f4efe6" stroke-width="2.4" stroke-linecap="round"/>
+        </g>
+        <g class="m-chapeu" style="transform-origin:80px 40px">
         <ellipse cx="80" cy="40" rx="42" ry="9" fill="#0f1114"/>
         <rect x="54" y="6" width="52" height="34" rx="4" fill="#15181c"/>
         <ellipse cx="80" cy="7" rx="26" ry="5.5" fill="#20242a"/>
         <rect x="54" y="29" width="52" height="7" fill="#c8322f"/>
         <text x="80" y="24" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="7.6" textLength="42" lengthAdjust="spacingAndGlyphs" fill="#F0B93B">BUFUNFA</text>
         <path d="M95 13 l4 -4 l3 3 l5 -6" fill="none" stroke="#F0B93B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+    </g>
     </g>
     <g class="m-gravata">
         <path d="M80 100 L61 91 L61 109 Z" fill="#101215"/>
         <path d="M80 100 L99 91 L99 109 Z" fill="#101215"/>
         <rect x="75" y="94" width="10" height="12" rx="3" fill="#1b1e23"/>
+    </g>
+    <g class="m-w-lingua" style="transform-origin:80px 92px">
+    <g class="m-cabeca" style="transform-origin:80px 92px">
+        <g class="m-lingua-fora" style="transform-origin:80px 88px">
+            <path d="M72 92 Q70 110 79.5 114 Q90 110 88 92 Q80 96 72 92 Z" fill="#ff8fa3" stroke="#e5607a" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M79.8 97 L79.8 108" stroke="#e5607a" stroke-width="1.2" stroke-linecap="round"/>
+        </g>
+    </g>
+    </g>
+    <g class="m-dab-e" style="transform-origin:54px 100px">
+        <path d="M49.8 95 L84.2 63.1 A9 9 0 0 1 95.8 76.9 L58.2 105 Z" fill="#5a4d3e"/>
+    </g>
+    <g class="m-dab-d" style="transform-origin:106px 100px">
+        <path d="M110.2 95 L75.8 63.1 A9 9 0 0 0 64.2 76.9 L101.8 105 Z" fill="#5a4d3e"/>
+    </g>
+    </g>
+    <g class="m-tontura" style="transform-origin:80px 8px">
+        <g transform="translate(80 8) scale(1.5 .5)">
+            <g class="m-tontura-gira">
+                <path transform="translate(40 0) scale(1.1)" d="M0 -6 L2 -2 L6 0 L2 2 L0 6 L-2 2 L-6 0 L-2 -2 Z" fill="#F0B93B"/>
+                <path transform="translate(-20 34.6) scale(1.1)" d="M0 -6 L2 -2 L6 0 L2 2 L0 6 L-2 2 L-6 0 L-2 -2 Z" fill="#F0B93B"/>
+                <path transform="translate(-20 -34.6) scale(1.1)" d="M0 -6 L2 -2 L6 0 L2 2 L0 6 L-2 2 L-6 0 L-2 -2 Z" fill="#fff"/>
+            </g>
+        </g>
+    </g>
+    <g class="m-topo" style="transform-origin:80px 100px">
+        <g transform="translate(80 100) scale(0.85)">
+            <g class="m-topo-gira">
+                <g class="m-topo-ar" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2.4" stroke-linecap="round">
+                    <path d="M0 -88 A88 88 0 0 1 62 -62"/>
+                    <path d="M0 88 A88 88 0 0 1 -62 62"/>
+                    <path d="M88 0 A88 88 0 0 1 62 62" stroke-opacity=".18"/>
+                    <path d="M-88 0 A88 88 0 0 1 -62 -62" stroke-opacity=".18"/>
+                </g>
+                <g class="m-topo-tras">
+                    <g transform="translate(-68 -5)"><g class="m-th-e"><path d="M0 0 C-8 -3 -18 -6 -27 -4 C-31 -2 -31 3 -27 4 C-18 6 -8 3 0 0 Z" fill="#4f4336"/></g></g>
+                    <g transform="translate(-68 5)"><g class="m-th-d"><path d="M0 0 C-8 3 -18 6 -27 4 C-31 2 -31 -3 -27 -4 C-18 -6 -8 -3 0 0 Z" fill="#4f4336"/></g></g>
+                    <path d="M-72 -3 C-62 -8 -48 -13 -30 -17 C-22 -19 -14 -20.5 -2 -21 L-2 21 C-14 20.5 -22 19 -30 17 C-48 13 -62 8 -72 3 Z" fill="#6a5c4b"/>
+                    <path d="M-62 0 C-44 -3 -24 -4 -4 -4" fill="none" stroke="#8a7660" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+                </g>
+                <g class="m-topo-frente" style="transform-origin:-6px 0px">
+                    <g transform="translate(12 18)"><g class="m-tf-b"><path d="M-3 0 C4 4 9 16 6 28 C4 35 -3 35 -5 29 C-8 18 -6 6 -3 0 Z" fill="#5a4d3e"/></g></g>
+                    <g transform="translate(12 -18)"><g class="m-tf-a"><path d="M-3 0 C4 4 9 16 6 28 C4 35 -3 35 -5 29 C-8 18 -6 6 -3 0 Z" fill="#5a4d3e" transform="scale(1 -1)"/></g></g>
+                    <path d="M-12 -21 C4 -23 20 -22 30 -17 C38 -14 44 -12 48 -10 L48 10 C44 12 38 14 30 17 C20 22 4 23 -12 21 Z" fill="#6a5c4b"/>
+                    <path d="M-8 0 C10 -3 30 -3 46 0" fill="none" stroke="#8a7660" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+                    <ellipse cx="56" cy="0" rx="15" ry="12" fill="#6a5c4b"/>
+                    <circle cx="52" cy="0" r="21" fill="#101215"/>
+                    <circle cx="52" cy="0" r="21" fill="none" stroke="#2c3138" stroke-width="1.6"/>
+                    <circle cx="52" cy="0" r="13" fill="#1b1f25" stroke="#c8322f" stroke-width="2.6"/>
+                    <path d="M46 3 l4 -5 l3 3 l5 -6" fill="none" stroke="#F0B93B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M71 -4 L85 -10 M71 -1.5 L86 -3 M71 4 L85 10 M71 1.5 L86 3" stroke="#e4dccd" stroke-width="1.2" stroke-linecap="round" opacity=".85"/>
+                    <circle cx="75" cy="0" r="4.2" fill="#0c0d10"/>
+                </g>
+            </g>
+        </g>
+    </g>
+    <g class="m-interroga" style="transform-origin:138px 26px">
+        <circle cx="138" cy="26" r="15" fill="#F0B93B" stroke="#b9860f" stroke-width="2"/>
+        <text x="138" y="35" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="24" fill="#15181c">?</text>
     </g>
     <g class="m-malabarismo">
         <g class="m-mo m-mo1"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"/><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
@@ -7490,60 +7571,723 @@ function soltarConfetes(x, y, quantidade, opcoes) {
     }, maiorDuracao + 100);
 }
 
-// Fim do modo feliz: espera o fim do ciclo do pulinho (sem tranco), volta à pose suavemente e solta confetes
-function encerrarFeliz(mascote) {
-    if (!mascote.classList.contains("m-feliz") || mascote.classList.contains("m-saindo")) {
+// ----------------------------------------------------------
+// Animações do mascote (5 segundos cada, sorteadas ao clicar)
+// ----------------------------------------------------------
+// Todas começam e terminam na pose normal. As coreografias novas usam a Web Animations API:
+// os quadros sem 0% ou 100% "nascem" da pose atual (mesmo que o mascote esteja acenando)
+// e voltam para ela no fim, sem nenhum tranco.
+const DURACAO_ANIMACAO = 5000;
+const ANIMACOES_MASCOTE = ["malabarismo", "giro", "curioso", "danca", "palmas", "dab", "lingua"];
+const cicloMascote = { fila: [], ultima: null };
+
+// Sorteio sem repetição: embaralha todas e só recomeça quando todas já passaram.
+// Na virada de ciclo, a primeira nunca é igual à última do ciclo anterior.
+function sortearAnimacaoMascote() {
+    if (cicloMascote.fila.length === 0) {
+        const ordem = ANIMACOES_MASCOTE.slice();
+
+        for (let i = ordem.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+
+            [ordem[i], ordem[j]] = [ordem[j], ordem[i]];
+        }
+
+        if (ordem[0] === cicloMascote.ultima) {
+            const j = 1 + Math.floor(Math.random() * (ordem.length - 1));
+
+            [ordem[0], ordem[j]] = [ordem[j], ordem[0]];
+        }
+
+        cicloMascote.fila = ordem;
+    }
+
+    cicloMascote.ultima = cicloMascote.fila.shift();
+
+    return cicloMascote.ultima;
+}
+
+function msParaOffset(ms) {
+    return Math.min(1, Math.max(0, ms / DURACAO_ANIMACAO));
+}
+
+// Ajudantes das coreografias
+function animarParte(elementos, quadros, opcoes) {
+    const lista = elementos instanceof Element ? [elementos] : Array.from(elementos);
+    const config = Object.assign({ duration: DURACAO_ANIMACAO, easing: "linear", fill: "none" }, opcoes || {});
+
+    return lista.map(function(el) {
+        return el.animate(quadros, config);
+    });
+}
+
+function definirOrigem(el, origem, restaurar) {
+    const antes = el.style.transformOrigin;
+
+    el.style.transformOrigin = origem;
+    restaurar.push(function() {
+        el.style.transformOrigin = antes;
+    });
+}
+
+// Sobe e desce entre dois valores, a cada "passo" ms, de inicio a fim (os extremos ficam em "passo")
+function vaiEVem(inicio, fim, passo, valorA, valorB, faseInicial) {
+    const quadros = [];
+    let alterna = faseInicial === true;
+
+    for (let t = inicio; t <= fim; t += passo) {
+        quadros.push({ offset: msParaOffset(t), transform: alterna ? valorB : valorA, easing: "ease-in-out" });
+        alterna = !alterna;
+    }
+
+    return quadros;
+}
+
+const COREOGRAFIAS_MASCOTE = {
+    // Giro / breakdance: visto de cima, deitado de barriga para baixo, girando sem parar
+    // e alternando a nadadeira que "pisa" no chão (como no GIF do leão-marinho)
+    giro: function(m, restaurar) {
+        const tudo = m.querySelector(".m-w-tudo");
+        const cab = m.querySelector(".m-w-cabeca");
+        const INICIO = 450;
+        const FIM = 3000;
+        const ms = msParaOffset;
+        const T = function(sx, sy, rot) {
+            return `scale(${sx}, ${sy}) rotate(${rot}deg)`;
+        };
+        let anims = [];
+
+        definirOrigem(tudo, "80px 188px", restaurar);
+        definirOrigem(cab, "80px 98px", restaurar);
+
+        // De pé -> "plof": o corpo achata e some, enquanto a vista de cima aparece.
+        // Depois do giro ele se levanta cambaleando, bem tonto.
+        anims = anims.concat(animarParte(tudo, [
+            { offset: 0, transform: T(1, 1, 0), opacity: 1, easing: "ease-in" },
+            { offset: ms(320), transform: T(1.15, 0.15, 0), opacity: 0 },
+            { offset: ms(3250), transform: T(1.15, 0.15, 0), opacity: 0, easing: "ease-out" },
+            { offset: ms(3350), transform: T(1.1, 0.4, -6), opacity: 1, easing: "ease-out" },
+            { offset: ms(3750), transform: T(1, 1, 8), opacity: 1, easing: "ease-in-out" },
+            { offset: ms(4050), transform: T(1, 1, -9), opacity: 1, easing: "ease-in-out" },
+            { offset: ms(4350), transform: T(1, 1, 6), opacity: 1, easing: "ease-in-out" },
+            { offset: ms(4650), transform: T(1, 1, -4), opacity: 1, easing: "ease-in-out" },
+            { offset: ms(4850), transform: T(1, 1, 1.5), opacity: 1, easing: "ease-in-out" },
+            { offset: 1, transform: T(1, 1, 0), opacity: 1 }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-topo"), [
+            { offset: 0, transform: "scale(0.45)", opacity: 0 },
+            { offset: ms(120), transform: "scale(0.45)", opacity: 0, easing: "ease-out" },
+            { offset: ms(INICIO), transform: "scale(1)", opacity: 1 },
+            { offset: ms(3150), transform: "scale(1)", opacity: 1, easing: "ease-in" },
+            { offset: ms(3450), transform: "scale(0.7)", opacity: 0 },
+            { offset: 1, transform: "scale(0.7)", opacity: 0 }
+        ]));
+
+        // O giro: acelera, roda rápido e vai parando (5 voltas inteiras, termina em ~3,2 s)
+        anims = anims.concat(animarParte(m.querySelector(".m-topo-gira"), [
+            { offset: 0, transform: "rotate(0deg)", easing: "ease-in" },
+            { offset: ms(1000), transform: "rotate(540deg)", easing: "linear" },
+            { offset: ms(2400), transform: "rotate(1440deg)", easing: "ease-out" },
+            { offset: ms(3250), transform: "rotate(1800deg)" },
+            { offset: 1, transform: "rotate(1800deg)" }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-topo-ar"), [
+            { offset: 0, transform: "rotate(0deg)" },
+            { offset: 1, transform: "rotate(-1200deg)" }
+        ]));
+
+        // Corpo se arqueando de um lado para o outro (igual ao leão-marinho do GIF)
+        anims = anims.concat(animarParte(m.querySelector(".m-topo-frente"),
+            vaiEVem(INICIO, FIM, 280, "rotate(9deg)", "rotate(-9deg)", false)));
+
+        // Troca de nadadeira: uma "pisa" para fora enquanto a outra fica recolhida, e inverte
+        anims = anims.concat(animarParte(m.querySelector(".m-tf-b"),
+            vaiEVem(INICIO, FIM, 280, "rotate(-8deg)", "rotate(62deg)", false)));
+        anims = anims.concat(animarParte(m.querySelector(".m-tf-a"),
+            vaiEVem(INICIO, FIM, 280, "rotate(-62deg)", "rotate(8deg)", false)));
+
+        // Nadadeiras de trás batendo
+        anims = anims.concat(animarParte(m.querySelector(".m-th-e"),
+            vaiEVem(INICIO, FIM, 140, "rotate(-14deg)", "rotate(14deg)", false)));
+        anims = anims.concat(animarParte(m.querySelector(".m-th-d"),
+            vaiEVem(INICIO, FIM, 140, "rotate(14deg)", "rotate(-14deg)", false)));
+
+        // Tontura: cabeça mole, olhos arregalados que não se acertam e estrelinhas girando
+        anims = anims.concat(animarParte(cab, [
+            { offset: 0, transform: "rotate(0deg)" },
+            { offset: ms(3400), transform: "rotate(0deg)", easing: "ease-in-out" },
+            { offset: ms(3750), transform: "rotate(-13deg)", easing: "ease-in-out" },
+            { offset: ms(4050), transform: "rotate(14deg)", easing: "ease-in-out" },
+            { offset: ms(4350), transform: "rotate(-10deg)", easing: "ease-in-out" },
+            { offset: ms(4650), transform: "rotate(6deg)", easing: "ease-in-out" },
+            { offset: ms(4850), transform: "rotate(-2deg)", easing: "ease-in-out" },
+            { offset: 1, transform: "rotate(0deg)" }
+        ]));
+        const O = function(x, esc) {
+            return `translate(${x}px, 0px) scale(${esc})`;
+        };
+
+        anims = anims.concat(animarParte(m.querySelector(".m-w-olhos"), [
+            { offset: 0, transform: O(0, 1) },
+            { offset: ms(3400), transform: O(0, 1), easing: "ease-in-out" },
+            { offset: ms(3600), transform: O(-2.2, 1.3), easing: "ease-in-out" },
+            { offset: ms(3900), transform: O(2.2, 1.3), easing: "ease-in-out" },
+            { offset: ms(4200), transform: O(-2.2, 1.3), easing: "ease-in-out" },
+            { offset: ms(4500), transform: O(2.2, 1.25), easing: "ease-in-out" },
+            { offset: ms(4750), transform: O(-1, 1.1), easing: "ease-in-out" },
+            { offset: ms(4950), transform: O(0, 1) },
+            { offset: 1, transform: O(0, 1) }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-tontura"), [
+            { offset: 0, opacity: 0 },
+            { offset: ms(3450), opacity: 0 },
+            { offset: ms(3700), opacity: 1 },
+            { offset: ms(4600), opacity: 1 },
+            { offset: ms(4900), opacity: 0 },
+            { offset: 1, opacity: 0 }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-tontura-gira"), [
+            { offset: ms(3400), transform: "rotate(0deg)" },
+            { offset: ms(4900), transform: "rotate(-700deg)" }
+        ]));
+
+        return anims;
+    },
+
+    // Olhar curioso: foca para a frente, arregala os olhos, inclina a cabeça e aparece um "?"
+    curioso: function(m, restaurar) {
+        const cab = m.querySelector(".m-w-cabeca");
+        const C = function(ty, rot, esc) {
+            return `translate(0px, ${ty}px) rotate(${rot}deg) scale(${esc})`;
+        };
+        const quadrosCabeca = [{ offset: 0, transform: C(0, 0, 1), easing: "ease-out" }];
+        const inclinacoes = [-12, 11, -10, 9, -7, 5];
+        let anims = [];
+
+        quadrosCabeca.push({ offset: msParaOffset(450), transform: C(2, 0, 1.12), easing: "ease-in-out" });
+        inclinacoes.forEach(function(graus, i) {
+            quadrosCabeca.push({ offset: msParaOffset(1000 + i * 650), transform: C(2, graus, 1.12), easing: "ease-in-out" });
+        });
+        quadrosCabeca.push({ offset: msParaOffset(4700), transform: C(2, 0, 1.12), easing: "ease-in-out" });
+        quadrosCabeca.push({ offset: 1, transform: C(0, 0, 1) });
+        anims = anims.concat(animarParte(cab, quadrosCabeca));
+
+        // Olhos arregalados que passeiam de um lado para o outro
+        const O = function(x, esc) {
+            return `translate(${x}px, 0px) scale(${esc})`;
+        };
+
+        anims = anims.concat(animarParte(m.querySelector(".m-w-olhos"), [
+            { offset: 0, transform: O(0, 1), easing: "ease-out" },
+            { offset: msParaOffset(450), transform: O(0, 1.4), easing: "ease-in-out" },
+            { offset: msParaOffset(1000), transform: O(-2.4, 1.4), easing: "ease-in-out" },
+            { offset: msParaOffset(1650), transform: O(2.4, 1.45), easing: "ease-in-out" },
+            { offset: msParaOffset(2300), transform: O(-2.4, 1.4), easing: "ease-in-out" },
+            { offset: msParaOffset(2950), transform: O(2.4, 1.45), easing: "ease-in-out" },
+            { offset: msParaOffset(3600), transform: O(-1.5, 1.4), easing: "ease-in-out" },
+            { offset: msParaOffset(4300), transform: O(0, 1.4), easing: "ease-in-out" },
+            { offset: 1, transform: O(0, 1) }
+        ]));
+
+        // Sobrancelhas lá no alto
+        anims = anims.concat(animarParte(m.querySelectorAll(".m-sobr"), [
+            { offset: 0, transform: "translate(0px, 0px)", easing: "ease-out" },
+            { offset: msParaOffset(450), transform: "translate(0px, -5px)" },
+            { offset: msParaOffset(4400), transform: "translate(0px, -5px)", easing: "ease-in-out" },
+            { offset: 1, transform: "translate(0px, 0px)" }
+        ]));
+
+        // Balão de interrogação flutuando ao lado
+        const Q = function(ty, esc) {
+            return `translate(0px, ${ty}px) scale(${esc})`;
+        };
+
+        anims = anims.concat(animarParte(m.querySelector(".m-interroga"), [
+            { offset: 0, transform: Q(8, 0.3), opacity: 0, easing: "ease-out" },
+            { offset: msParaOffset(700), transform: Q(0, 1.15), opacity: 1, easing: "ease-in-out" },
+            { offset: msParaOffset(900), transform: Q(0, 1), opacity: 1, easing: "ease-in-out" },
+            { offset: msParaOffset(1700), transform: Q(-5, 1), opacity: 1, easing: "ease-in-out" },
+            { offset: msParaOffset(2500), transform: Q(0, 1), opacity: 1, easing: "ease-in-out" },
+            { offset: msParaOffset(3300), transform: Q(-5, 1), opacity: 1, easing: "ease-in-out" },
+            { offset: msParaOffset(4100), transform: Q(0, 1), opacity: 1, easing: "ease-in" },
+            { offset: msParaOffset(4700), transform: Q(-6, 0.5), opacity: 0 },
+            { offset: 1, transform: Q(-6, 0.5), opacity: 0 }
+        ]));
+
+        return anims;
+    },
+
+    // Dança boba (GIF do leão-marinho): apoiado nas nadadeiras da frente, primeiro balança a cabeça
+    // de um lado para o outro e depois sacode o corpo todo, com as nadadeiras de trás voando
+    danca: function(m, restaurar) {
+        const tudo = m.querySelector(".m-w-tudo");
+        const cab = m.querySelector(".m-w-cabeca");
+        const ms = msParaOffset;
+        const B = function(x, y, rot, sx, sy) {
+            return `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${sx}, ${sy})`;
+        };
+        // a cabeça nunca sai do pescoço: só gira em volta dele (x fica sempre 0)
+        const H = function(x, y, rot, esc) {
+            return `translate(0px, ${y}px) rotate(${rot}deg) scale(${esc})`;
+        };
+        const REP = B(0, 12, 0, 1.06, 0.9);
+        const NEUTRO = B(0, 0, 0, 1, 1);
+        const corpo = [
+            { offset: 0, transform: NEUTRO, easing: "ease-in-out" },
+            { offset: ms(500), transform: REP, easing: "linear" },
+            { offset: ms(2300), transform: REP, easing: "ease-in-out" }
+        ];
+        const cabeca = [
+            { offset: 0, transform: H(0, 0, 0, 1), easing: "ease-in-out" },
+            { offset: ms(500), transform: H(0, 3, 0, 1.05), easing: "ease-in-out" }
+        ];
+        const bracoE = [{ offset: ms(500), transform: "rotate(18deg) scale(1, 1.3)" }];
+        const bracoD = [{ offset: ms(500), transform: "rotate(-18deg) scale(1, 1.3)" }];
+        const peE = [{ offset: ms(2300), transform: "translate(0px, 0px) rotate(0deg)" }];
+        const peD = [{ offset: ms(2300), transform: "translate(0px, 0px) rotate(0deg)" }];
+        let lado = 1;
+        let anims = [];
+
+        definirOrigem(tudo, "80px 188px", restaurar);
+        definirOrigem(cab, "80px 98px", restaurar);
+
+        // Fase 1: a cabeça balança e inclina de um lado para o outro, olhando para a câmera
+        for (let t = 850, i = 0; t <= 2150; t += 350, i++) {
+            cabeca.push({ offset: ms(t), transform: H(0, 3 + (i % 2) * 1, 15 * lado, 1.05), easing: "ease-in-out" });
+            lado = -lado;
+        }
+
+        cabeca.push({ offset: ms(2300), transform: H(0, 3, 0, 1.05), easing: "ease-in-out" });
+
+        // Fase 2: o corpo inteiro sacode rápido, as nadadeiras da frente se revezam e as de trás voam
+        lado = 1;
+
+        for (let t = 2450; t <= 4150; t += 150) {
+            corpo.push({ offset: ms(t), transform: B(5 * lado, 12, 9 * lado, 1.06, 0.9), easing: "ease-in-out" });
+            cabeca.push({ offset: ms(t), transform: H(0, 3, -9 * lado, 1.05), easing: "ease-in-out" });
+            bracoE.push({ offset: ms(t), transform: lado > 0 ? "rotate(30deg) scale(1, 1.12)" : "rotate(18deg) scale(1, 1.3)", easing: "ease-in-out" });
+            bracoD.push({ offset: ms(t), transform: lado > 0 ? "rotate(-18deg) scale(1, 1.3)" : "rotate(-30deg) scale(1, 1.12)", easing: "ease-in-out" });
+            peE.push({ offset: ms(t), transform: `rotate(${9 * lado}deg)`, easing: "ease-in-out" });
+            peD.push({ offset: ms(t), transform: `rotate(${9 * lado}deg)`, easing: "ease-in-out" });
+            lado = -lado;
+        }
+
+        corpo.push({ offset: ms(4400), transform: REP, easing: "ease-in-out" });
+        corpo.push({ offset: ms(4850), transform: NEUTRO });
+        corpo.push({ offset: 1, transform: NEUTRO });
+        cabeca.push({ offset: ms(4400), transform: H(0, 3, 0, 1.05), easing: "ease-in-out" });
+        cabeca.push({ offset: ms(4850), transform: H(0, 0, 0, 1) });
+        cabeca.push({ offset: 1, transform: H(0, 0, 0, 1) });
+        bracoE.push({ offset: ms(4400), transform: "rotate(18deg) scale(1, 1.3)" });
+        bracoD.push({ offset: ms(4400), transform: "rotate(-18deg) scale(1, 1.3)" });
+        peE.push({ offset: ms(4400), transform: "translate(0px, 0px) rotate(0deg)" });
+        peD.push({ offset: ms(4400), transform: "translate(0px, 0px) rotate(0deg)" });
+
+        anims = anims.concat(animarParte(tudo, corpo));
+        anims = anims.concat(animarParte(cab, cabeca));
+        anims = anims.concat(animarParte(m.querySelector(".m-braco-e"), bracoE));
+        anims = anims.concat(animarParte(m.querySelector(".m-braco-d"), bracoD));
+        anims = anims.concat(animarParte(m.querySelector(".m-pe-e"), peE));
+        anims = anims.concat(animarParte(m.querySelector(".m-pe-d"), peD));
+
+        // Olhões e, na parte do sacode, um sorriso
+        anims = anims.concat(animarParte(m.querySelector(".m-w-olhos"), [
+            { offset: 0, transform: "scale(1, 1)", easing: "ease-in-out" },
+            { offset: ms(500), transform: "scale(1.2, 1.25)" },
+            { offset: ms(4300), transform: "scale(1.2, 1.25)", easing: "ease-in-out" },
+            { offset: 1, transform: "scale(1, 1)" }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-sorriso"), [
+            { offset: ms(2300), opacity: 0 },
+            { offset: ms(2450), opacity: 1 },
+            { offset: ms(4250), opacity: 1 },
+            { offset: ms(4400), opacity: 0 }
+        ]));
+        anims = anims.concat(animarParte(m.querySelectorAll(".m-boca"), [
+            { offset: ms(2300), opacity: 1 },
+            { offset: ms(2450), opacity: 0 },
+            { offset: ms(4250), opacity: 0 },
+            { offset: ms(4400), opacity: 1 }
+        ]));
+
+        return anims;
+    },
+
+    // Bate-palmas sério: ereto, cara fechada e nadadeiras batendo rápido no peito
+    palmas: function(m, restaurar) {
+        const tudo = m.querySelector(".m-w-tudo");
+        const ABRE = 13;
+        const FECHA = 27;
+        const MEIO = 75;
+        let anims = [];
+
+        definirOrigem(tudo, "80px 188px", restaurar);
+
+        // Postura: tronco esticado para cima
+        anims = anims.concat(animarParte(tudo, [
+            { offset: 0, transform: "scale(1, 1)", easing: "ease-in-out" },
+            { offset: msParaOffset(500), transform: "scale(1, 1.08)" },
+            { offset: msParaOffset(4400), transform: "scale(1, 1.08)", easing: "ease-in-out" },
+            { offset: 1, transform: "scale(1, 1)" }
+        ]));
+
+        // Rostinho marrento: sobrancelhas baixas e inclinadas, olhos apertados e boca reta
+        const sobrE = m.querySelectorAll(".m-sobr")[0];
+        const sobrD = m.querySelectorAll(".m-sobr")[1];
+
+        // inclinação das sobrancelhas (cada uma com o seu lado)
+        [[sobrE, 14], [sobrD, -14]].forEach(function(par) {
+            anims = anims.concat(animarParte(par[0], [
+                { offset: 0, transform: "translate(0px, 0px) rotate(0deg)", easing: "ease-in-out" },
+                { offset: msParaOffset(400), transform: `translate(0px, 2.5px) rotate(${par[1]}deg)` },
+                { offset: msParaOffset(4400), transform: `translate(0px, 2.5px) rotate(${par[1]}deg)`, easing: "ease-in-out" },
+                { offset: 1, transform: "translate(0px, 0px) rotate(0deg)" }
+            ]));
+        });
+
+        anims = anims.concat(animarParte(m.querySelector(".m-w-olhos"), [
+            { offset: 0, transform: "scale(1, 1)", easing: "ease-in-out" },
+            { offset: msParaOffset(400), transform: "scale(1, 0.78)" },
+            { offset: msParaOffset(4400), transform: "scale(1, 0.78)", easing: "ease-in-out" },
+            { offset: 1, transform: "scale(1, 1)" }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-boca-seria"), [
+            { offset: msParaOffset(300), opacity: 1 },
+            { offset: msParaOffset(4500), opacity: 1 }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-boca-curva"), [
+            { offset: msParaOffset(300), opacity: 0 },
+            { offset: msParaOffset(4500), opacity: 0 }
+        ]));
+
+        // Nadadeiras: rajadas de palmas (0,15 s cada), com respiros curtos entre elas
+        function palmasDoLado(sinal) {
+            const R = function(graus) {
+                return `rotate(${graus * sinal}deg)`;
+            };
+            const quadros = [{ offset: msParaOffset(450), transform: R(-ABRE), easing: "ease-in-out" }];
+            let t = 450;
+
+            while (t + 2 * MEIO <= 4350) {
+                for (let i = 0; i < 8 && t + 2 * MEIO <= 4350; i++) {
+                    quadros.push({ offset: msParaOffset(t + MEIO), transform: R(-FECHA), easing: "ease-in-out" });
+                    quadros.push({ offset: msParaOffset(t + 2 * MEIO), transform: R(-ABRE), easing: "ease-in-out" });
+                    t += 2 * MEIO;
+                }
+
+                t += 250;
+
+                if (t <= 4350) {
+                    quadros.push({ offset: msParaOffset(t), transform: R(-ABRE), easing: "ease-in-out" });
+                }
+            }
+
+            return quadros;
+        }
+
+        anims = anims.concat(animarParte(m.querySelector(".m-braco-e"), palmasDoLado(1)));
+        anims = anims.concat(animarParte(m.querySelector(".m-braco-d"), palmasDoLado(-1)));
+
+        return anims;
+    },
+
+    // Dab: cara séria, cabeça mergulha na dobra de um braço e o outro estica na diagonal (depois, do outro lado)
+    dab: function(m, restaurar) {
+        const tudo = m.querySelector(".m-w-tudo");
+        const cab = m.querySelector(".m-w-cabeca");
+        const bE = m.querySelector(".m-braco-e");
+        const bD = m.querySelector(".m-braco-d");
+        const dE = m.querySelector(".m-dab-e");
+        const dD = m.querySelector(".m-dab-d");
+        const ms = msParaOffset;
+        // fases: [inicio do pop, fim da pose]
+        const F1 = { pop: 450, solta: 1900 };
+        const F2 = { pop: 2400, solta: 3700 };
+        const H = function(x, y, rot) {
+            return `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+        };
+        let anims = [];
+
+        definirOrigem(tudo, "80px 188px", restaurar);
+
+        // Cabeça: mergulha no cotovelo da esquerda, volta, e mergulha no da direita
+        anims = anims.concat(animarParte(cab, [
+            { offset: 0, transform: H(0, 0, 0), easing: "ease-in" },
+            { offset: ms(F1.pop), transform: H(2, -2, 4), easing: "cubic-bezier(0.2, 0.9, 0.3, 1)" },
+            { offset: ms(F1.pop + 250), transform: H(-10, 8, -16), easing: "linear" },
+            { offset: ms(F1.solta), transform: H(-10, 8, -16), easing: "ease-in-out" },
+            { offset: ms(F1.solta + 400), transform: H(0, 0, 0), easing: "ease-in" },
+            { offset: ms(F2.pop), transform: H(-2, -2, -4), easing: "cubic-bezier(0.2, 0.9, 0.3, 1)" },
+            { offset: ms(F2.pop + 250), transform: H(10, 8, 16), easing: "linear" },
+            { offset: ms(F2.solta), transform: H(10, 8, 16), easing: "ease-in-out" },
+            { offset: ms(F2.solta + 500), transform: H(0, 0, 0) },
+            { offset: 1, transform: H(0, 0, 0) }
+        ]));
+
+        // Corpo: recuo no "pop" e uma pulsadinha no ritmo durante a pose
+        function corpoDoDab(f, sinal) {
+            const pose = `translate(${-2 * sinal}px, 0px) rotate(${-3 * sinal}deg)`;
+            const sobe = `translate(${-2 * sinal}px, -2px) rotate(${-3 * sinal}deg)`;
+            const q = [{ offset: ms(f.pop), transform: "translate(0px, 0px) rotate(0deg)", easing: "ease-out" },
+                       { offset: ms(f.pop + 250), transform: pose, easing: "ease-in-out" }];
+
+            for (let t = f.pop + 450; t < f.solta - 150; t += 400) {
+                q.push({ offset: ms(t), transform: sobe, easing: "ease-in-out" });
+                q.push({ offset: ms(t + 200), transform: pose, easing: "ease-in-out" });
+            }
+
+            q.push({ offset: ms(f.solta + 350), transform: "translate(0px, 0px) rotate(0deg)" });
+
+            return q;
+        }
+
+        const corpo = [{ offset: 0, transform: "translate(0px, 0px) rotate(0deg)" }]
+            .concat(corpoDoDab(F1, 1))
+            .concat(corpoDoDab(F2, -1))
+            .concat([{ offset: 1, transform: "translate(0px, 0px) rotate(0deg)" }]);
+
+        anims = anims.concat(animarParte(tudo, corpo));
+
+        // Braço esticado na diagonal (direito no 1º dab, esquerdo no 2º) e o outro dobrado sobre o rosto
+        anims = anims.concat(animarParte(bD, [
+            { offset: ms(F1.pop), transform: "rotate(-7deg)", easing: "cubic-bezier(0.2, 0.9, 0.3, 1)" },
+            { offset: ms(F1.pop + 250), transform: "rotate(-135deg)", easing: "linear" },
+            { offset: ms(F1.solta), transform: "rotate(-135deg)", easing: "ease-in-out" },
+            { offset: ms(F1.solta + 400), transform: "rotate(-7deg)" },
+            { offset: ms(F2.solta + 500), transform: "rotate(-7deg)" }
+        ]));
+        anims = anims.concat(animarParte(bE, [
+            { offset: ms(F1.pop), transform: "rotate(7deg)" },
+            { offset: ms(F2.pop), transform: "rotate(7deg)", easing: "cubic-bezier(0.2, 0.9, 0.3, 1)" },
+            { offset: ms(F2.pop + 250), transform: "rotate(135deg)", easing: "linear" },
+            { offset: ms(F2.solta), transform: "rotate(135deg)", easing: "ease-in-out" },
+            { offset: ms(F2.solta + 500), transform: "rotate(7deg)" }
+        ]));
+
+        // Troca entre o braço normal e o braço dobrado (o dobrado fica na frente do rosto)
+        function trocaDeBraco(normal, dobrado, f) {
+            const sai = [{ offset: ms(f.pop), opacity: 1 }, { offset: ms(f.pop + 200), opacity: 0 },
+                         { offset: ms(f.solta), opacity: 0 }, { offset: ms(f.solta + 200), opacity: 1 }];
+            const entra = [
+                { offset: 0, opacity: 0, transform: "scale(0.4)" },
+                { offset: ms(f.pop), opacity: 0, transform: "scale(0.4)", easing: "ease-out" },
+                { offset: ms(f.pop + 250), opacity: 1, transform: "scale(1)" },
+                { offset: ms(f.solta), opacity: 1, transform: "scale(1)" },
+                { offset: ms(f.solta + 200), opacity: 0, transform: "scale(0.4)" },
+                { offset: 1, opacity: 0, transform: "scale(0.4)" }
+            ];
+
+            return animarParte(normal, sai).concat(animarParte(dobrado, entra));
+        }
+
+        // o braço que esteja esticado fica sempre visível; só o que dobra é trocado
+        anims = anims.concat(trocaDeBraco(bE, dE, F1));
+        anims = anims.concat(trocaDeBraco(bD, dD, F2));
+
+        // Carinha séria (a mesma do bate-palmas)
+        const sobr = m.querySelectorAll(".m-sobr");
+
+        [[sobr[0], 14], [sobr[1], -14]].forEach(function(par) {
+            anims = anims.concat(animarParte(par[0], [
+                { offset: 0, transform: "translate(0px, 0px) rotate(0deg)", easing: "ease-in-out" },
+                { offset: ms(300), transform: `translate(0px, 2.5px) rotate(${par[1]}deg)` },
+                { offset: ms(4500), transform: `translate(0px, 2.5px) rotate(${par[1]}deg)`, easing: "ease-in-out" },
+                { offset: 1, transform: "translate(0px, 0px) rotate(0deg)" }
+            ]));
+        });
+
+        anims = anims.concat(animarParte(m.querySelector(".m-w-olhos"), [
+            { offset: 0, transform: "scale(1, 1)", easing: "ease-in-out" },
+            { offset: ms(300), transform: "scale(1, 0.78)" },
+            { offset: ms(4500), transform: "scale(1, 0.78)", easing: "ease-in-out" },
+            { offset: 1, transform: "scale(1, 1)" }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-boca-seria"), [
+            { offset: ms(250), opacity: 1 },
+            { offset: ms(4550), opacity: 1 }
+        ]));
+        anims = anims.concat(animarParte(m.querySelector(".m-boca-curva"), [
+            { offset: ms(250), opacity: 0 },
+            { offset: ms(4550), opacity: 0 }
+        ]));
+
+        return anims;
+    },
+
+    // Língua de fora (GIF do Rigby): olhão arregalado, o chapéu cai e revela um moicano roxo ralinho,
+    // e aí vem a carinha: boca aberta, língua para fora, cabeça inclinada e olhos apertados de felicidade
+    lingua: function(m, restaurar) {
+        const cab = m.querySelector(".m-w-cabeca");
+        const ms = msParaOffset;
+        const C = function(x, y, rot, esc) {
+            return `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${esc})`;
+        };
+        const P = function(x, y, rot) {
+            return `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+        };
+        let anims = [];
+
+        definirOrigem(cab, "80px 96px", restaurar);
+        definirOrigem(m.querySelector(".m-w-lingua"), "80px 96px", restaurar);
+
+        // Cabeça: chega perto da câmera, fica encarando e depois inclina de felicidade
+        const cabeca = [
+            { offset: 0, transform: C(0, 0, 0, 1), easing: "ease-out" },
+            { offset: ms(450), transform: C(0, 2, 0, 1.06), easing: "ease-in-out" },
+            { offset: ms(1500), transform: C(0, 2, 0, 1.06), easing: "ease-in-out" },
+            { offset: ms(1900), transform: C(0, 1, 0, 1.12), easing: "linear" },
+            { offset: ms(2450), transform: C(0, 1, 0, 1.12), easing: "ease-in-out" },
+            { offset: ms(2700), transform: C(0, 1, -15, 1.12), easing: "ease-in-out" }
+        ];
+
+        // chacoalhando de felicidade, igual ao leão-marinho da foto
+        for (let t = 2850, i = 0; t <= 3850; t += 150, i++) {
+            cabeca.push({ offset: ms(t), transform: i % 2 ? C(0, 1, -17, 1.12) : C(0, 3, -7, 1.12), easing: "ease-in-out" });
+        }
+
+        cabeca.push({ offset: ms(4000), transform: C(0, 1, -14, 1.12), easing: "ease-in-out" });
+        cabeca.push({ offset: ms(4400), transform: C(0, 1, 0, 1.05), easing: "ease-in-out" });
+        cabeca.push({ offset: ms(4800), transform: C(0, 0, 0, 1) });
+        cabeca.push({ offset: 1, transform: C(0, 0, 0, 1) });
+        anims = anims.concat(animarParte(cab, cabeca));
+        // a língua fica na frente da gravata e acompanha a cabeça
+        anims = anims.concat(animarParte(m.querySelector(".m-w-lingua"), cabeca));
+
+        // O chapéu: dá um pulinho, escorrega, cai, quica no chão... e depois volta voando para a cabeça
+        anims = anims.concat(animarParte(m.querySelector(".m-chapeu"), [
+            { offset: 0, transform: P(0, 0, 0), easing: "ease-in-out" },
+            { offset: ms(650), transform: P(0, 0, 0), easing: "ease-out" },
+            { offset: ms(780), transform: P(0, -9, -6), easing: "ease-in" },
+            { offset: ms(950), transform: P(12, 12, 28), easing: "ease-in" },
+            { offset: ms(1150), transform: P(24, 66, 100), easing: "ease-in" },
+            { offset: ms(1330), transform: P(26, 104, 170), easing: "ease-out" },
+            { offset: ms(1450), transform: P(27, 92, 182), easing: "ease-in" },
+            { offset: ms(1560), transform: P(28, 104, 190), easing: "linear" },
+            { offset: ms(4000), transform: P(28, 104, 190), easing: "ease-out" },
+            { offset: ms(4300), transform: P(18, 38, 90), easing: "ease-in-out" },
+            { offset: ms(4600), transform: P(0, -8, -6), easing: "ease-in-out" },
+            { offset: ms(4780), transform: P(0, 0, 0) },
+            { offset: 1, transform: P(0, 0, 0) }
+        ]));
+
+        // Moicano roxo ralinho: aparece quando o chapéu sai e balança de leve
+        const moicano = [
+            { offset: 0, opacity: 0, transform: "rotate(0deg)" },
+            { offset: ms(700), opacity: 0, transform: "rotate(0deg)", easing: "ease-out" },
+            { offset: ms(950), opacity: 1, transform: "rotate(-4deg)", easing: "ease-in-out" }
+        ];
+
+        for (let t = 1200, i = 0; t <= 4000; t += (t < 2650 ? 260 : 130), i++) {
+            moicano.push({ offset: ms(t), opacity: 1, transform: `rotate(${i % 2 ? -4 : 4}deg) scale(${t < 2650 ? 1 : 1.12})`, easing: "ease-in-out" });
+        }
+
+        moicano.push({ offset: ms(4550), opacity: 1, transform: "rotate(0deg)" });
+        moicano.push({ offset: ms(4750), opacity: 0, transform: "rotate(0deg)" });
+        moicano.push({ offset: 1, opacity: 0, transform: "rotate(0deg)" });
+        anims = anims.concat(animarParte(m.querySelector(".m-moicano"), moicano));
+
+        // Olhos arregalados (bem esbugalhados) e, na hora da língua, apertadinhos de felicidade
+        anims = anims.concat(animarParte(m.querySelector(".m-w-olhos"), [
+            { offset: 0, transform: "scale(1, 1)", easing: "ease-in-out" },
+            { offset: ms(450), transform: "scale(1.5, 1.6)", easing: "linear" },
+            { offset: ms(2450), transform: "scale(1.5, 1.6)", easing: "ease-in-out" },
+            { offset: ms(2650), transform: "scale(1.25, 0.1)", easing: "linear" },
+            { offset: ms(3950), transform: "scale(1.25, 0.1)", easing: "ease-in-out" },
+            { offset: ms(4400), transform: "scale(1, 1)" },
+            { offset: 1, transform: "scale(1, 1)" }
+        ]));
+
+        // Boca aberta com a língua para fora (e a língua sacudindo)
+        const lingua = [
+            { offset: ms(2300), opacity: 0, transform: "rotate(0deg) scale(0.6)", easing: "ease-out" },
+            { offset: ms(2550), opacity: 1, transform: "rotate(0deg) scale(1)", easing: "ease-in-out" }
+        ];
+
+        for (let t = 2750, i = 0; t <= 3900; t += 150, i++) {
+            lingua.push({ offset: ms(t), opacity: 1, transform: `rotate(${i % 2 ? -12 : 12}deg) scale(1, ${i % 2 ? 1.04 : 0.95})`, easing: "ease-in-out" });
+        }
+
+        lingua.push({ offset: ms(4050), opacity: 1, transform: "rotate(0deg) scale(1)" });
+        lingua.push({ offset: ms(4250), opacity: 0, transform: "rotate(0deg) scale(0.6)" });
+        lingua.push({ offset: 1, opacity: 0, transform: "rotate(0deg) scale(0.6)" });
+        anims = anims.concat(animarParte(m.querySelector(".m-lingua-fora"), lingua));
+        // boca aberta (aparece e some junto com a língua, sem balançar)
+        anims = anims.concat(animarParte(m.querySelector(".m-lingua"), [
+            { offset: ms(2300), opacity: 0 },
+            { offset: ms(2550), opacity: 1 },
+            { offset: ms(4050), opacity: 1 },
+            { offset: ms(4250), opacity: 0 },
+            { offset: 1, opacity: 0 }
+        ]));
+        anims = anims.concat(animarParte(m.querySelectorAll(".m-boca"), [
+            { offset: ms(2300), opacity: 1 },
+            { offset: ms(2450), opacity: 0 },
+            { offset: ms(4150), opacity: 0 },
+            { offset: ms(4300), opacity: 1 }
+        ]));
+
+        return anims;
+    }
+};
+
+// Dispara uma animação no mascote. "forcada" é opcional (só para testes/prévia).
+function tocarAnimacaoMascote(mascote, forcada) {
+    if (mascote.animando) {
         return;
     }
 
-    function iniciarSaida() {
+    const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const nome = reduzido ? "malabarismo" : (forcada || sortearAnimacaoMascote());
+    const restaurar = [];
+    let anims = [];
+    let temporizadores = [];
+
+    mascote.animando = true;
+    mascote.nomeAnimacao = nome;
+    mascote.classList.add("m-anim", "m-a-" + nome);
+
+    function concluir() {
         const caixa = mascote.getBoundingClientRect();
 
-        mascote.removeEventListener("animationiteration", aoCicloCompleto);
-        clearTimeout(mascote.temporizadorEspera);
-        mascote.classList.add("m-saindo");
-        soltarConfetes(caixa.left + caixa.width / 2, caixa.top + caixa.height * 0.3, 36, { direcao: -90, abertura: 110 });
+        anims.forEach(function(a) {
+            a.cancel();
+        });
+        temporizadores.forEach(clearTimeout);
+        restaurar.forEach(function(fn) {
+            fn();
+        });
+        mascote.classList.remove("m-anim", "m-a-" + nome, "m-feliz", "m-saindo");
+        mascote.animando = false;
+        soltarConfetes(caixa.left + caixa.width / 2, caixa.top + caixa.height * 0.3, 40, { direcao: -90, abertura: 110 });
 
-        mascote.temporizadorSaida = setTimeout(function() {
-            mascote.classList.remove("m-feliz", "m-saindo");
-        }, 480);
-    }
-
-    function aoCicloCompleto(evento) {
-        if (evento.target === mascote && evento.animationName === "m-pulinho") {
-            iniciarSaida();
+        if (typeof mascote.aoTerminar === "function") {
+            mascote.aoTerminar(nome);
         }
     }
 
-    mascote.cancelarEspera = function() {
-        mascote.removeEventListener("animationiteration", aoCicloCompleto);
-        clearTimeout(mascote.temporizadorEspera);
-    };
-
-    mascote.addEventListener("animationiteration", aoCicloCompleto);
-    mascote.temporizadorEspera = setTimeout(iniciarSaida, 900);
-}
-
-// Clique no mascote: ele fica feliz, de óculos escuros, e faz malabarismo com moedinhas
-document.addEventListener("click", function(evento) {
-    const mascote = evento.target.closest(".mascote");
-
-    if (!mascote) {
+    if (nome === "malabarismo") {
+        // Animação original (óculos escuros + moedinhas): 4 s de show e 1 s voltando à pose
+        mascote.classList.add("m-feliz");
+        temporizadores.push(setTimeout(function() {
+            mascote.classList.add("m-saindo");
+        }, DURACAO_ANIMACAO - 1000));
+        temporizadores.push(setTimeout(concluir, DURACAO_ANIMACAO));
         return;
     }
 
-    if (mascote.cancelarEspera) {
-        mascote.cancelarEspera();
-    }
+    anims = COREOGRAFIAS_MASCOTE[nome](mascote, restaurar);
+    temporizadores.push(setTimeout(concluir, DURACAO_ANIMACAO));
+}
 
-    clearTimeout(mascote.temporizadorSaida);
-    mascote.classList.remove("m-saindo");
-    mascote.classList.add("m-feliz");
-    clearTimeout(mascote.temporizadorFeliz);
-    mascote.temporizadorFeliz = setTimeout(function() {
-        encerrarFeliz(mascote);
-    }, 6000);
+// Clique no mascote: sorteia e toca uma das 5 animações
+document.addEventListener("click", function(evento) {
+    const mascote = evento.target.closest(".mascote");
+
+    if (mascote) {
+        tocarAnimacaoMascote(mascote);
+    }
 });
+
 
 // 22.3 Painel Sobre: versão, atalhos, histórico, glossário e feedback
 document.querySelectorAll("[data-versao-texto]").forEach(function(el) {

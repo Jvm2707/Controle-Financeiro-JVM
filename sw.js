@@ -1,6 +1,6 @@
 // Controle Financeiro · service worker
 // REGRA 3: ao subir o ?v= no HTML, subir também a VERSAO abaixo (com o mesmo número).
-const VERSAO = "17.7";
+const VERSAO = "18.0";
 const CACHE_APP = "cf-app-" + VERSAO;
 const CACHE_FONTES = "cf-fontes";
 const CACHE_LEMBRETES = "cf-lembretes";
@@ -64,11 +64,18 @@ self.addEventListener("fetch", function(evento) {
     // Cotações, feedback e outras APIs: sempre da internet (nunca dado velho)
     if (url.origin !== self.location.origin) return;
 
-    // Páginas: internet primeiro (pega a versão nova); sem internet, a guardada
+    // Páginas institucionais (Sobre, Contato, Privacidade, Documentação), arquivos .md e .txt:
+    // sempre da internet, sem passar pelo cache do app
+    const escopo = new URL(self.registration.scope);
+    const rota = url.pathname.slice(escopo.pathname.length);
+    const ehApp = rota === "" || rota === "index.html";
+    if (!ehApp && (pedido.mode === "navigate" || /\.(md|txt|xml)$/.test(rota))) return;
+
+    // App: internet primeiro (pega a versão nova); sem internet, a guardada
     if (pedido.mode === "navigate") {
         evento.respondWith(
             fetch(pedido).then(function(resposta) {
-                // Só guarda páginas que carregaram certo (nunca uma página de erro 404/500)
+                // Só guarda a página do app quando carregou certo (nunca uma página de erro 404/500)
                 if (resposta.ok) {
                     const copia = resposta.clone();
                     caches.open(CACHE_APP).then(function(cache) { cache.put("./index.html", copia); });

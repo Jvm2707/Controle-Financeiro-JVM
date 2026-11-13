@@ -6,47 +6,94 @@
     <!-- v17.7: segurança (CSP). Se o script em linha do <body> mudar, atualizar o hash (ver REGRAS-DO-PROJETO.md) -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Egb26+s5F1q05OHx+gTKTM736IJn8+mnJhRwFocLb10='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; worker-src 'self'; manifest-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Controle Financeiro · Organize despesas, cartões e metas</title>
+    <title>Controle Financeiro JVM · Controle financeiro pessoal gratuito</title>
     <!-- v17.7: SEO e pré-visualização de links -->
-    <meta name="description" content="Controle financeiro pessoal gratuito e sem cadastro: despesas, receitas, cartões de crédito, metas e investimentos, com relatórios e gráficos. Os dados ficam salvos no seu aparelho.">
+    <meta name="description" content="App gratuito de controle financeiro pessoal: despesas, receitas, cartões, orçamento, metas e investimentos. Sem cadastro, com os dados no seu aparelho.">
+    <meta name="keywords" content="controle financeiro pessoal, controle de gastos, gestão de despesas, orçamento mensal, planejamento financeiro, cartão de crédito, reserva de emergência, metas financeiras, investimentos, Controle Financeiro JVM">
+    <meta name="application-name" content="Controle Financeiro JVM">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="JVM">
     <meta name="google-site-verification" content="2VdWMlj7xW_DxGoEzTh0HIeaDgScdDcT867AE91ElaY">
     <link rel="canonical" href="https://jvm2707.github.io/Controle-Financeiro-JVM/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Controle Financeiro">
-    <meta property="og:title" content="Controle Financeiro · Seu dinheiro, em ordem.">
+    <meta property="og:site_name" content="Controle Financeiro JVM">
+    <meta property="og:title" content="Controle Financeiro JVM · Seu dinheiro, em ordem.">
     <meta property="og:description" content="Despesas, cartões, metas e investimentos em um só lugar. Gratuito, sem cadastro, com os dados salvos no seu aparelho.">
     <meta property="og:url" content="https://jvm2707.github.io/Controle-Financeiro-JVM/">
     <meta property="og:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Controle Financeiro: seu dinheiro, em ordem.">
+    <meta property="og:image:alt" content="Controle Financeiro JVM: seu dinheiro, em ordem.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Controle Financeiro · Seu dinheiro, em ordem.">
+    <meta name="twitter:title" content="Controle Financeiro JVM · Seu dinheiro, em ordem.">
     <meta name="twitter:description" content="Despesas, cartões, metas e investimentos em um só lugar. Gratuito e sem cadastro.">
     <meta name="twitter:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Controle Financeiro",
-        "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/",
-        "description": "Controle financeiro pessoal gratuito e sem cadastro: despesas, receitas, cartões de crédito, metas e investimentos, com relatórios e gráficos. Os dados ficam salvos no seu aparelho.",
-        "applicationCategory": "FinanceApplication",
-        "operatingSystem": "Web, Android, iOS, Windows, macOS",
-        "inLanguage": "pt-BR",
-        "isAccessibleForFree": true,
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
-        "image": "https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg",
-        "author": { "@type": "Person", "name": "JVM" }
-    }
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://jvm2707.github.io/Controle-Financeiro-JVM/#site",
+            "name": "Controle Financeiro JVM",
+            "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/",
+            "inLanguage": "pt-BR",
+            "description": "Site oficial do Controle Financeiro JVM, aplicação web gratuita de controle financeiro pessoal."
+        },
+        {
+            "@type": "SoftwareApplication",
+            "@id": "https://jvm2707.github.io/Controle-Financeiro-JVM/#app",
+            "name": "Controle Financeiro JVM",
+            "alternateName": "Controle Financeiro",
+            "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/",
+            "description": "Aplicação web gratuita de controle financeiro pessoal para organizar despesas, receitas, cartões de crédito, orçamento, metas, reserva de emergência e investimentos. Funciona no navegador, sem cadastro, e guarda os dados no aparelho de quem usa.",
+            "applicationCategory": "FinanceApplication",
+            "applicationSubCategory": "Controle financeiro pessoal",
+            "operatingSystem": "Web (navegador). Instalável como app (PWA) em Android, iOS, Windows e macOS.",
+            "browserRequirements": "Requer JavaScript e um navegador moderno.",
+            "softwareVersion": "2.0.1",
+            "dateModified": "2026-11-12",
+            "inLanguage": "pt-BR",
+            "isAccessibleForFree": true,
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "BRL"
+            },
+            "featureList": [
+                "Despesas únicas, recorrentes e parceladas",
+                "Cartões de crédito com fatura, limite e melhor dia de compra",
+                "Orçamento mensal por categoria",
+                "Receitas recorrentes",
+                "Metas financeiras com aportes",
+                "Reserva de emergência e simulador",
+                "Investimentos com cotações públicas",
+                "Relatórios e gráficos",
+                "Importação de extratos OFX e CSV",
+                "Backup e restauração em arquivo",
+                "Funcionamento offline (PWA)"
+            ],
+            "image": "https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg",
+            "screenshot": "https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg",
+            "author": {
+                "@type": "Person",
+                "name": "JVM",
+                "url": "https://github.com/jvm2707"
+            },
+            "isPartOf": {
+                "@id": "https://jvm2707.github.io/Controle-Financeiro-JVM/#site"
+            }
+        }
+    ]
+}
     </script>
+    <link rel="alternate" type="text/markdown" href="index.md" title="Descrição do app em Markdown">
+    <link rel="privacy-policy" href="privacy/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@500;600;700&display=swap">
-    <link rel="stylesheet" href="Controlefinanceiro.css?v=17.7">
+    <link rel="stylesheet" href="Controlefinanceiro.css?v=18.0">
     <link rel="icon" type="image/png" href="assets/logo-jvm-128.png">
     <!-- v16.6: app instalável (PWA) -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -73,9 +120,11 @@
     </svg>
     <script>if (navigator.userAgentData || /Chrom(e|ium)\//.test(navigator.userAgent)) document.documentElement.classList.add("com-refracao");</script>
     <noscript>
-        <div style="padding:24px;font-family:system-ui,sans-serif;color:#F4F4F5;background:#09090B">
-            <strong>O Controle Financeiro precisa de JavaScript.</strong>
-            Ative o JavaScript nas configurações do navegador para usar o app.
+        <div style="padding:24px;font-family:system-ui,sans-serif;color:#F4F4F5;background:#09090B;line-height:1.6">
+            <p><strong>O Controle Financeiro JVM precisa de JavaScript.</strong>
+            Ative o JavaScript nas configurações do navegador para usar o app.</p>
+            <p>O Controle Financeiro JVM é uma aplicação web gratuita de controle financeiro pessoal para organizar despesas, receitas, cartões de crédito, orçamento, metas e investimentos, sem cadastro e com os dados salvos no próprio aparelho.</p>
+            <p><a href="about/" style="color:#F0B93B">Sobre o projeto</a> · <a href="docs/" style="color:#F0B93B">Documentação</a> · <a href="privacy/" style="color:#F0B93B">Privacidade</a> · <a href="contact/" style="color:#F0B93B">Contato</a></p>
         </div>
     </noscript>
     <a class="pular-conteudo" href="#conteudo-principal">Pular para o conteúdo</a>
@@ -128,7 +177,7 @@
             <!-- CABEÇALHO (celular) -->
             <header>
                 <div>
-                    <h1>Seu dinheiro, <span>em ordem.</span></h1>
+                    <h1><span class="so-leitor">Controle Financeiro JVM: </span>Seu dinheiro, <span>em ordem.</span></h1>
                     <p>Acompanhe seus gastos, cuide dos seus planos.</p>
                 </div>
 
@@ -1676,6 +1725,7 @@
                             <figcaption><img src="assets/logo-jvm-128.png" alt="" width="34" height="34"><span><b>JVM</b><small>Criador do Controle Financeiro</small></span></figcaption>
                         </figure>
                     </div>
+                    <a class="painel-link" href="about/">Sobre o projeto</a>
                 </div>
 
                 <!-- Privacidade e segurança -->
@@ -1691,6 +1741,7 @@
                         <li><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span><div><strong>Cuidado ao limpar o navegador</strong><span>Apagar os dados do site apaga tudo. Faça backups de vez em quando, é rápido.</span></div></li>
                     </ul>
                     <button type="button" class="painel-link" data-ir="backup">Ir para Backup e exportação</button>
+                    <a class="painel-link" href="privacy/">Ler a política de privacidade completa</a>
                 </div>
 
                 <!-- Dúvidas frequentes e glossário (um card, duas abas) -->
@@ -1762,6 +1813,7 @@
                         <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><div><strong>CSS Grid e Flexbox</strong><span>Layout que se adapta do celular ao PC</span></div></div>
                     </div>
                     <p class="sb-aviso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>As cotações, taxas e simulações são informativas e não substituem a orientação de um profissional.</p>
+                    <a class="painel-link" href="docs/">Documentação técnica do projeto</a>
                 </div>
 
                 <!-- Novidades / changelog -->
@@ -1802,7 +1854,7 @@
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                             Enviar mensagem
                         </button>
-                        <p class="receita-dica">Sua mensagem vai direto para o criador do app. Não pedimos nome nem e-mail.</p>
+                        <p class="receita-dica">Sua mensagem vai direto para o criador do app. Não pedimos nome nem e-mail. <a href="contact/">Outras formas de contato</a>.</p>
                     </form>
                 </div>
 
@@ -1943,7 +1995,7 @@
     <!-- Biblioteca para criar gráficos -->
 
     <!-- JavaScript do aplicativo -->
-    <script src="Controlefinanceiro.js?v=17.7"></script>
+    <script src="Controlefinanceiro.js?v=18.0"></script>
 
 </body>
 </html>

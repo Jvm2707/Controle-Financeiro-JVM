@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Documentação · Controle Financeiro JVM</title>
+    <meta name="description" content="Documentação técnica do Controle Financeiro JVM: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
+    <meta name="author" content="JVM">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jvm2707.github.io/Controle-Financeiro-JVM/docs/">
+    <link rel="alternate" type="text/markdown" href="index.md" title="Versão em Markdown">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Controle Financeiro JVM">
+    <meta property="og:title" content="Documentação · Controle Financeiro JVM">
+    <meta property="og:description" content="Documentação técnica do Controle Financeiro JVM: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
+    <meta property="og:url" content="https://jvm2707.github.io/Controle-Financeiro-JVM/docs/">
+    <meta property="og:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "name": "Documentação · Controle Financeiro JVM",
+    "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/docs/",
+    "description": "Documentação técnica do Controle Financeiro JVM: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.",
+    "inLanguage": "pt-BR",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "Controle Financeiro JVM",
+        "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/"
+    },
+    "about": {
+        "@type": "SoftwareApplication",
+        "name": "Controle Financeiro JVM",
+        "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/"
+    },
+    "dateModified": "2026-11-12"
+}
+    </script>
+    <meta name="theme-color" content="#030304">
+    <link rel="icon" type="image/png" href="../assets/logo-jvm-128.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+    <link rel="stylesheet" href="../assets/paginas.css">
+</head>
+<body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <header class="topo">
+        <a class="marca" href="../">
+            <img src="../assets/logo-jvm-128.png" alt="" width="36" height="36">
+            <span>Controle Financeiro <em>JVM</em></span>
+        </a>
+        <nav class="navegacao" aria-label="Páginas do projeto">
+            <a href="../about/">Sobre</a>
+            <a href="../docs/" aria-current="page">Documentação</a>
+            <a href="../privacy/">Privacidade</a>
+            <a href="../contact/">Contato</a>
+        </nav>
+    </header>
+    <main id="conteudo">
+        <article class="cartao">
+            <p class="sobretitulo">Documentação</p>
+<h1 id="documentacao-do-controle-financeiro-jvm">Documentação do Controle Financeiro JVM</h1>
+<p>Guia técnico do projeto: tecnologias, estrutura dos arquivos, como executar, como os dados são armazenados e como funcionam o backup e a restauração.</p>
+<ul>
+<li><strong>Aplicação:</strong> <a href="https://jvm2707.github.io/Controle-Financeiro-JVM/">https://jvm2707.github.io/Controle-Financeiro-JVM/</a></li>
+<li><strong>Repositório:</strong> <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">github.com/jvm2707/Controle-Financeiro-JVM</a></li>
+<li><strong>Versão documentada:</strong> 2.0.1</li>
+</ul>
+<h2 id="recursos-que-nao-existem">Recursos que não existem</h2>
+<p>Para evitar confusão: o projeto <strong>não oferece API pública, SDK, CLI, servidor MCP, webhooks nem integração bancária</strong>. Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem <strong>ler</strong> as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.</p>
+<h2 id="tecnologias">Tecnologias</h2>
+<div class="tabela"><table>
+<thead>
+<tr>
+<th>Área</th>
+<th>O que é usado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interface</td>
+<td>HTML, CSS e JavaScript puros, sem framework e sem etapa de compilação obrigatória</td>
+</tr>
+<tr>
+<td>Gráficos</td>
+<td>SVG desenhado pelo próprio código</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td><code>localStorage</code> do navegador (JSON)</td>
+</tr>
+<tr>
+<td>Offline e instalação</td>
+<td>Service worker (<code>sw.js</code>) e Web App Manifest (PWA)</td>
+</tr>
+<tr>
+<td>Backup automático</td>
+<td>File System Access API, com a pasta escolhida guardada no IndexedDB</td>
+</tr>
+<tr>
+<td>Lembretes</td>
+<td>Notifications API e Periodic Background Sync, quando o navegador permite</td>
+</tr>
+<tr>
+<td>Dados externos</td>
+<td>APIs públicas de cotações: Banco Central do Brasil (SGS), AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi e Yahoo Finance</td>
+</tr>
+<tr>
+<td>Feedback</td>
+<td>Web3Forms (envio da mensagem por e-mail ao autor)</td>
+</tr>
+<tr>
+<td>Fontes</td>
+<td>Google Fonts (Geist, Geist Mono, Instrument Serif e Space Grotesk)</td>
+</tr>
+<tr>
+<td>Hospedagem</td>
+<td>GitHub Pages, como site estático</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="estrutura-dos-arquivos-publicados">Estrutura dos arquivos publicados</h2>
+<pre><code class="language-text">/Controle-Financeiro-JVM/
+├── index.html              Aplicação (todas as telas)
+├── index.md                Descrição da aplicação em Markdown, para agentes
+├── Controlefinanceiro.js   Lógica do app
+├── Controlefinanceiro.css  Estilos do app
+├── sw.js                   Service worker (cache offline e lembretes)
+├── manifest.webmanifest    Manifesto do app instalável
+├── llms.txt                Guia do projeto para agentes de IA
+├── sitemap.xml             Páginas indexáveis
+├── 404.html                Página de erro &quot;não encontrada&quot;
+├── .nojekyll               Publica os arquivos como estão (sem Jekyll)
+├── about/                  Sobre (index.html e index.md)
+├── contact/                Contato (index.html e index.md)
+├── privacy/                Política de privacidade (index.html e index.md)
+├── docs/                   Esta documentação (index.html e index.md)
+└── assets/                 Imagens, ícones, fundos e o estilo das páginas institucionais
+</code></pre>
+<p>Na publicação, o JavaScript e o CSS do app vão minificados. A versão legível fica com o autor. Os arquivos <code>index.md</code> têm o mesmo conteúdo das páginas HTML correspondentes.</p>
+<h2 id="como-executar">Como executar</h2>
+<p>O app não precisa de instalação nem de dependências. Para rodar uma cópia local:</p>
+<ol>
+<li>Baixe ou clone o repositório.</li>
+<li>Sirva a pasta com qualquer servidor estático. Por exemplo:</li>
+</ol>
+<pre><code class="language-bash">python -m http.server 8080
+# ou
+npx serve .
+</code></pre>
+<ol start="3">
+<li>Abra <code>http://localhost:8080/</code> no navegador.</li>
+</ol>
+<p>Abrir o <code>index.html</code> direto do disco (<code>file://</code>) também funciona para o uso básico, mas o service worker, a instalação como app e os lembretes só funcionam em <code>http://localhost</code> ou em HTTPS.</p>
+<p>Os dados de uma cópia local ficam separados dos dados do site oficial, porque o navegador separa o armazenamento por endereço.</p>
+<h2 id="armazenamento-local">Armazenamento local</h2>
+<p>Cada conjunto de dados é salvo como texto JSON em uma chave do <code>localStorage</code>. As principais:</p>
+<div class="tabela"><table>
+<thead>
+<tr>
+<th>Chave</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gastos</code></td>
+<td>Despesas: únicas, ocorrências de recorrentes e parcelas</td>
+</tr>
+<tr>
+<td><code>receitas</code></td>
+<td>Receitas por mês, com os lançamentos de cada uma</td>
+</tr>
+<tr>
+<td><code>receitasFixas</code></td>
+<td>Receitas recorrentes e o histórico de reajustes</td>
+</tr>
+<tr>
+<td><code>cartoes</code></td>
+<td>Cartões: apelido, final, dias de fechamento e vencimento, limite e aparência</td>
+</tr>
+<tr>
+<td><code>categorias</code> e <code>orcamentos</code></td>
+<td>Categorias e limite mensal de cada uma</td>
+</tr>
+<tr>
+<td><code>metas</code></td>
+<td>Metas com aportes</td>
+</tr>
+<tr>
+<td><code>investimentos</code>, <code>aportesInvestimentos</code>, <code>resgatesInvestimentos</code></td>
+<td>Carteira de investimentos e movimentações</td>
+</tr>
+<tr>
+<td><code>metaReservaGeral</code></td>
+<td>Valor-alvo da reserva de emergência</td>
+</tr>
+<tr>
+<td><code>ocorrenciasExcluidas</code></td>
+<td>Ocorrências de recorrentes apagadas (para não serem recriadas)</td>
+</tr>
+<tr>
+<td><code>importacoesExtrato</code></td>
+<td>Registro das importações de OFX e CSV (evita duplicidade)</td>
+</tr>
+<tr>
+<td><code>cacheApi</code></td>
+<td>Últimas cotações obtidas, para uso offline</td>
+</tr>
+</tbody>
+</table></div>
+<p>Também há chaves de preferência (por exemplo <code>tema</code>, <code>ocultarValores</code>, <code>secaoAtual</code>) e de estado da interface. Se o conteúdo de uma chave estiver danificado, o app guarda uma cópia com o sufixo <code>_corrompido</code> e continua funcionando.</p>
+<p>As despesas recorrentes são mantidas com 12 meses de ocorrências à frente. Cada ocorrência guarda a data em que foi gerada, o que impede duplicidade ao editar datas.</p>
+<h2 id="backup-e-restauracao">Backup e restauração</h2>
+<ul>
+<li><strong>Fazer backup</strong> (tela Backup) gera <code>backup-financeiro-AAAA-MM-DD.json</code> com receitas, receitas recorrentes, despesas, metas, investimentos, aportes, resgates, meta da reserva, exclusões de ocorrências, categorias, orçamentos e cartões. O arquivo leva o campo <code>versao</code> (formato atual: 15) e a data de geração.</li>
+<li><strong>Restaurar backup</strong> valida o arquivo (listas obrigatórias, datas no formato <code>AAAA-MM-DD</code>, valores numéricos positivos) e substitui os dados atuais depois da confirmação. Backups de versões anteriores continuam aceitos.</li>
+<li><strong>Backup automático</strong> grava <code>backup-auto-financeiro-AAAA-MM-DD.json</code> na pasta escolhida, nos navegadores com suporte à File System Access API (Chrome e Edge no computador).</li>
+<li><strong>Exportar despesas</strong> gera um CSV que abre no Excel ou no Google Planilhas. <strong>Relatório do mês</strong> abre a impressão, de onde é possível salvar em PDF.</li>
+</ul>
+<p>O arquivo de backup não é criptografado.</p>
+<h2 id="atualizacoes-e-cache">Atualizações e cache</h2>
+<p>Cada publicação muda o parâmetro <code>?v=</code> dos arquivos JS e CSS e a constante <code>VERSAO</code> do <code>sw.js</code>. Assim, quem já instalou o app recebe os arquivos novos, e os caches antigos são apagados.</p>
+<h2 id="seguranca">Segurança</h2>
+<ul>
+<li>A página do app declara uma Content-Security-Policy que só permite scripts do próprio site.</li>
+<li>Textos digitados pelo usuário são inseridos como texto, não como HTML.</li>
+<li>Não há cookies nem ferramentas de rastreamento.</li>
+</ul>
+<h2 id="como-contribuir">Como contribuir</h2>
+<p>O repositório é público e o histórico de alterações pode ser acompanhado pelos commits. Sugestões e relatos de problemas podem ser enviados pelo formulário <strong>Contato e feedback</strong>, dentro do app (veja a página de <a href="../contact/">contato</a>).</p>
+<p>O repositório não declara uma licença de uso. Antes de reutilizar o código em outro projeto, consulte o autor.</p>
+<h2 id="paginas-relacionadas">Páginas relacionadas</h2>
+<ul>
+<li><a href="../about/">Sobre o projeto</a></li>
+<li><a href="../privacy/">Política de privacidade</a></li>
+<li><a href="../llms.txt">Guia para agentes de IA (llms.txt)</a></li>
+<li><a href="../sitemap.xml">Mapa do site (sitemap.xml)</a></li>
+</ul>
+            <p><a class="botao" href="../">Abrir o Controle Financeiro</a></p>
+        </article>
+    </main>
+    <footer class="rodape">
+        <nav aria-label="Rodapé">
+            <a href="../">App</a>
+            <a href="../about/">Sobre</a>
+            <a href="../docs/">Documentação</a>
+            <a href="../privacy/">Privacidade</a>
+            <a href="../contact/">Contato</a>
+            <a href="../llms.txt">llms.txt</a>
+            <a href="../sitemap.xml">Sitemap</a>
+        </nav>
+        <p>Controle Financeiro JVM · projeto pessoal e gratuito de JVM · <a href="index.md">Esta página em Markdown</a> · <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">Código no GitHub</a></p>
+    </footer>
+</body>
+</html>

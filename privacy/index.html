@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Política de privacidade · Controle Financeiro JVM</title>
+    <meta name="description" content="Como o Controle Financeiro JVM guarda os dados no navegador, o que é enviado a serviços externos, como funcionam os backups e como apagar seus dados.">
+    <meta name="author" content="JVM">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jvm2707.github.io/Controle-Financeiro-JVM/privacy/">
+    <link rel="alternate" type="text/markdown" href="index.md" title="Versão em Markdown">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Controle Financeiro JVM">
+    <meta property="og:title" content="Política de privacidade · Controle Financeiro JVM">
+    <meta property="og:description" content="Como o Controle Financeiro JVM guarda os dados no navegador, o que é enviado a serviços externos, como funcionam os backups e como apagar seus dados.">
+    <meta property="og:url" content="https://jvm2707.github.io/Controle-Financeiro-JVM/privacy/">
+    <meta property="og:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Política de privacidade · Controle Financeiro JVM",
+    "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/privacy/",
+    "description": "Como o Controle Financeiro JVM guarda os dados no navegador, o que é enviado a serviços externos, como funcionam os backups e como apagar seus dados.",
+    "inLanguage": "pt-BR",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "Controle Financeiro JVM",
+        "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/"
+    },
+    "about": {
+        "@type": "SoftwareApplication",
+        "name": "Controle Financeiro JVM",
+        "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/"
+    },
+    "dateModified": "2026-11-12"
+}
+    </script>
+    <meta name="theme-color" content="#030304">
+    <link rel="icon" type="image/png" href="../assets/logo-jvm-128.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+    <link rel="stylesheet" href="../assets/paginas.css">
+</head>
+<body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <header class="topo">
+        <a class="marca" href="../">
+            <img src="../assets/logo-jvm-128.png" alt="" width="36" height="36">
+            <span>Controle Financeiro <em>JVM</em></span>
+        </a>
+        <nav class="navegacao" aria-label="Páginas do projeto">
+            <a href="../about/">Sobre</a>
+            <a href="../docs/">Documentação</a>
+            <a href="../privacy/" aria-current="page">Privacidade</a>
+            <a href="../contact/">Contato</a>
+        </nav>
+    </header>
+    <main id="conteudo">
+        <article class="cartao">
+            <p class="sobretitulo">Privacidade</p>
+<h1 id="politica-de-privacidade">Política de privacidade</h1>
+<p><em>Última atualização: 12 de novembro de 2026 · versão 2.0.1 do app</em></p>
+<p>Esta política descreve como o <strong>Controle Financeiro JVM</strong> trata as informações de quem o usa. Ela foi escrita a partir do funcionamento real do código, que é público e pode ser conferido no <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">repositório do projeto</a>.</p>
+<h2 id="resumo">Resumo</h2>
+<ul>
+<li><strong>Não há cadastro, conta, login nem servidor próprio.</strong> O app é um conjunto de arquivos estáticos hospedados no GitHub Pages e executados no seu navegador.</li>
+<li><strong>Os dados financeiros ficam no seu aparelho</strong>, no armazenamento local do navegador. O autor não recebe, não vê e não guarda esses dados.</li>
+<li><strong>Não há cookies, ferramentas de análise (analytics), anúncios nem rastreamento.</strong></li>
+<li>Alguns recursos <strong>consultam serviços públicos na internet</strong> (cotações e fontes) ou <strong>enviam uma mensagem quando você usa o formulário de feedback</strong>. Esses envios estão descritos abaixo.</li>
+</ul>
+<h2 id="onde-os-dados-ficam">Onde os dados ficam</h2>
+<div class="tabela"><table>
+<thead>
+<tr>
+<th>Armazenamento do navegador</th>
+<th>O que guarda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>localStorage</code></td>
+<td>Todos os dados financeiros: despesas, receitas, receitas recorrentes, cartões (apelido, final com 4 dígitos, dias de fechamento e vencimento, limite), categorias, orçamentos, metas e aportes, investimentos, aportes e resgates, meta da reserva, exclusões de ocorrências e histórico de importações de extrato. Também guarda preferências (tema, valores ocultos, tela atual, moedas da cotação), a última cotação obtida, imagens de logos que você enviar para os cartões e, se você informar, o token gratuito da Brapi.</td>
+</tr>
+<tr>
+<td><code>sessionStorage</code></td>
+<td>Apenas a posição da rolagem da página, por alguns instantes, quando o app é recarregado para aplicar uma atualização.</td>
+</tr>
+<tr>
+<td><code>IndexedDB</code></td>
+<td>Apenas a referência da pasta escolhida para o backup automático (não guarda valores financeiros).</td>
+</tr>
+<tr>
+<td>Cache do service worker</td>
+<td>Os arquivos do próprio app (para funcionar sem internet), as fontes e, se você ativar os lembretes, uma lista com o nome, o valor e a data das contas que vencem nos próximos dias, usada para mostrar as notificações no próprio aparelho.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Esses dados ficam <strong>no navegador e no endereço em que o app foi aberto</strong>. Eles não são sincronizados entre aparelhos ou navegadores. Em uma janela anônima, tudo é apagado ao fechar a janela.</p>
+<h2 id="o-que-sai-do-seu-aparelho">O que sai do seu aparelho</h2>
+<div class="tabela"><table>
+<thead>
+<tr>
+<th>Situação</th>
+<th>Para onde</th>
+<th>O que é enviado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Abrir o app</td>
+<td>GitHub Pages (hospedagem)</td>
+<td>O pedido dos arquivos do site, como em qualquer página da web. O GitHub pode registrar dados técnicos de acesso, como o endereço IP, conforme a <a href="https://docs.github.com/pt/site-policy/privacy-policies/github-general-privacy-statement">declaração de privacidade do GitHub</a>.</td>
+</tr>
+<tr>
+<td>Carregar as fontes</td>
+<td>Google Fonts</td>
+<td>O pedido das fontes Geist, Geist Mono, Instrument Serif e Space Grotesk. O Google recebe dados técnicos da conexão, como o endereço IP.</td>
+</tr>
+<tr>
+<td>Cotações de moedas, taxas e investimentos</td>
+<td>Banco Central do Brasil, AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi e Yahoo Finance</td>
+<td>Somente códigos públicos (por exemplo <code>USD-BRL</code>, <code>PETR4</code>, <code>bitcoin</code>) e datas. <strong>Valores, saldos e descrições não são enviados.</strong> Na Brapi, o token informado por você acompanha o pedido.</td>
+</tr>
+<tr>
+<td>Investimento com "Endpoint REST"</td>
+<td>O endereço que você mesmo configurar</td>
+<td>Um pedido ao endereço informado, feito pelo seu navegador.</td>
+</tr>
+<tr>
+<td>Enviar feedback</td>
+<td>Web3Forms, que repassa ao autor por e-mail</td>
+<td>O tipo da mensagem, o texto escrito, a versão do app e se o envio foi feito pelo celular ou pelo computador. Nome e e-mail não são pedidos.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Nenhum desses envios inclui suas despesas, receitas, saldos, metas ou investimentos.</p>
+<h2 id="backups-e-exportacoes">Backups e exportações</h2>
+<ul>
+<li><strong>Backup:</strong> gera um arquivo <code>backup-financeiro-AAAA-MM-DD.json</code> no seu aparelho com todos os dados financeiros. O arquivo <strong>não é criptografado</strong>: guarde-o com o mesmo cuidado que teria com um extrato.</li>
+<li><strong>Restaurar backup:</strong> lê um arquivo escolhido por você, confere se o formato é válido e substitui os dados atuais, depois de pedir confirmação.</li>
+<li><strong>Backup automático:</strong> disponível nos navegadores que permitem acesso a pastas (como Chrome e Edge no computador). O app grava o arquivo na pasta que você escolher. Se essa pasta for sincronizada com um serviço de nuvem (Google Drive, OneDrive etc.), a cópia passa a seguir as regras desse serviço.</li>
+<li><strong>Exportar despesas (CSV) e relatório do mês:</strong> os arquivos são gerados no próprio aparelho, sem envio pela internet.</li>
+</ul>
+<h2 id="notificacoes">Notificações</h2>
+<p>Os lembretes de vencimento são opcionais e gerados pelo próprio navegador, a partir dos dados salvos no aparelho. Não existe servidor de notificações.</p>
+<h2 id="como-apagar-seus-dados">Como apagar seus dados</h2>
+<ul>
+<li>No app: <strong>Sobre → Dados do app → Limpar dados deste navegador</strong>, com dupla confirmação.</li>
+<li>Pelo navegador: apagar os dados do site <code>jvm2707.github.io</code> nas configurações também remove tudo.</li>
+</ul>
+<p>A exclusão não pode ser desfeita. Faça um backup antes, se quiser guardar uma cópia.</p>
+<h2 id="limitacoes-e-responsabilidades">Limitações e responsabilidades</h2>
+<ul>
+<li><strong>Não há proteção por senha ou criptografia dentro do app.</strong> Qualquer pessoa com acesso ao seu aparelho e ao seu navegador consegue ver os dados. Use o bloqueio do próprio aparelho.</li>
+<li>Os dados podem ser perdidos se você limpar o navegador, trocar de aparelho sem backup ou se o navegador remover dados do site por falta de espaço. <strong>Fazer backups é responsabilidade de quem usa.</strong></li>
+<li>O app não tem como recuperar dados apagados, porque o autor não tem cópia deles.</li>
+<li>Cotações dependem de serviços de terceiros e podem estar indisponíveis ou atrasadas. Simulações e comparações de taxas são estimativas e não constituem recomendação de investimento.</li>
+</ul>
+<h2 id="alteracoes-nesta-politica">Alterações nesta política</h2>
+<p>Mudanças no funcionamento que afetem a privacidade serão refletidas nesta página e no histórico de versões do app (<strong>Sobre → Novidades e histórico</strong>).</p>
+<h2 id="contato">Contato</h2>
+<p>Dúvidas sobre privacidade podem ser enviadas pelo formulário descrito na página de <a href="../contact/">contato</a>.</p>
+            <p><a class="botao" href="../">Abrir o Controle Financeiro</a></p>
+        </article>
+    </main>
+    <footer class="rodape">
+        <nav aria-label="Rodapé">
+            <a href="../">App</a>
+            <a href="../about/">Sobre</a>
+            <a href="../docs/">Documentação</a>
+            <a href="../privacy/">Privacidade</a>
+            <a href="../contact/">Contato</a>
+            <a href="../llms.txt">llms.txt</a>
+            <a href="../sitemap.xml">Sitemap</a>
+        </nav>
+        <p>Controle Financeiro JVM · projeto pessoal e gratuito de JVM · <a href="index.md">Esta página em Markdown</a> · <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">Código no GitHub</a></p>
+    </footer>
+</body>
+</html>

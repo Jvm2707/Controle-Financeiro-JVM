@@ -3,7 +3,7 @@
 O **Controle Financeiro JVM** é uma aplicação web gratuita de **controle financeiro pessoal**, em português do Brasil, para organizar despesas, receitas, cartões de crédito, metas e investimentos em um só lugar. Ela funciona direto no navegador, sem cadastro e sem conta, e guarda os dados no próprio aparelho de quem usa.
 
 - **Endereço oficial:** <https://jvm2707.github.io/Controle-Financeiro-JVM/>
-- **Versão atual:** 2.0.1 (novembro de 2026)
+- **Versão atual:** 2.0.2 (novembro de 2026)
 - **Autor:** JVM ([perfil no GitHub](https://github.com/jvm2707))
 - **Código-fonte:** [github.com/jvm2707/Controle-Financeiro-JVM](https://github.com/jvm2707/Controle-Financeiro-JVM)
 

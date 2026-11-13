@@ -3,7 +3,7 @@
 Aplicação web gratuita de **controle financeiro pessoal**, em português do Brasil, para organizar despesas, receitas, cartões de crédito, metas, reserva de emergência e investimentos. Funciona no navegador, sem cadastro, e guarda os dados no aparelho de quem usa.
 
 - **Abrir o app:** <https://jvm2707.github.io/Controle-Financeiro-JVM/>
-- **Versão:** 2.0.1 (novembro de 2026)
+- **Versão:** 2.0.2 (novembro de 2026)
 - **Preço:** gratuito, sem anúncios e sem assinatura
 - **Idioma e moeda:** português (Brasil), valores em reais (R$)
 - **Autor:** JVM ([github.com/jvm2707](https://github.com/jvm2707))

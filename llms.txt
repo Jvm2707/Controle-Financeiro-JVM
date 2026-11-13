@@ -3,7 +3,7 @@
 > Free, browser-based personal finance app in Brazilian Portuguese for tracking expenses, income, credit cards, savings goals, an emergency fund and investments. No sign-up, no server-side account: all financial data stays in the user's browser (localStorage). Built by an independent developer (JVM) and hosted on GitHub Pages.
 
 - App URL: https://jvm2707.github.io/Controle-Financeiro-JVM/
-- Version: 2.0.1 (November 2026)
+- Version: 2.0.2 (November 2026)
 - Price: free, no ads, no subscription
 - Interface language: Portuguese (Brazil). Currency: Brazilian real (BRL, R$)
 - Platforms: any modern browser on desktop or mobile; installable as a PWA; works offline after the first visit

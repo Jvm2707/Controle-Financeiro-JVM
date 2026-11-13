@@ -1,6 +1,6 @@
 # Política de privacidade
 
-*Última atualização: 12 de novembro de 2026 · versão 2.0.1 do app*
+*Última atualização: 12 de novembro de 2026 · válida para a versão 2.0.2 do app*
 
 Esta política descreve como o **Controle Financeiro JVM** trata as informações de quem o usa. Ela foi escrita a partir do funcionamento real do código, que é público e pode ser conferido no [repositório do projeto](https://github.com/jvm2707/Controle-Financeiro-JVM).
 

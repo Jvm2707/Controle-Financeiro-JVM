@@ -1,6 +1,6 @@
 // Controle Financeiro · service worker
 // REGRA 3: ao subir o ?v= no HTML, subir também a VERSAO abaixo (com o mesmo número).
-const VERSAO = "18.0";
+const VERSAO = "18.1";
 const CACHE_APP = "cf-app-" + VERSAO;
 const CACHE_FONTES = "cf-fontes";
 const CACHE_LEMBRETES = "cf-lembretes";

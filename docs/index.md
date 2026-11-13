@@ -4,7 +4,7 @@ Guia técnico do projeto: tecnologias, estrutura dos arquivos, como executar, co
 
 - **Aplicação:** <https://jvm2707.github.io/Controle-Financeiro-JVM/>
 - **Repositório:** [github.com/jvm2707/Controle-Financeiro-JVM](https://github.com/jvm2707/Controle-Financeiro-JVM)
-- **Versão documentada:** 2.0.1
+- **Versão documentada:** 2.0.2
 
 ## Recursos que não existem
 

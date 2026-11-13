@@ -53,7 +53,11 @@ body {
 body::before {
     content: "";
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    height: 100lvh; /* não muda de tamanho quando a barra do navegador do celular some */
     z-index: -1;
     background: var(--veu), var(--fundo-img) center 42% / cover no-repeat, var(--pagina);
 }

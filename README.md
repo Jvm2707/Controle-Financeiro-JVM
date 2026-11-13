@@ -14,7 +14,7 @@ Aplicação web gratuita de **controle financeiro pessoal**, em português do Br
 
 | | |
 |---|---|
-| Versão | 2.0.1 |
+| Versão | 2.0.2 |
 | Tecnologias | HTML, CSS e JavaScript puros, service worker (PWA), SVG |
 | Dados | `localStorage` do navegador; sem servidor, conta ou sincronização |
 | Hospedagem | GitHub Pages (site estático) |

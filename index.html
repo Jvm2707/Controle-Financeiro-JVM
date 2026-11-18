@@ -6,27 +6,27 @@
     <!-- v17.7: segurança (CSP). Se o script em linha do <body> mudar, atualizar o hash (ver REGRAS-DO-PROJETO.md) -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Egb26+s5F1q05OHx+gTKTM736IJn8+mnJhRwFocLb10='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; worker-src 'self'; manifest-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Controle Financeiro JVM · Controle financeiro pessoal gratuito</title>
+    <title>Bufunfa: planilha de gastos automática e grátis</title>
     <!-- v17.7: SEO e pré-visualização de links -->
-    <meta name="description" content="App gratuito de controle financeiro pessoal: despesas, receitas, cartões, orçamento, metas e investimentos. Sem cadastro, com os dados no seu aparelho.">
-    <meta name="keywords" content="controle financeiro pessoal, controle de gastos, gestão de despesas, orçamento mensal, planejamento financeiro, cartão de crédito, reserva de emergência, metas financeiras, investimentos, Controle Financeiro JVM">
-    <meta name="application-name" content="Controle Financeiro JVM">
+    <meta name="description" content="Bufunfa: controle financeiro grátis e offline. Despesas, cartões, metas e investimentos em um só lugar, sem cadastro e com os dados no seu aparelho.">
+    <meta name="keywords" content="controle financeiro pessoal, controle de gastos, gestão de despesas, orçamento mensal, planejamento financeiro, cartão de crédito, reserva de emergência, metas financeiras, investimentos, planilha de gastos, Bufunfa, Controle Financeiro JVM">
+    <meta name="application-name" content="Bufunfa">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="JVM">
     <meta name="google-site-verification" content="2VdWMlj7xW_DxGoEzTh0HIeaDgScdDcT867AE91ElaY">
     <link rel="canonical" href="https://jvm2707.github.io/Controle-Financeiro-JVM/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Controle Financeiro JVM">
-    <meta property="og:title" content="Controle Financeiro JVM · Seu dinheiro, em ordem.">
+    <meta property="og:site_name" content="Bufunfa">
+    <meta property="og:title" content="Bufunfa: planilha de gastos automática e grátis">
     <meta property="og:description" content="Despesas, cartões, metas e investimentos em um só lugar. Gratuito, sem cadastro, com os dados salvos no seu aparelho.">
     <meta property="og:url" content="https://jvm2707.github.io/Controle-Financeiro-JVM/">
     <meta property="og:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Controle Financeiro JVM: seu dinheiro, em ordem.">
+    <meta property="og:image:alt" content="Bufunfa: seu dinheiro, em ordem.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Controle Financeiro JVM · Seu dinheiro, em ordem.">
+    <meta name="twitter:title" content="Bufunfa: planilha de gastos automática e grátis">
     <meta name="twitter:description" content="Despesas, cartões, metas e investimentos em um só lugar. Gratuito e sem cadastro.">
     <meta name="twitter:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
     <script type="application/ld+json">
@@ -36,24 +36,25 @@
         {
             "@type": "WebSite",
             "@id": "https://jvm2707.github.io/Controle-Financeiro-JVM/#site",
-            "name": "Controle Financeiro JVM",
+            "name": "Bufunfa",
+            "alternateName": "Controle Financeiro JVM",
             "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/",
             "inLanguage": "pt-BR",
-            "description": "Site oficial do Controle Financeiro JVM, aplicação web gratuita de controle financeiro pessoal."
+            "description": "Site oficial do Bufunfa (antigo Controle Financeiro JVM), aplicação web gratuita de controle financeiro pessoal."
         },
         {
             "@type": "SoftwareApplication",
             "@id": "https://jvm2707.github.io/Controle-Financeiro-JVM/#app",
-            "name": "Controle Financeiro JVM",
-            "alternateName": "Controle Financeiro",
+            "name": "Bufunfa",
+            "alternateName": ["Controle Financeiro JVM", "Bufunfa · Controle financeiro grátis e offline"],
             "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/",
             "description": "Aplicação web gratuita de controle financeiro pessoal para organizar despesas, receitas, cartões de crédito, orçamento, metas, reserva de emergência e investimentos. Funciona no navegador, sem cadastro, e guarda os dados no aparelho de quem usa.",
             "applicationCategory": "FinanceApplication",
             "applicationSubCategory": "Controle financeiro pessoal",
             "operatingSystem": "Web (navegador). Instalável como app (PWA) em Android, iOS, Windows e macOS.",
             "browserRequirements": "Requer JavaScript e um navegador moderno.",
-            "softwareVersion": "2.0.2",
-            "dateModified": "2026-11-13",
+            "softwareVersion": "2.1.0",
+            "dateModified": "2026-11-18",
             "inLanguage": "pt-BR",
             "isAccessibleForFree": true,
             "offers": {
@@ -93,15 +94,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@500;600;700&display=swap">
-    <link rel="stylesheet" href="Controlefinanceiro.css?v=18.1">
-    <link rel="icon" type="image/png" href="assets/logo-jvm-128.png">
+    <link rel="stylesheet" href="Controlefinanceiro.css?v=18.36">
+    <link rel="icon" type="image/png" href="assets/icones/icone-192.png">
     <!-- v16.6: app instalável (PWA) -->
     <link rel="manifest" href="manifest.webmanifest">
     <meta name="theme-color" content="#09090B">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Controle Financeiro">
+    <meta name="apple-mobile-web-app-title" content="Bufunfa">
     <link rel="apple-touch-icon" href="assets/icones/apple-touch-icon.png">
 </head>
 
@@ -121,9 +122,9 @@
     <script>if (navigator.userAgentData || /Chrom(e|ium)\//.test(navigator.userAgent)) document.documentElement.classList.add("com-refracao");</script>
     <noscript>
         <div style="padding:24px;font-family:system-ui,sans-serif;color:#F4F4F5;background:#09090B;line-height:1.6">
-            <p><strong>O Controle Financeiro JVM precisa de JavaScript.</strong>
+            <p><strong>O Bufunfa precisa de JavaScript.</strong>
             Ative o JavaScript nas configurações do navegador para usar o app.</p>
-            <p>O Controle Financeiro JVM é uma aplicação web gratuita de controle financeiro pessoal para organizar despesas, receitas, cartões de crédito, orçamento, metas e investimentos, sem cadastro e com os dados salvos no próprio aparelho.</p>
+            <p>O Bufunfa é uma aplicação web gratuita de controle financeiro pessoal para organizar despesas, receitas, cartões de crédito, orçamento, metas e investimentos, sem cadastro e com os dados salvos no próprio aparelho.</p>
             <p><a href="about/" style="color:#F0B93B">Sobre o projeto</a> · <a href="docs/" style="color:#F0B93B">Documentação</a> · <a href="privacy/" style="color:#F0B93B">Privacidade</a> · <a href="contact/" style="color:#F0B93B">Contato</a></p>
         </div>
     </noscript>
@@ -132,21 +133,14 @@
     <div class="app">
 
         <!-- Menu lateral (PC) -->
-        <aside class="menu-lateral" aria-label="Menu principal">
+        <aside class="menu-lateral" aria-label="Menu principal" data-tilt="0.6">
             <div class="menu-marca">
-                <span class="menu-marca-icone logo-vidro" title="JVM">
-                    <span class="logo-cena" aria-hidden="false">
-                        <img src="assets/logo-jvm-128.png" alt="JVM" class="menu-marca-logo logo-base" width="34" height="34">
-                        <img src="assets/logo-jvm-128.png" alt="" class="logo-cheio" width="34" height="34" aria-hidden="true">
-                        <span class="logo-luz" aria-hidden="true"></span>
-                    </span>
-                    <span class="logo-reflexo" aria-hidden="true"></span>
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
-                        <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
-                    </svg>
-                </span>
-                <p class="menu-marca-titulo"><span class="menu-marca-l1">Seu dinheiro,</span> <span class="menu-marca-l2">em ordem.</span></p>
+                <span class="menu-marca-b" id="logo-bufunfa" role="button" tabindex="0" aria-label="Logotipo Bufunfa: animar"></span>
+                <p class="menu-marca-titulo"><span class="menu-marca-l1">Bufunfa</span> <span class="menu-marca-l2">Seu dinheiro, em ordem.</span></p>
+                <!-- v18.24: recolher/expandir o menu (rótulos e estado no JS) -->
+                <button type="button" id="menu-recolher" class="botao-icone menu-recolher" aria-controls="menu-lateral-itens" aria-expanded="true" aria-label="Recolher menu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19V5"/><path d="m13 6-6 6 6 6"/><path d="M7 12h14"/></svg>
+                </button>
             </div>
 
             <div id="menu-lateral-itens"></div>
@@ -177,7 +171,7 @@
             <!-- CABEÇALHO (celular) -->
             <header>
                 <div>
-                    <h1><span class="so-leitor">Controle Financeiro JVM: </span>Seu dinheiro, <span>em ordem.</span></h1>
+                    <h1>Bufunfa: seu dinheiro, <span>em ordem.</span></h1>
                     <p>Acompanhe seus gastos, cuide dos seus planos.</p>
                 </div>
 
@@ -253,10 +247,6 @@
                         </svg>
                     </button>
 
-                    <button type="button" id="botao-abrir-receita" class="botao-receita" data-mag data-ripple="claro">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                        Registrar receita
-                    </button>
                 </div>
             </div>
 
@@ -413,7 +403,7 @@
                 <div class="painel-duo">
                     <div class="painel-card vidro card-movs" data-tilt>
                         <div class="card-cabeca">
-                            <h3>Últimas movimentações</h3>
+                            <h3>Últimos lançamentos</h3>
                             <button type="button" class="link-dourado" data-ir="movimentacoes">Ver todas →</button>
                         </div>
                         <ul id="lista-movimentacoes" class="lista-movs"></ul>
@@ -427,37 +417,89 @@
 
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">Painel · Movimentações</span>
-                    <h2>Movimentações</h2>
+                    <span class="sobretitulo">Lançamentos · Todos</span>
+                    <h2>Todos os <em>lançamentos</em></h2>
                     <p class="subtitulo">Tudo o que entrou e saiu do seu bolso</p>
                 </div>
             </div>
 
-            <div class="cabecalho-tela">
-                <button type="button" class="botao-voltar" data-ir="inicio" aria-label="Voltar para o Início">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <h3>Todas as movimentações</h3>
+            <!-- v18.21: filtros no lugar do "Mostrar" (as opções dele estão em Tipo) -->
+            <!-- v18.34: no celular os filtros ficam recolhidos neste botão (mostra quantos estão em uso) -->
+            <button type="button" class="botao-secundario botao-filtros" id="botao-filtros-mov" aria-expanded="false" aria-controls="filtros-mov">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                <span>Filtros</span>
+            </button>
+            <div class="grade-campos filtros-mov" id="filtros-mov">
+                <div>
+                    <label for="filtro-periodo-mov">Período</label>
+                    <select id="filtro-periodo-mov">
+                        <option value="">Todos os meses</option>
+                        <option value="ano">Este ano</option>
+                        <option value="mes">Este mês</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro-tipo-mov">Tipo</label>
+                    <select id="filtro-tipo-mov">
+                        <option value="">Todos os tipos</option>
+                        <option value="receita">Receitas</option>
+                        <option value="despesa">Despesas e contas pagas</option>
+                        <option value="meta">Aportes em metas</option>
+                        <option value="reserva">Aportes na reserva</option>
+                        <option value="resgate">Resgates da reserva</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro-categoria-mov">Categoria</label>
+                    <select id="filtro-categoria-mov"></select>
+                </div>
             </div>
 
-            <label for="filtro-tipo-mov">Mostrar</label>
-            <select id="filtro-tipo-mov">
-                <option value="">Todas as movimentações</option>
-                <option value="receita">Receitas</option>
-                <option value="despesa">Despesas e contas pagas</option>
-                <option value="meta">Aportes em metas</option>
-                <option value="reserva">Aportes na reserva</option>
-                <option value="resgate">Resgates da reserva</option>
-            </select>
-
             <div id="lista-movimentacoes-completa"></div>
+        </section>
+
+        <!-- v18.4: RECEITAS (aba de Lançamentos; "Nova receita" abre a mesma janela do botão +) -->
+        <section id="receitas" class="painel-largo" hidden>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <span class="sobretitulo">Lançamentos · Receitas</span>
+                    <h2>Minhas <em>receitas</em></h2>
+                    <p class="subtitulo">Receitas únicas e recorrentes, com o histórico de reajustes</p>
+                </div>
+                <div class="cabecalho-acoes">
+                    <button type="button" id="botao-abrir-receita" class="botao-receita" data-mag data-ripple="claro">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        <span>Nova receita</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="extra-grade">
+                <div class="painel-card vidro" data-tilt hidden>
+                    <h3 class="titulo-com-ladrilho"><span class="ladrilho tom-sucesso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>Receitas recorrentes</h3>
+                    <div id="receitas-fixas" class="receitas-fixas" hidden></div>
+                </div>
+
+                <div class="painel-card vidro" data-tilt>
+                    <div class="card-cabeca">
+                        <h3 class="titulo-com-ladrilho"><span class="ladrilho tom-dourado"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>Histórico de receitas</h3>
+                        <label for="filtro-periodo-receitas" class="so-leitor">Período</label>
+                        <select id="filtro-periodo-receitas">
+                            <option value="">Todos os meses</option>
+                            <option value="ano">Este ano</option>
+                            <option value="mes">Este mês</option>
+                        </select>
+                    </div>
+                    <div id="lista-receitas"></div>
+                </div>
+            </div>
         </section>
 
         <!-- 1.1 RELATÓRIOS -->
         <section id="relatorios" class="painel-largo" hidden>
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">Painel · Relatórios</span>
+                    <span class="sobretitulo">Análise · Relatórios</span>
                     <h2>Relatórios</h2>
                     <p class="subtitulo">O mês selecionado e a evolução ao longo do tempo</p>
                 </div>
@@ -585,7 +627,7 @@
 
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">Gerenciar · Despesas</span>
+                    <span class="sobretitulo">Lançamentos · Despesas</span>
                     <h2>Minhas <em>despesas</em></h2>
                     <p class="subtitulo">Controle seus gastos, contas e categorias</p>
                 </div>
@@ -620,7 +662,6 @@
                 </div>
 
                 <nav class="menu-despesas" aria-label="Menu de despesas">
-
                     <button type="button" class="item-menu" data-abrir="cadastrar">
                         <span class="item-menu-icone">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -637,7 +678,6 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
-
                     <button type="button" class="item-menu" data-abrir="despesas">
                         <span class="item-menu-icone">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -655,25 +695,6 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
-
-                    <button type="button" class="item-menu" data-abrir="categorias">
-                        <span class="item-menu-icone">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"/>
-                                <path d="M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z"/>
-                                <circle cx="6.5" cy="9.5" r=".5" fill="currentColor"/>
-                            </svg>
-                        </span>
-                        <span class="item-menu-texto">
-                            <strong>Gerenciar categorias</strong>
-                            <span>Crie, edite e exclua categorias.</span>
-                        </span>
-                        <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="m9 18 6-6-6-6"/>
-                        </svg>
-                    </button>
-
-                    <!-- v15: importar extrato do banco ou fatura do cartão -->
                     <button type="button" class="item-menu" data-abrir="importar">
                         <span class="item-menu-icone">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -691,6 +712,23 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
+                    <button type="button" class="item-menu" data-abrir="categorias">
+                        <span class="item-menu-icone">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"/>
+                                <path d="M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z"/>
+                                <circle cx="6.5" cy="9.5" r=".5" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        <span class="item-menu-texto">
+                            <strong>Gerenciar categorias</strong>
+                            <span>Crie, edite e exclua categorias.</span>
+                        </span>
+                        <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </button>
+                    <!-- v15: importar extrato do banco ou fatura do cartão -->
 
                     
 
@@ -954,46 +992,23 @@
 
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">Gerenciar · Metas</span>
+                    <span class="sobretitulo">Planejamento · Metas</span>
                     <h2>Minhas <em>metas</em></h2>
                     <p class="subtitulo">Acompanhe seus objetivos e aportes</p>
+                </div>
+                <div class="cabecalho-acoes">
+                    <button type="button" class="botao-receita" data-abrir="nova-meta" data-mag data-ripple="claro">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        <span>Nova meta</span>
+                    </button>
                 </div>
             </div>
 
             <!-- 3.1 Tela inicial: resumo das metas + ações -->
             <div class="tela-despesas" data-tela="menu">
 
+                <!-- v18.21: "Nova meta" fica no topo; o aporte fica em cada meta da lista -->
                 <ul id="lista-metas" class="lista-despesas lista-resumo"></ul>
-
-                <nav class="menu-despesas" aria-label="Ações das metas">
-
-                    <button type="button" class="item-menu" data-abrir="nova-meta">
-                        <span class="item-menu-icone">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-                        </span>
-                        <span class="item-menu-texto">
-                            <strong>Criar uma meta financeira</strong>
-                            <span>Defina o nome, o valor e o prazo do seu objetivo.</span>
-                        </span>
-                        <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="m9 18 6-6-6-6"/>
-                        </svg>
-                    </button>
-
-                    <button type="button" class="item-menu" data-abrir="aporte">
-                        <span class="item-menu-icone">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>
-                        </span>
-                        <span class="item-menu-texto">
-                            <strong>Registrar aporte</strong>
-                            <span>Adicione dinheiro a uma das suas metas.</span>
-                        </span>
-                        <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="m9 18 6-6-6-6"/>
-                        </svg>
-                    </button>
-
-                </nav>
 
                 <!-- v5: resumo e plano das metas -->
                 <div id="metas-resumo" class="extra-grade"></div>
@@ -1098,7 +1113,7 @@
 
             <div class="painel-cabecalho cabecalho-reserva">
                 <div class="cabecalho-reserva-texto">
-                    <span class="sobretitulo">Gerenciar · Reserva</span>
+                    <span class="sobretitulo">Planejamento · Reserva</span>
                     <h2>Reserva &amp; <em>Investimentos</em></h2>
                     <p class="subtitulo">Gestão de alocações com sincronização via API em tempo real</p>
                 </div>
@@ -1150,7 +1165,6 @@
                 <div id="reserva-meta-bloco" class="painel-card painel-solto" hidden></div>
 
                 <nav class="menu-despesas" aria-label="Ações da reserva">
-
                     <button type="button" class="item-menu" data-abrir="cadastrar-invest">
                         <span class="item-menu-icone tom-dourado">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2h0V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h.01"/></svg>
@@ -1163,7 +1177,6 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
-
                     <button type="button" class="item-menu" data-abrir="aporte-reserva">
                         <span class="item-menu-icone tom-roxo">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg>
@@ -1176,7 +1189,6 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
-
                     <button type="button" class="item-menu" data-abrir="simulador">
                         <span class="item-menu-icone tom-roxo">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
@@ -1189,7 +1201,6 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
-
                     <button type="button" class="item-menu" data-abrir="onde-render">
                         <span class="item-menu-icone tom-verde">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="m12 2 9 5H3z"/></svg>
@@ -1202,20 +1213,6 @@
                             <path d="m9 18 6-6-6-6"/>
                         </svg>
                     </button>
-
-                    <button type="button" class="item-menu" data-abrir="ativos">
-                        <span class="item-menu-icone tom-verde">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg>
-                        </span>
-                        <span class="item-menu-texto">
-                            <strong>Investimentos ativos</strong>
-                            <span>Consulte suas alocações, lucros do mês selecionado e variações em tempo real.</span>
-                        </span>
-                        <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="m9 18 6-6-6-6"/>
-                        </svg>
-                    </button>
-
                 </nav>
             </div>
 
@@ -1245,6 +1242,22 @@
                 <p class="subtitulo-tela">Selecione o tipo de ativo e configure a integração automática por API.</p>
 
                 <form id="form-reserva" class="form-despesa">
+                    <!-- v18.6: banco e produto preenchem o resto; "Outro" mantém o formulário de sempre -->
+                    <label for="banco-investimento">Onde está o dinheiro?</label>
+                    <select id="banco-investimento">
+                        <option value="">Outro</option>
+                    </select>
+
+                    <div id="bloco-produto" hidden>
+                        <label for="produto-investimento">Produto</label>
+                        <select id="produto-investimento"></select>
+
+                        <details id="regras-produto" class="regras-avancadas" hidden>
+                            <summary>Regras avançadas</summary>
+                            <p id="regras-produto-texto" class="linha-meta"></p>
+                        </details>
+                    </div>
+
                     <label for="nome-investimento">Instituição / Nome do ativo</label>
                     <input
                         type="text"
@@ -1523,9 +1536,6 @@
             <!-- 4.5 Tela: investimentos ativos -->
             <div class="tela-despesas" data-tela="ativos" hidden>
                 <div class="cabecalho-tela">
-                    <button type="button" class="botao-voltar" data-abrir="menu" aria-label="Voltar">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                    </button>
                     <h3>Investimentos ativos</h3>
                 </div>
 
@@ -1550,7 +1560,7 @@
         <section id="cartoes" class="painel-largo" hidden>
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">Gerenciar · Cartões</span>
+                    <span class="sobretitulo">Lançamentos · Cartões</span>
                     <h2>Meus <em>cartões</em></h2>
                     <p class="subtitulo">Faturas, limites e parcelas de cada cartão</p>
                 </div>
@@ -1575,7 +1585,7 @@
         <section id="backup" hidden>
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">Gerenciar · Backup</span>
+                    <span class="sobretitulo">Dados · Backup</span>
                     <h2>Backup e <em>exportação</em></h2>
                     <p class="subtitulo">Guarde, recupere e exporte seus dados com segurança</p>
                 </div>
@@ -1656,11 +1666,60 @@
         </section>
 
             
+        <!-- v18.3: MAIS (atalhos para telas que já existem) -->
+        <section id="mais" class="painel-largo" hidden>
+            <div class="painel-cabecalho">
+                <div class="painel-cabecalho-texto">
+                    <span class="sobretitulo">Mais</span>
+                    <h2>Mais <em>opções</em></h2>
+                    <p class="subtitulo">Relatórios, backup e informações do app</p>
+                </div>
+            </div>
+
+            <!-- v18.22: itens do Mais em grupos -->
+            <nav class="grupos-mais" aria-label="Mais opções">
+                <span class="sobretitulo" id="mais-grupo-1">Análise</span>
+                <div class="menu-despesas" role="group" aria-labelledby="mais-grupo-1">
+                <button type="button" class="item-menu" data-ir="relatorios">
+                    <span class="item-menu-icone tom-roxo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Relatórios</strong>
+                        <span>Evolução, balanço do mês e despesas por categoria.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                </div>
+                <!-- v18.23: Categorias fica só em Despesas › Gerenciar categorias -->
+                <span class="sobretitulo" id="mais-grupo-2">Dados</span>
+                <div class="menu-despesas" role="group" aria-labelledby="mais-grupo-2">
+                <button type="button" class="item-menu" data-ir="backup">
+                    <span class="item-menu-icone"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Backup</strong>
+                        <span>Salve e restaure uma cópia dos seus dados.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                </div>
+                <span class="sobretitulo" id="mais-grupo-3">Ajuda</span>
+                <div class="menu-despesas" role="group" aria-labelledby="mais-grupo-3">
+                <button type="button" class="item-menu" data-ir="sobre">
+                    <span class="item-menu-icone tom-verde"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Sobre</strong>
+                        <span>Perguntas frequentes, glossário, novidades e tutorial.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                </div>
+            </nav>
+        </section>
+
         <!-- 6. SOBRE -->
         <section id="sobre" class="painel-largo" hidden>
             <div class="painel-cabecalho">
                 <div class="painel-cabecalho-texto">
-                    <span class="sobretitulo">App · Sobre</span>
+                    <span class="sobretitulo">Ajuda · Sobre</span>
                     <h2>Sobre o <em>app</em></h2>
                     <p class="subtitulo">Conheça o projeto, sua privacidade e as novidades</p>
                 </div>
@@ -1712,7 +1771,7 @@
                     <div class="sb-trio">
                         <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span><strong>Controlar</strong><span>Saiba para onde o dinheiro vai</span></div>
                         <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span><strong>Organizar</strong><span>Contas, cartões e vencimentos</span></div>
-                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><strong>Planejar</strong><span>Metas, reserva e investimentos</span></div>
+                        <div><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><strong>Planejamento</strong><span>Metas, reserva e investimentos</span></div>
                     </div>
                     <div class="sb-historia sb-historia-v2">
                         <div class="sbh-texto">
@@ -1722,7 +1781,7 @@
                         <figure class="sbh-citacao">
                             <svg class="sbh-aspas" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 4-2 5-4 5z"/><path d="M14 21c3 0 7-1 7-8V5h-7v8h4c0 4-2 5-4 5z"/></svg>
                             <blockquote>Quem cuida bem dos pequenos valores de hoje constrói as grandes conquistas de amanhã.</blockquote>
-                            <figcaption><img src="assets/logo-jvm-128.png" alt="" width="34" height="34"><span><b>JVM</b><small>Criador do Controle Financeiro</small></span></figcaption>
+                            <figcaption><img src="assets/logo-jvm-128.png" alt="" width="34" height="34"><span><b>JVM</b><small>Criador do Bufunfa</small></span></figcaption>
                         </figure>
                     </div>
                     <a class="painel-link" href="about/">Sobre o projeto</a>
@@ -1756,29 +1815,29 @@
                     <input type="search" id="busca-glossario" placeholder="Buscar dúvida" autocomplete="off" aria-label="Buscar nas dúvidas e no glossário">
                     <div class="sb-acordeao sb-ajuda-lista" id="lista-duvidas" data-painel="duvidas" role="tabpanel">
                         <details><summary>Meus dados somem se eu fechar o site?</summary><p>Não. Eles ficam salvos no navegador. Só somem se você limpar os dados do site ou usar uma janela anônima.</p></details>
-                        <details><summary>Como uso em outro aparelho?</summary><p>Faça um backup em Backup e exportação, envie o arquivo .json para o outro aparelho e use "Restaurar backup".</p></details>
-                        <details><summary>O que acontece quando pauso uma despesa recorrente?</summary><p>As cobranças ainda não pagas, do mês atual em diante, deixam de entrar nas somas. Ao retomar, elas voltam a valer; os meses que passaram durante a pausa ficam de fora.</p></details>
-                        <details><summary>As cotações não atualizam. E agora?</summary><p>Elas precisam de internet. Sem conexão, o app mostra o último valor salvo e atualiza quando você voltar a ficar online.</p></details>
-                        <details><summary>Os valores do simulador são garantidos?</summary><p>Não. São estimativas com base nas taxas informadas e não representam recomendação de investimento.</p></details>
-                        <details><summary>Como funciona a previsão para o fim do mês?</summary><p>É a receita do mês menos as saídas já lançadas (despesas, contas, parcelas e aportes) e menos a estimativa dos gastos do dia a dia até o fim do mês, calculada pela média diária desses gastos até hoje. Aparece no Início, no mês atual, quando há receita registrada. O ícone de informação ao lado do valor mostra a conta com os seus números.</p></details>
-                        <details><summary>Como é calculada a projeção de gastos em Relatórios?</summary><p>Despesas já lançadas mais a média diária dos gastos do dia a dia multiplicada pelos dias que faltam. Contas recorrentes e parcelas entram uma vez só. Os indicadores de Evolução têm um ícone de informação com a fórmula aplicada.</p></details>
-                        <details><summary>Como registrar um salário que entra todo mês?</summary><p>Em Registrar receita, escolha o tipo Recorrente. O valor passa a entrar automaticamente todo mês. Um reajuste vale a partir do mês informado e não altera os meses anteriores.</p></details>
+                        <details><summary>Como uso em outro aparelho?</summary><p>Faça um backup em Mais › Backup, envie o arquivo .json para o outro aparelho e use "Restaurar backup".</p></details>
+                        <details><summary>Como funciona o backup automático?</summary><p>Em Backup, ative o backup automático e escolha a frequência. No Chrome ou Edge do computador, o arquivo é salvo na pasta escolhida; nos demais navegadores, é baixado automaticamente.</p></details>
                         <details><summary>Excluí um lançamento por engano. É possível desfazer?</summary><p>Sim. O aviso exibido logo após a exclusão traz o botão Desfazer, que restaura o que foi apagado.</p></details>
+                        <details><summary>Como registrar um salário que entra todo mês?</summary><p>No botão +, escolha Receita e o tipo Recorrente. O valor passa a entrar automaticamente todo mês. Os reajustes ficam em Lançamentos › Receitas: cada um vale a partir do mês informado e não altera os meses anteriores.</p></details>
+                        <details><summary>O que acontece quando pauso uma despesa recorrente?</summary><p>As cobranças ainda não pagas, do mês atual em diante, deixam de entrar nas somas. Ao retomar, elas voltam a valer; os meses que passaram durante a pausa ficam de fora.</p></details>
                         <details><summary>Como alterar todas as parcelas de uma compra?</summary><p>Ao editar ou excluir uma parcela ou uma conta recorrente, escolha entre Somente esta, Esta e as posteriores ou Toda a série.</p></details>
                         <details><summary>Como excluir várias despesas de uma vez?</summary><p>Na lista de despesas, use o botão Selecionar, marque os lançamentos e aplique a ação na barra que aparece.</p></details>
                         <details><summary>Como importar o extrato do banco?</summary><p>Em Despesas, abra Importar extrato e envie o arquivo OFX ou CSV do banco ou da fatura do cartão. Cada lançamento recebe uma categoria sugerida, e você escolhe quais importar antes de confirmar.</p></details>
                         <details><summary>Como registrar o pagamento da fatura do cartão?</summary><p>Em Cartões, no card Fatura atual, use Pagar fatura. As compras daquela fatura são marcadas como pagas.</p></details>
-                        <details><summary>Como funciona o backup automático?</summary><p>Em Backup, ative o backup automático e escolha a frequência. No Chrome ou Edge do computador, o arquivo é salvo na pasta escolhida; nos demais navegadores, é baixado automaticamente.</p></details>
+                        <details><summary>Como funciona a previsão para o fim do mês?</summary><p>É a receita do mês menos as saídas já lançadas (despesas, contas, parcelas e aportes) e menos a estimativa dos gastos do dia a dia até o fim do mês, calculada pela média diária desses gastos até hoje. Aparece no Início, no mês atual, quando há receita registrada. O ícone de informação ao lado do valor mostra a conta com os seus números.</p></details>
+                        <details><summary>Como é calculada a projeção de gastos em Relatórios?</summary><p>Despesas já lançadas mais a média diária dos gastos do dia a dia multiplicada pelos dias que faltam. Contas recorrentes e parcelas entram uma vez só. Os indicadores de Evolução têm um ícone de informação com a fórmula aplicada.</p></details>
                         <details><summary>Como é calculado o aporte sugerido de uma meta?</summary><p>É o valor que falta para a meta dividido pelos meses até o prazo. Aparece em Metas, no Plano para bater as metas, e nos detalhes de Metas e reserva no Início.</p></details>
+                        <details><summary>Os valores do simulador são garantidos?</summary><p>Não. São estimativas com base nas taxas informadas e não representam recomendação de investimento.</p></details>
+                        <details><summary>As cotações não atualizam. E agora?</summary><p>Elas precisam de internet. Sem conexão, o app mostra o último valor salvo e atualiza quando você voltar a ficar online.</p></details>
                     </div>
                     <div class="sb-acordeao sb-ajuda-lista" id="lista-glossario" data-painel="glossario" role="tabpanel" hidden>
+                        <details><summary>Inflação</summary><p>Aumento geral dos preços ao longo do tempo. Com ela, o mesmo dinheiro compra cada vez menos coisas.</p></details>
+                        <details><summary>IPCA</summary><p>Índice de Preços ao Consumidor Amplo, calculado pelo IBGE. É a inflação oficial do país e mostra o quanto os preços subiram em um período.</p></details>
                         <details><summary>Selic</summary><p>Taxa básica de juros da economia brasileira, definida pelo Copom do Banco Central. Serve de referência para financiamentos, empréstimos e investimentos.</p></details>
                         <details><summary>CDI</summary><p>Taxa de referência usada nas operações entre bancos e que acompanha de perto a Selic. É o parâmetro de rentabilidade da renda fixa: "100% do CDI" significa render igual a ela.</p></details>
-                        <details><summary>IPCA</summary><p>Índice de Preços ao Consumidor Amplo, calculado pelo IBGE. É a inflação oficial do país e mostra o quanto os preços subiram em um período.</p></details>
-                        <details><summary>Inflação</summary><p>Aumento geral dos preços ao longo do tempo. Com ela, o mesmo dinheiro compra cada vez menos coisas.</p></details>
-                        <details><summary>Liquidez</summary><p>Facilidade de transformar um investimento em dinheiro, sem perder valor. Quanto mais rápido o resgate, maior a liquidez.</p></details>
-                        <details><summary>Rentabilidade</summary><p>Quanto um investimento rendeu em um período, em porcentagem. A rentabilidade real é a que sobra depois de descontar a inflação.</p></details>
                         <details><summary>Juros compostos</summary><p>Juros que incidem sobre o valor investido mais os juros já acumulados: o famoso "juros sobre juros".</p></details>
+                        <details><summary>Rentabilidade</summary><p>Quanto um investimento rendeu em um período, em porcentagem. A rentabilidade real é a que sobra depois de descontar a inflação.</p></details>
+                        <details><summary>Liquidez</summary><p>Facilidade de transformar um investimento em dinheiro, sem perder valor. Quanto mais rápido o resgate, maior a liquidez.</p></details>
                         <details><summary>Renda fixa e renda variável</summary><p>Na renda fixa, a regra de remuneração é conhecida na hora da aplicação. Na renda variável (como ações), o retorno muda conforme o mercado e pode ser negativo.</p></details>
                         <details><summary>CDB</summary><p>Título de renda fixa em que você empresta dinheiro a um banco e recebe juros em troca, geralmente atrelados ao CDI.</p></details>
                         <details><summary>Tesouro Direto</summary><p>Programa em que você empresta dinheiro ao governo federal comprando títulos públicos, como o Tesouro Selic, o IPCA+ e o prefixado.</p></details>
@@ -1836,8 +1895,22 @@
 
                 <!-- Contato e feedback -->
                 <div class="painel-card col-2" id="sb-contato">
-                    <div class="painel-titulo">
-                        <svg class="icone-dourado" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    <div class="painel-titulo sb-contato-titulo">
+                        <!-- v18.12: logo original do projeto (JVM), com a animação, ao lado do contato com o autor -->
+                        <span class="sb-logo-3d">
+                        <span class="menu-marca-icone logo-vidro" title="JVM">
+                            <span class="logo-cena" aria-hidden="false">
+                                <img src="assets/logo-jvm-128.png" alt="JVM" class="menu-marca-logo logo-base" width="34" height="34">
+                                <img src="assets/logo-jvm-128.png" alt="" class="logo-cheio" width="34" height="34" aria-hidden="true">
+                                <span class="logo-luz" aria-hidden="true"></span>
+                            </span>
+                            <span class="logo-reflexo" aria-hidden="true"></span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+                                <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+                            </svg>
+                        </span>
+                        </span>
                         <h3>Contato e feedback</h3>
                     </div>
                     <p class="painel-subtitulo">Teve uma ideia ou encontrou um problema? Me conte!</p>
@@ -1903,7 +1976,6 @@
                 </button>
             </div>
 
-            <div id="receitas-fixas" class="receitas-fixas" hidden></div>
 
             <form id="form-receita" class="form-despesa">
                 <label for="receitames">Valor da receita mensal (R$)</label>
@@ -1985,6 +2057,52 @@
         </div>
     </div>
 
+    <!-- v18.3: gaveta do botão + (cada opção leva à tela que já existe) -->
+    <div id="gaveta-novo" class="modal gaveta" hidden>
+        <div class="modal-caixa vidro" role="dialog" aria-modal="true" aria-labelledby="gaveta-novo-titulo" tabindex="-1">
+            <div class="modal-topo">
+                <h3 id="gaveta-novo-titulo" class="titulo-com-ladrilho"><span class="ladrilho tom-dourado"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg></span>Novo registro</h3>
+                <button type="button" id="fechar-gaveta-novo" class="botao-icone" aria-label="Fechar">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <nav class="menu-despesas" aria-label="Tipo de registro">
+                <button type="button" class="item-menu" data-novo="despesa" data-ir="gastos:cadastrar">
+                    <span class="item-menu-icone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Despesa</strong>
+                        <span>Gasto avulso, recorrente ou parcelado.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <button type="button" class="item-menu" data-novo="cartao" data-ir="gastos:cadastrar">
+                    <span class="item-menu-icone tom-roxo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Compra no cartão</strong>
+                        <span>Despesa lançada na fatura de um cartão.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <button type="button" class="item-menu" data-novo="receita">
+                    <span class="item-menu-icone tom-verde"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 16 6 6"/><circle cx="16" cy="9" r="2.9"/><circle cx="6" cy="5" r="3"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Receita</strong>
+                        <span>Valor recebido no mês.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <button type="button" class="item-menu" data-novo="aporte" data-ir="reserva-emergencia:aporte-reserva">
+                    <span class="item-menu-icone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></span>
+                    <span class="item-menu-texto">
+                        <strong>Aporte</strong>
+                        <span>Valor guardado na reserva ou nos investimentos.</span>
+                    </span>
+                    <svg class="item-menu-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </nav>
+        </div>
+    </div>
+
     <!-- Janela: registrar ou editar cartão -->
     <!-- Barra inferior (celular) -->
     <nav class="barra-abas" aria-label="Menu principal">
@@ -1995,7 +2113,7 @@
     <!-- Biblioteca para criar gráficos -->
 
     <!-- JavaScript do aplicativo -->
-    <script src="Controlefinanceiro.js?v=18.1"></script>
+    <script src="Controlefinanceiro.js?v=18.36"></script>
 
 </body>
 </html>

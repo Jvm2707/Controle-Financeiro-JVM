@@ -1,9 +1,9 @@
-# Sobre o Controle Financeiro JVM
+# Sobre o Bufunfa
 
-O **Controle Financeiro JVM** é uma aplicação web gratuita de **controle financeiro pessoal**, em português do Brasil, para organizar despesas, receitas, cartões de crédito, metas e investimentos em um só lugar. Ela funciona direto no navegador, sem cadastro e sem conta, e guarda os dados no próprio aparelho de quem usa.
+O **Bufunfa** (antigo Controle Financeiro JVM) é uma aplicação web gratuita de **controle financeiro pessoal**, em português do Brasil, para organizar despesas, receitas, cartões de crédito, metas e investimentos em um só lugar. Ela funciona direto no navegador, sem cadastro e sem conta, e guarda os dados no próprio aparelho de quem usa.
 
 - **Endereço oficial:** <https://jvm2707.github.io/Controle-Financeiro-JVM/>
-- **Versão atual:** 2.0.2 (novembro de 2026)
+- **Versão atual:** 2.1.0 (novembro de 2026)
 - **Autor:** JVM ([perfil no GitHub](https://github.com/jvm2707))
 - **Código-fonte:** [github.com/jvm2707/Controle-Financeiro-JVM](https://github.com/jvm2707/Controle-Financeiro-JVM)
 
@@ -13,16 +13,16 @@ O objetivo é oferecer uma ferramenta simples para quem quer **saber para onde v
 
 ## O problema que ele resolve
 
-Planilhas exigem montar fórmulas e manter tudo à mão. Muitos aplicativos de finanças, por outro lado, pedem cadastro, acesso à conta bancária ou assinatura. O Controle Financeiro JVM fica no meio do caminho: tem cálculos prontos (parcelas, faturas, recorrências, rendimento), mas mantém o controle e os dados com a própria pessoa.
+Planilhas exigem montar fórmulas e manter tudo à mão. Muitos aplicativos de finanças, por outro lado, pedem cadastro, acesso à conta bancária ou assinatura. O Bufunfa fica no meio do caminho: tem cálculos prontos (parcelas, faturas, recorrências, rendimento), mas mantém o controle e os dados com a própria pessoa.
 
 ## Principais funcionalidades
 
-- **Início:** saldo acumulado, receitas e despesas do mês, previsão de saldo no fim do mês, vencimentos em linha do tempo, orçamento por categoria, metas, cotação de moedas e últimas movimentações.
+- **Início:** saldo acumulado, receitas e despesas do mês, previsão de saldo no fim do mês, vencimentos em linha do tempo, orçamento por categoria, metas, cotação de moedas e últimos lançamentos.
 - **Despesas:** cadastro de despesas únicas, recorrentes (com pausa e retomada) e parceladas; forma de pagamento (Pix, débito, dinheiro, boleto ou cartão de crédito); categorias com limite de orçamento; edição e exclusão em série; seleção de várias despesas de uma vez; importação de extratos OFX e CSV.
 - **Cartões:** fatura atual, limite usado e disponível, melhor dia de compra, próximas faturas e pagamento da fatura inteira.
 - **Receitas:** receitas do mês e receitas recorrentes com reajuste de valor.
 - **Metas:** objetivos com valor e prazo, aportes e plano de quanto guardar por mês.
-- **Reserva e investimentos:** reserva de emergência, simulador de evolução, comparação de taxas ("Onde render mais"), investimentos com cotações públicas e resgates com estimativa de IR e IOF.
+- **Reserva e investimentos:** reserva de emergência, simulador de evolução, comparação de taxas ("Onde render mais"), cadastro por banco e produto com faixas de rendimento, investimentos com cotações públicas e resgates com estimativa de IR e IOF.
 - **Relatórios:** evolução anual e semestral, balanço do mês, despesas por categoria, comparação entre meses, assinaturas e relatório mensal.
 - **Backup e exportação:** backup e restauração em arquivo, backup automático em uma pasta do computador, exportação das despesas em CSV e relatório do mês para imprimir ou salvar em PDF.
 - **App instalável:** pode ser instalado no celular ou no computador (PWA), funciona sem internet depois de aberto uma vez e pode lembrar vencimentos por notificação.
@@ -33,7 +33,7 @@ HTML, CSS e JavaScript puros, sem framework e sem servidor próprio. Os dados fi
 
 ## O que o projeto não é
 
-O Controle Financeiro JVM **não é um banco, uma corretora nem uma consultoria financeira**. Ele não movimenta dinheiro, não se conecta a contas bancárias e não oferece uma API pública. As simulações e comparações de taxas são estimativas e não constituem recomendação de investimento.
+O Bufunfa **não é um banco, uma corretora nem uma consultoria financeira**. Ele não movimenta dinheiro, não se conecta a contas bancárias e não oferece uma API própria. Ele apenas consulta APIs públicas de cotações e taxas, enviando só códigos e datas (veja a [política de privacidade](../privacy/)). As simulações e comparações de taxas são estimativas e não constituem recomendação de investimento.
 
 ## Páginas relacionadas
 

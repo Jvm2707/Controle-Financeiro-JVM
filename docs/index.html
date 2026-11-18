@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'none'; form-action 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Documentação · Controle Financeiro JVM</title>
-    <meta name="description" content="Documentação técnica do Controle Financeiro JVM: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
+    <title>Documentação · Bufunfa</title>
+    <meta name="description" content="Documentação técnica do Bufunfa: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
     <meta name="author" content="JVM">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://jvm2707.github.io/Controle-Financeiro-JVM/docs/">
     <link rel="alternate" type="text/markdown" href="index.md" title="Versão em Markdown">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Controle Financeiro JVM">
-    <meta property="og:title" content="Documentação · Controle Financeiro JVM">
-    <meta property="og:description" content="Documentação técnica do Controle Financeiro JVM: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
+    <meta property="og:site_name" content="Bufunfa">
+    <meta property="og:title" content="Documentação · Bufunfa">
+    <meta property="og:description" content="Documentação técnica do Bufunfa: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
     <meta property="og:url" content="https://jvm2707.github.io/Controle-Financeiro-JVM/docs/">
     <meta property="og:image" content="https://jvm2707.github.io/Controle-Financeiro-JVM/assets/og-imagem.jpg">
     <meta property="og:image:width" content="1200">
@@ -25,25 +25,25 @@
 {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "name": "Documentação · Controle Financeiro JVM",
+    "name": "Documentação · Bufunfa",
     "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/docs/",
-    "description": "Documentação técnica do Controle Financeiro JVM: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.",
+    "description": "Documentação técnica do Bufunfa: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.",
     "inLanguage": "pt-BR",
     "isPartOf": {
         "@type": "WebSite",
-        "name": "Controle Financeiro JVM",
+        "name": "Bufunfa",
         "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/"
     },
     "about": {
         "@type": "SoftwareApplication",
-        "name": "Controle Financeiro JVM",
+        "name": "Bufunfa",
         "url": "https://jvm2707.github.io/Controle-Financeiro-JVM/"
     },
     "dateModified": "2026-11-13"
 }
     </script>
     <meta name="theme-color" content="#030304">
-    <link rel="icon" type="image/png" href="../assets/logo-jvm-128.png">
+    <link rel="icon" type="image/png" href="../assets/icones/icone-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
@@ -53,8 +53,8 @@
     <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
     <header class="topo">
         <a class="marca" href="../">
-            <img src="../assets/logo-jvm-128.png" alt="" width="36" height="36">
-            <span>Controle Financeiro <em>JVM</em></span>
+            <img src="../assets/icones/icone-192.png" alt="" width="36" height="36">
+            <span>Bufunfa</span>
         </a>
         <nav class="navegacao" aria-label="Páginas do projeto">
             <a href="../about/">Sobre</a>
@@ -66,15 +66,15 @@
     <main id="conteudo">
         <article class="cartao">
             <p class="sobretitulo">Documentação</p>
-<h1 id="documentacao-do-controle-financeiro-jvm">Documentação do Controle Financeiro JVM</h1>
+<h1 id="documentacao-do-bufunfa">Documentação do Bufunfa</h1>
 <p>Guia técnico do projeto: tecnologias, estrutura dos arquivos, como executar, como os dados são armazenados e como funcionam o backup e a restauração.</p>
 <ul>
 <li><strong>Aplicação:</strong> <a href="https://jvm2707.github.io/Controle-Financeiro-JVM/">https://jvm2707.github.io/Controle-Financeiro-JVM/</a></li>
 <li><strong>Repositório:</strong> <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">github.com/jvm2707/Controle-Financeiro-JVM</a></li>
-<li><strong>Versão documentada:</strong> 2.0.2</li>
+<li><strong>Versão documentada:</strong> 2.1.0</li>
 </ul>
 <h2 id="recursos-que-nao-existem">Recursos que não existem</h2>
-<p>Para evitar confusão: o projeto <strong>não oferece API pública, SDK, CLI, servidor MCP, webhooks nem integração bancária</strong>. Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem <strong>ler</strong> as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.</p>
+<p>Para evitar confusão: o projeto <strong>não oferece API própria, SDK, CLI, servidor MCP, webhooks nem integração bancária</strong>. Ele apenas consome APIs públicas de cotações e taxas (listadas abaixo). Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem <strong>ler</strong> as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.</p>
 <h2 id="tecnologias">Tecnologias</h2>
 <div class="tabela"><table>
 <thead>
@@ -131,6 +131,7 @@
 ├── index.html              Aplicação (todas as telas)
 ├── index.md                Descrição da aplicação em Markdown, para agentes
 ├── Controlefinanceiro.js   Lógica do app
+├── Controlefinanceiro-sobre.js  Histórico de versões da tela Sobre (carregado ao abrir o Sobre)
 ├── Controlefinanceiro.css  Estilos do app
 ├── sw.js                   Service worker (cache offline e lembretes)
 ├── manifest.webmanifest    Manifesto do app instalável
@@ -244,7 +245,7 @@ npx serve .
 <li><a href="../llms.txt">Guia para agentes de IA (llms.txt)</a></li>
 <li><a href="../sitemap.xml">Mapa do site (sitemap.xml)</a></li>
 </ul>
-            <p><a class="botao" href="../">Abrir o Controle Financeiro</a></p>
+            <p><a class="botao" href="../">Abrir o Bufunfa</a></p>
         </article>
     </main>
     <footer class="rodape">
@@ -257,7 +258,7 @@ npx serve .
             <a href="../llms.txt">llms.txt</a>
             <a href="../sitemap.xml">Sitemap</a>
         </nav>
-        <p>Controle Financeiro JVM · projeto pessoal e gratuito de JVM · <a href="index.md">Esta página em Markdown</a> · <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">Código no GitHub</a></p>
+        <p>Bufunfa · projeto pessoal e gratuito de JVM · <a href="index.md">Esta página em Markdown</a> · <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">Código no GitHub</a></p>
     </footer>
 </body>
 </html>

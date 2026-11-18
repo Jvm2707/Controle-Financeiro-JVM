@@ -1,14 +1,14 @@
-# Documentação do Controle Financeiro JVM
+# Documentação do Bufunfa
 
 Guia técnico do projeto: tecnologias, estrutura dos arquivos, como executar, como os dados são armazenados e como funcionam o backup e a restauração.
 
 - **Aplicação:** <https://jvm2707.github.io/Controle-Financeiro-JVM/>
 - **Repositório:** [github.com/jvm2707/Controle-Financeiro-JVM](https://github.com/jvm2707/Controle-Financeiro-JVM)
-- **Versão documentada:** 2.0.2
+- **Versão documentada:** 2.1.0
 
 ## Recursos que não existem
 
-Para evitar confusão: o projeto **não oferece API pública, SDK, CLI, servidor MCP, webhooks nem integração bancária**. Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem **ler** as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.
+Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor MCP, webhooks nem integração bancária**. Ele apenas consome APIs públicas de cotações e taxas (listadas abaixo). Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem **ler** as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.
 
 ## Tecnologias
 
@@ -32,6 +32,7 @@ Para evitar confusão: o projeto **não oferece API pública, SDK, CLI, servidor
 ├── index.html              Aplicação (todas as telas)
 ├── index.md                Descrição da aplicação em Markdown, para agentes
 ├── Controlefinanceiro.js   Lógica do app
+├── Controlefinanceiro-sobre.js  Histórico de versões da tela Sobre (carregado ao abrir o Sobre)
 ├── Controlefinanceiro.css  Estilos do app
 ├── sw.js                   Service worker (cache offline e lembretes)
 ├── manifest.webmanifest    Manifesto do app instalável

@@ -1,6 +1,6 @@
-# Controle Financeiro JVM
+# Bufunfa
 
-Aplicação web gratuita de **controle financeiro pessoal**, em português do Brasil: despesas, receitas, cartões de crédito, orçamento, metas, reserva de emergência e investimentos. Funciona no navegador, sem cadastro, e guarda os dados no aparelho de quem usa (`localStorage`).
+Bufunfa (antigo Controle Financeiro JVM): aplicação web gratuita de **controle financeiro pessoal**, em português do Brasil: despesas, receitas, cartões de crédito, orçamento, metas, reserva de emergência e investimentos. Funciona no navegador, sem cadastro, e guarda os dados no aparelho de quem usa (`localStorage`).
 
 **Acesse:** https://jvm2707.github.io/Controle-Financeiro-JVM/
 
@@ -14,11 +14,11 @@ Aplicação web gratuita de **controle financeiro pessoal**, em português do Br
 
 | | |
 |---|---|
-| Versão | 2.0.2 |
+| Versão | 2.1.0 |
 | Tecnologias | HTML, CSS e JavaScript puros, service worker (PWA), SVG |
 | Dados | `localStorage` do navegador; sem servidor, conta ou sincronização |
 | Hospedagem | GitHub Pages (site estático) |
-| API, SDK, CLI, MCP | Não existem |
+| API, SDK, CLI, MCP | O app não oferece API própria. Ele consulta APIs públicas de cotações e taxas (BCB, AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi, Yahoo Finance) |
 | Autor | JVM ([@jvm2707](https://github.com/jvm2707)) |
 
 ## Executar localmente

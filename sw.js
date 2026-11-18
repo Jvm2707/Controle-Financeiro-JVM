@@ -1,6 +1,6 @@
 // Controle Financeiro · service worker
 // REGRA 3: ao subir o ?v= no HTML, subir também a VERSAO abaixo (com o mesmo número).
-const VERSAO = "18.1";
+const VERSAO = "18.36";
 const CACHE_APP = "cf-app-" + VERSAO;
 const CACHE_FONTES = "cf-fontes";
 const CACHE_LEMBRETES = "cf-lembretes";
@@ -10,6 +10,7 @@ const NUCLEO = [
     "./index.html",
     "./Controlefinanceiro.css?v=" + VERSAO,
     "./Controlefinanceiro.js?v=" + VERSAO,
+    "./Controlefinanceiro-sobre.js?v=" + VERSAO, // v18.31: Novidades da tela Sobre (carregadas sob demanda)
     "./manifest.webmanifest",
     "./assets/logo-jvm.png",
     "./assets/logo-jvm-128.png",

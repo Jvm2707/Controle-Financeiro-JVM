@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- v17.7: segurança (CSP). Se o script em linha do <body> mudar, atualizar o hash (ver REGRAS-DO-PROJETO.md) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Egb26+s5F1q05OHx+gTKTM736IJn8+mnJhRwFocLb10='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; worker-src 'self'; manifest-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Egb26+s5F1q05OHx+gTKTM736IJn8+mnJhRwFocLb10=' 'sha256-VE1Ze5Go/CIOZst4i3LDz9RE9+aUGpm+Fwx9Bsp++9w='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; worker-src 'self'; manifest-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <!-- v18.38: primeira visita mostra o balão do tutorial antes do JS (hash na CSP; se mudar este script, recalcular) -->
+    <script>(function(){var v;try{v=localStorage.getItem("tutorialVisto")}catch(e){}if(v!=="1")document.documentElement.classList.add("tut-pre")})();</script>
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Bufunfa: planilha de gastos automática e grátis</title>
     <!-- v17.7: SEO e pré-visualização de links -->
@@ -93,8 +95,9 @@
     <link rel="privacy-policy" href="privacy/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@500;600;700&display=swap">
-    <link rel="stylesheet" href="Controlefinanceiro.css?v=18.36">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@500;600;700&display=swap">
+    <link rel="preload" href="Controlefinanceiro.js?v=18.39" as="script"> <!-- v18.37: baixa o JS em paralelo com o CSS (LCP) -->
+    <link rel="stylesheet" href="Controlefinanceiro.css?v=18.39">
     <link rel="icon" type="image/png" href="assets/icones/icone-192.png">
     <!-- v16.6: app instalável (PWA) -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -107,6 +110,185 @@
 </head>
 
 <body>
+    <!-- v18.38: balão do passo 1 do tutorial já no HTML, logo no início do <body> (é fixed; no fim do HTML ele só era lido depois da primeira pintura). Na primeira visita o script do <head> mostra (classe tut-pre)
+         antes de o JS carregar; o JS reaproveita este mesmo elemento (montarTutorial). Manter igual ao primeiro passo de PASSOS_TUTORIAL. -->
+    <div id="tutorial" hidden role="dialog" aria-modal="true" aria-label="Tutorial de boas-vindas">
+        <div class="tut-foco sem" id="tut-foco" style="left:50%;top:50%;width:0;height:0"></div>
+        <div class="tut-balao centro" id="tut-balao">
+            <div class="tut-corpo">
+                <div class="tut-mascote" id="tut-mascote" data-pose="acenar"><svg class="mascote m-acenar" viewBox="-12 -12 184 214" aria-hidden="true">
+    <g class="m-w-tudo" style="transform-origin:80px 188px">
+    <ellipse class="m-sombra" cx="80" cy="191" rx="50" ry="6" fill="rgba(0,0,0,.35)"></ellipse>
+    <g class="m-pe-e" style="transform-origin:40px 183px"><ellipse cx="40" cy="183" rx="32" ry="6" transform="rotate(-8 40 183)" fill="#4f4336"></ellipse></g>
+    <g class="m-pe-d" style="transform-origin:120px 183px"><ellipse cx="120" cy="183" rx="32" ry="6" transform="rotate(8 120 183)" fill="#4f4336"></ellipse></g>
+    <g class="m-corpo">
+        <path d="M52 80 Q38 132 46 177 Q80 192 114 177 Q122 132 108 80 Z" fill="#6a5c4b"></path>
+        <ellipse cx="80" cy="136" rx="27" ry="42" fill="#a99371"></ellipse>
+        <ellipse cx="80" cy="128" rx="19" ry="30" fill="#bda684" opacity=".55"></ellipse>
+    </g>
+    <g class="m-braco-e" style="transform-origin:54px 100px">
+        <path d="M54 98 Q34 112 38 152 Q41 165 50 160 Q60 132 64 108 Z" fill="#5a4d3e"></path>
+    </g>
+    <g class="m-braco-d" style="transform-origin:106px 100px">
+        <path d="M106 98 Q126 112 122 152 Q119 165 110 160 Q100 132 96 108 Z" fill="#5a4d3e"></path>
+        <g class="m-tablet" transform="rotate(14 118 160)">
+            <rect x="106" y="140" width="28" height="36" rx="3" fill="#d4dae3" stroke="#8c95a3" stroke-width="1.5"></rect>
+            <rect x="109.5" y="143.5" width="21" height="27" rx="1.5" fill="#1d3b5c"></rect>
+            <path d="M113 165 l5 -6 l4 3 l6 -8" fill="none" stroke="#F0B93B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+        <g class="m-moeda">
+            <circle cx="117" cy="162" r="11" fill="#F0B93B" stroke="#b9860f" stroke-width="2"></circle>
+            <path d="M111 167 l4 -5 l3 3 l5 -7" fill="none" stroke="#7a5608" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+    </g>
+    <g class="m-w-cabeca" style="transform-origin:80px 92px">
+    <g class="m-cabeca" style="transform-origin:80px 92px">
+        <ellipse cx="49" cy="60" rx="5" ry="7" fill="#5a4d3e"></ellipse>
+        <ellipse cx="111" cy="60" rx="5" ry="7" fill="#5a4d3e"></ellipse>
+        <ellipse cx="80" cy="64" rx="28" ry="30" fill="#6a5c4b"></ellipse>
+        <ellipse cx="80" cy="78" rx="15" ry="14" fill="#8d7b64"></ellipse>
+        <ellipse cx="80" cy="71" rx="6.5" ry="4.6" fill="#1d2024"></ellipse>
+        <path class="m-boca" d="M80 75 v5" stroke="#2a2825" stroke-width="2" stroke-linecap="round"></path>
+        <path class="m-boca m-boca-curva" d="M72 86 Q80 81 88 86" fill="none" stroke="#2a2825" stroke-width="2.2" stroke-linecap="round"></path>
+        <path class="m-boca-seria" d="M72 87.5 Q80 83 88 87.5" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"></path>
+        <g class="m-sorriso">
+            <path d="M80 75 v4" stroke="#2a2825" stroke-width="2" stroke-linecap="round"></path>
+            <path d="M70 83 Q80 95 90 83 Q80 88 70 83 Z" fill="#2a2825" stroke="#2a2825" stroke-width="2" stroke-linejoin="round"></path>
+            <path d="M74 86 Q80 90 86 86" fill="none" stroke="#f4efe6" stroke-width="2" stroke-linecap="round"></path>
+            <ellipse cx="55" cy="72" rx="5" ry="3" fill="#e0866f" opacity=".55"></ellipse>
+            <ellipse cx="105" cy="72" rx="5" ry="3" fill="#e0866f" opacity=".55"></ellipse>
+        </g>
+        <g stroke="#e4dccd" stroke-width="1" stroke-linecap="round" opacity=".8">
+            <path d="M64 74 L44 70"></path><path d="M64 77 L43 78"></path><path d="M65 80 L47 86"></path>
+            <path d="M96 74 L116 70"></path><path d="M96 77 L117 78"></path><path d="M95 80 L113 86"></path>
+        </g>
+        <g class="m-w-olhos" style="transform-origin:80px 56px">
+        <g class="m-olhos" style="transform-origin:80px 56px">
+            <ellipse cx="66" cy="56" rx="4.4" ry="4.8" fill="#16181b"></ellipse>
+            <ellipse cx="94" cy="56" rx="4.4" ry="4.8" fill="#16181b"></ellipse>
+            <circle cx="67.4" cy="54.5" r="1.4" fill="#fff"></circle><circle cx="95.4" cy="54.5" r="1.4" fill="#fff"></circle>
+        </g>
+        </g>
+        <path class="m-sobr" style="transform-origin:66px 50px" d="M59 52 Q66 47 73 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"></path>
+        <path class="m-sobr" style="transform-origin:94px 50px" d="M87 52 Q94 47 101 52" fill="none" stroke="#2a2825" stroke-width="2.4" stroke-linecap="round"></path>
+        <g class="m-oculos">
+            <path d="M52 53 L58 53 M102 53 L108 53" stroke="#0c0d10" stroke-width="2.4" stroke-linecap="round"></path>
+            <path d="M58 49 H76 a2 2 0 0 1 2 2 v4 a8 8 0 0 1 -8 8 h-4 a8 8 0 0 1 -8 -8 v-4 a2 2 0 0 1 2 -2 Z" fill="#0c0d10"></path>
+            <path d="M82 49 H100 a2 2 0 0 1 2 2 v4 a8 8 0 0 1 -8 8 h-4 a8 8 0 0 1 -8 -8 v-4 a2 2 0 0 1 2 -2 Z" fill="#0c0d10"></path>
+            <path d="M78 52 Q80 50.5 82 52" fill="none" stroke="#0c0d10" stroke-width="2.4"></path>
+            <path d="M61 52 l5 -0.5 M85 52 l5 -0.5" stroke="#F0B93B" stroke-width="1.8" stroke-linecap="round" opacity=".85"></path>
+            <path d="M63 56 l3 -.3 M87 56 l3 -.3" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".6"></path>
+        </g>
+        <g class="m-moicano" fill="none" stroke-linecap="round" style="transform-origin:80px 36px">
+            <path d="M69 37 Q67 30 63 26" stroke="#8B5CF6" stroke-width="2.4"></path>
+            <path d="M73 35.5 Q72 27 70 20" stroke="#A78BFA" stroke-width="2.2"></path>
+            <path d="M77 34.5 Q77 25 76 17" stroke="#7C3AED" stroke-width="2.4"></path>
+            <path d="M81 34 Q82 24 84 16" stroke="#8B5CF6" stroke-width="2.4"></path>
+            <path d="M85 34.5 Q88 27 91 21" stroke="#A78BFA" stroke-width="2.2"></path>
+            <path d="M89 36 Q93 31 97 29" stroke="#7C3AED" stroke-width="2.2"></path>
+            <path d="M75 40 l1 -4 M83 41 l-1 -4 M79 45 l0 -3 M71 44 l-1.5 -2.5 M88 43 l1.5 -2.5" stroke="#9F7AEA" stroke-width="1.6"></path>
+        </g>
+        <g class="m-lingua" style="transform-origin:80px 88px">
+            <path d="M80 75 V83" stroke="#2a2825" stroke-width="2" stroke-linecap="round"></path>
+            <path d="M61 81 Q80 114 99 81 Q80 90 61 81 Z" fill="#2a1a1a" stroke="#2a2825" stroke-width="2" stroke-linejoin="round"></path>
+            <path d="M73 87 Q80 90 87 87" fill="none" stroke="#f4efe6" stroke-width="2.4" stroke-linecap="round"></path>
+        </g>
+        <g class="m-chapeu" style="transform-origin:80px 40px">
+        <ellipse cx="80" cy="40" rx="42" ry="9" fill="#0f1114"></ellipse>
+        <rect x="54" y="6" width="52" height="34" rx="4" fill="#15181c"></rect>
+        <ellipse cx="80" cy="7" rx="26" ry="5.5" fill="#20242a"></ellipse>
+        <rect x="54" y="29" width="52" height="7" fill="#c8322f"></rect>
+        <text x="80" y="24" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="7.6" textLength="42" lengthAdjust="spacingAndGlyphs" fill="#F0B93B">BUFUNFA</text>
+        <path d="M95 13 l4 -4 l3 3 l5 -6" fill="none" stroke="#F0B93B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+    </g>
+    </g>
+    <g class="m-gravata">
+        <path d="M80 100 L61 91 L61 109 Z" fill="#101215"></path>
+        <path d="M80 100 L99 91 L99 109 Z" fill="#101215"></path>
+        <rect x="75" y="94" width="10" height="12" rx="3" fill="#1b1e23"></rect>
+    </g>
+    <g class="m-w-lingua" style="transform-origin:80px 92px">
+    <g class="m-cabeca" style="transform-origin:80px 92px">
+        <g class="m-lingua-fora" style="transform-origin:80px 88px">
+            <path d="M72 92 Q70 110 79.5 114 Q90 110 88 92 Q80 96 72 92 Z" fill="#ff8fa3" stroke="#e5607a" stroke-width="1.4" stroke-linejoin="round"></path>
+            <path d="M79.8 97 L79.8 108" stroke="#e5607a" stroke-width="1.2" stroke-linecap="round"></path>
+        </g>
+    </g>
+    </g>
+    <g class="m-dab-e" style="transform-origin:54px 100px">
+        <path d="M49.8 95 L84.2 63.1 A9 9 0 0 1 95.8 76.9 L58.2 105 Z" fill="#5a4d3e"></path>
+    </g>
+    <g class="m-dab-d" style="transform-origin:106px 100px">
+        <path d="M110.2 95 L75.8 63.1 A9 9 0 0 0 64.2 76.9 L101.8 105 Z" fill="#5a4d3e"></path>
+    </g>
+    </g>
+    <g class="m-tontura" style="transform-origin:80px 8px">
+        <g transform="translate(80 8) scale(1.5 .5)">
+            <g class="m-tontura-gira">
+                <path transform="translate(40 0) scale(1.1)" d="M0 -6 L2 -2 L6 0 L2 2 L0 6 L-2 2 L-6 0 L-2 -2 Z" fill="#F0B93B"></path>
+                <path transform="translate(-20 34.6) scale(1.1)" d="M0 -6 L2 -2 L6 0 L2 2 L0 6 L-2 2 L-6 0 L-2 -2 Z" fill="#F0B93B"></path>
+                <path transform="translate(-20 -34.6) scale(1.1)" d="M0 -6 L2 -2 L6 0 L2 2 L0 6 L-2 2 L-6 0 L-2 -2 Z" fill="#fff"></path>
+            </g>
+        </g>
+    </g>
+    <g class="m-topo" style="transform-origin:80px 100px">
+        <g transform="translate(80 100) scale(0.85)">
+            <g class="m-topo-gira">
+                <g class="m-topo-ar" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2.4" stroke-linecap="round">
+                    <path d="M0 -88 A88 88 0 0 1 62 -62"></path>
+                    <path d="M0 88 A88 88 0 0 1 -62 62"></path>
+                    <path d="M88 0 A88 88 0 0 1 62 62" stroke-opacity=".18"></path>
+                    <path d="M-88 0 A88 88 0 0 1 -62 -62" stroke-opacity=".18"></path>
+                </g>
+                <g class="m-topo-tras">
+                    <g transform="translate(-68 -5)"><g class="m-th-e"><path d="M0 0 C-8 -3 -18 -6 -27 -4 C-31 -2 -31 3 -27 4 C-18 6 -8 3 0 0 Z" fill="#4f4336"></path></g></g>
+                    <g transform="translate(-68 5)"><g class="m-th-d"><path d="M0 0 C-8 3 -18 6 -27 4 C-31 2 -31 -3 -27 -4 C-18 -6 -8 -3 0 0 Z" fill="#4f4336"></path></g></g>
+                    <path d="M-72 -3 C-62 -8 -48 -13 -30 -17 C-22 -19 -14 -20.5 -2 -21 L-2 21 C-14 20.5 -22 19 -30 17 C-48 13 -62 8 -72 3 Z" fill="#6a5c4b"></path>
+                    <path d="M-62 0 C-44 -3 -24 -4 -4 -4" fill="none" stroke="#8a7660" stroke-width="5" stroke-linecap="round" opacity=".45"></path>
+                </g>
+                <g class="m-topo-frente" style="transform-origin:-6px 0px">
+                    <g transform="translate(12 18)"><g class="m-tf-b"><path d="M-3 0 C4 4 9 16 6 28 C4 35 -3 35 -5 29 C-8 18 -6 6 -3 0 Z" fill="#5a4d3e"></path></g></g>
+                    <g transform="translate(12 -18)"><g class="m-tf-a"><path d="M-3 0 C4 4 9 16 6 28 C4 35 -3 35 -5 29 C-8 18 -6 6 -3 0 Z" fill="#5a4d3e" transform="scale(1 -1)"></path></g></g>
+                    <path d="M-12 -21 C4 -23 20 -22 30 -17 C38 -14 44 -12 48 -10 L48 10 C44 12 38 14 30 17 C20 22 4 23 -12 21 Z" fill="#6a5c4b"></path>
+                    <path d="M-8 0 C10 -3 30 -3 46 0" fill="none" stroke="#8a7660" stroke-width="5" stroke-linecap="round" opacity=".45"></path>
+                    <ellipse cx="56" cy="0" rx="15" ry="12" fill="#6a5c4b"></ellipse>
+                    <circle cx="52" cy="0" r="21" fill="#101215"></circle>
+                    <circle cx="52" cy="0" r="21" fill="none" stroke="#2c3138" stroke-width="1.6"></circle>
+                    <circle cx="52" cy="0" r="13" fill="#1b1f25" stroke="#c8322f" stroke-width="2.6"></circle>
+                    <path d="M46 3 l4 -5 l3 3 l5 -6" fill="none" stroke="#F0B93B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M71 -4 L85 -10 M71 -1.5 L86 -3 M71 4 L85 10 M71 1.5 L86 3" stroke="#e4dccd" stroke-width="1.2" stroke-linecap="round" opacity=".85"></path>
+                    <circle cx="75" cy="0" r="4.2" fill="#0c0d10"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+    <g class="m-interroga" style="transform-origin:138px 26px">
+        <circle cx="138" cy="26" r="15" fill="#F0B93B" stroke="#b9860f" stroke-width="2"></circle>
+        <text x="138" y="35" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="24" fill="#15181c">?</text>
+    </g>
+    <g class="m-malabarismo">
+        <g class="m-mo m-mo1"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"></circle><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></g>
+        <g class="m-mo m-mo2"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"></circle><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></g>
+        <g class="m-mo m-mo3"><circle r="9" fill="#F0B93B" stroke="#b9860f" stroke-width="2"></circle><path d="M-4 3 l3 -4 l2.5 2.5 l4 -5" fill="none" stroke="#7a5608" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></g>
+    </g>
+</svg></div>
+                <div class="tut-texto">
+                    <span class="tut-passo" id="tut-passo" hidden></span>
+                    <h3 id="tut-titulo">Oi! Eu sou o Bufunfa</h3>
+                    <p id="tut-conteudo">Vou te mostrar o app em menos de 1 minuto. É rapidinho, prometo!</p>
+                </div>
+            </div>
+            <div class="tut-pontos" id="tut-pontos"><i class="ativo"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="tut-acoes">
+                <button type="button" class="tut-pular" id="tut-pular">Pular</button>
+                <span class="tut-espaco"></span>
+                <button type="button" class="tut-voltar" id="tut-voltar" style="visibility:hidden">Voltar</button>
+                <button type="button" class="tut-proximo" id="tut-proximo">Vamos lá!</button>
+            </div>
+        </div>
+    </div>
+
     <!-- v16.8: refração dos cards (usado no backdrop-filter, seção 52 do CSS) -->
     <svg class="lg-filtros" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
         <filter id="lg-refracao" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
@@ -2113,7 +2295,7 @@
     <!-- Biblioteca para criar gráficos -->
 
     <!-- JavaScript do aplicativo -->
-    <script src="Controlefinanceiro.js?v=18.36"></script>
+    <script src="Controlefinanceiro.js?v=18.39"></script>
 
 </body>
 </html>

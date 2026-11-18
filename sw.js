@@ -1,6 +1,6 @@
 // Controle Financeiro · service worker
 // REGRA 3: ao subir o ?v= no HTML, subir também a VERSAO abaixo (com o mesmo número).
-const VERSAO = "18.36";
+const VERSAO = "18.39";
 const CACHE_APP = "cf-app-" + VERSAO;
 const CACHE_FONTES = "cf-fontes";
 const CACHE_LEMBRETES = "cf-lembretes";
@@ -16,6 +16,8 @@ const NUCLEO = [
     "./assets/logo-jvm-128.png",
     "./assets/fundo-liquid-escuro.webp",
     "./assets/fundo-liquid-claro.webp",
+    "./assets/fundo-liquid-escuro-retrato.webp", // v18.37: fundo do celular em pé
+    "./assets/fundo-liquid-claro-retrato.webp",
     "./assets/icones/icone-192.png",
     "./assets/icones/icone-512.png",
     "./assets/icones/apple-touch-icon.png",

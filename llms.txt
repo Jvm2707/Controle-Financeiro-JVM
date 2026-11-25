@@ -53,7 +53,7 @@ The app is one page (index.html) with sections selected from the side menu (desk
 
 - Financial data: browser localStorage, as JSON, on the user's device only. No cookies, no analytics, no tracking.
 - No sync between devices or browsers. Clearing site data deletes everything. Backups are unencrypted JSON files.
-- Outbound requests: public quote APIs (Banco Central do Brasil, AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi, Yahoo Finance) receive only ticker/currency codes and dates, never amounts; Google Fonts; Web3Forms only when the user sends feedback (message type, text, app version, device type).
+- Outbound requests: public quote APIs (Banco Central do Brasil, AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi, Yahoo Finance) receive only ticker/currency codes and dates, never amounts; Web3Forms only when the user sends feedback (message type, text, app version, device type).
 - Full policy: https://jvm2707.github.io/Controle-Financeiro-JVM/privacy/
 
 ## Technical limitations

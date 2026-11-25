@@ -22,7 +22,7 @@ Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor
 | Lembretes | Notifications API e Periodic Background Sync, quando o navegador permite |
 | Dados externos | APIs públicas de cotações: Banco Central do Brasil (SGS), AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi e Yahoo Finance |
 | Feedback | Web3Forms (envio da mensagem por e-mail ao autor) |
-| Fontes | Google Fonts (Geist, Geist Mono, Instrument Serif e Space Grotesk) |
+| Fontes | Geist, Geist Mono, Instrument Serif e Space Grotesk (licença OFL), hospedadas no próprio site em `assets/fontes/` |
 | Hospedagem | GitHub Pages, como site estático |
 
 ## Estrutura dos arquivos publicados
@@ -44,7 +44,7 @@ Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor
 ├── contact/                Contato (index.html e index.md)
 ├── privacy/                Política de privacidade (index.html e index.md)
 ├── docs/                   Esta documentação (index.html e index.md)
-└── assets/                 Imagens, ícones, fundos e o estilo das páginas institucionais
+└── assets/                 Imagens, ícones, fundos, fontes e o estilo das páginas institucionais
 ```
 
 Na publicação, o JavaScript e o CSS do app vão minificados. A versão legível fica com o autor. Os arquivos `index.md` têm o mesmo conteúdo das páginas HTML correspondentes.

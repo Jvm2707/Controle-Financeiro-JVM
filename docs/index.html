@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Documentação · Bufunfa</title>
     <meta name="description" content="Documentação técnica do Bufunfa: tecnologias, estrutura dos arquivos, como executar, armazenamento local, backup e restauração.">
@@ -44,9 +44,7 @@
     </script>
     <meta name="theme-color" content="#030304">
     <link rel="icon" type="image/png" href="../assets/icones/icone-192.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+    <link rel="stylesheet" href="../assets/fontes/fontes.css">
     <link rel="stylesheet" href="../assets/paginas.css">
 </head>
 <body>
@@ -118,7 +116,7 @@
 </tr>
 <tr>
 <td>Fontes</td>
-<td>Google Fonts (Geist, Geist Mono, Instrument Serif e Space Grotesk)</td>
+<td>Geist, Geist Mono, Instrument Serif e Space Grotesk (licença OFL), hospedadas no próprio site em <code>assets/fontes/</code></td>
 </tr>
 <tr>
 <td>Hospedagem</td>
@@ -143,7 +141,7 @@
 ├── contact/                Contato (index.html e index.md)
 ├── privacy/                Política de privacidade (index.html e index.md)
 ├── docs/                   Esta documentação (index.html e index.md)
-└── assets/                 Imagens, ícones, fundos e o estilo das páginas institucionais
+└── assets/                 Imagens, ícones, fundos, fontes e o estilo das páginas institucionais
 </code></pre>
 <p>Na publicação, o JavaScript e o CSS do app vão minificados. A versão legível fica com o autor. Os arquivos <code>index.md</code> têm o mesmo conteúdo das páginas HTML correspondentes.</p>
 <h2 id="como-executar">Como executar</h2>

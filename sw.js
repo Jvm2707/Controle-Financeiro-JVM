@@ -1,8 +1,7 @@
 // Controle Financeiro · service worker
 // REGRA 3: ao subir o ?v= no HTML, subir também a VERSAO abaixo (com o mesmo número).
-const VERSAO = "18.39";
+const VERSAO = "18.42";
 const CACHE_APP = "cf-app-" + VERSAO;
-const CACHE_FONTES = "cf-fontes";
 const CACHE_LEMBRETES = "cf-lembretes";
 
 const NUCLEO = [
@@ -12,6 +11,11 @@ const NUCLEO = [
     "./Controlefinanceiro.js?v=" + VERSAO,
     "./Controlefinanceiro-sobre.js?v=" + VERSAO, // v18.31: Novidades da tela Sobre (carregadas sob demanda)
     "./manifest.webmanifest",
+    "./assets/fontes/geist.woff2", // v18.40: fontes no próprio site
+    "./assets/fontes/geist-mono.woff2",
+    "./assets/fontes/instrument-serif.woff2",
+    "./assets/fontes/instrument-serif-italico.woff2",
+    "./assets/fontes/space-grotesk.woff2",
     "./assets/logo-jvm.png",
     "./assets/logo-jvm-128.png",
     "./assets/fundo-liquid-escuro.webp",
@@ -38,9 +42,10 @@ self.addEventListener("install", function(evento) {
 });
 
 self.addEventListener("activate", function(evento) {
+    // cf-fontes: cache das fontes do Google até a v18.39 (agora as fontes estão no cache do app)
     evento.waitUntil(
         caches.keys().then(function(nomes) {
-            return Promise.all(nomes.filter(function(n) { return n.startsWith("cf-app-") && n !== CACHE_APP; }).map(function(n) { return caches.delete(n); }));
+            return Promise.all(nomes.filter(function(n) { return (n.startsWith("cf-app-") && n !== CACHE_APP) || n === "cf-fontes"; }).map(function(n) { return caches.delete(n); }));
         }).then(function() { return self.clients.claim(); })
     );
 });
@@ -49,20 +54,6 @@ self.addEventListener("fetch", function(evento) {
     const pedido = evento.request;
     if (pedido.method !== "GET") return;
     const url = new URL(pedido.url);
-
-    // Fontes do Google: usa a guardada e atualiza em segundo plano
-    if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") {
-        evento.respondWith(caches.open(CACHE_FONTES).then(function(cache) {
-            return cache.match(pedido).then(function(guardada) {
-                const daRede = fetch(pedido).then(function(resposta) {
-                    if (resposta.ok || resposta.type === "opaque") cache.put(pedido, resposta.clone());
-                    return resposta;
-                }).catch(function() { return guardada; });
-                return guardada || daRede;
-            });
-        }));
-        return;
-    }
 
     // Cotações, feedback e outras APIs: sempre da internet (nunca dado velho)
     if (url.origin !== self.location.origin) return;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Política de privacidade · Bufunfa</title>
     <meta name="description" content="Como o Bufunfa guarda os dados no navegador, o que é enviado a serviços externos, como funcionam os backups e como apagar seus dados.">
@@ -44,9 +44,7 @@
     </script>
     <meta name="theme-color" content="#030304">
     <link rel="icon" type="image/png" href="../assets/icones/icone-192.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+    <link rel="stylesheet" href="../assets/fontes/fontes.css">
     <link rel="stylesheet" href="../assets/paginas.css">
 </head>
 <body>
@@ -67,14 +65,14 @@
         <article class="cartao">
             <p class="sobretitulo">Privacidade</p>
 <h1 id="politica-de-privacidade">Política de privacidade</h1>
-<p><em>Última atualização: 18 de novembro de 2026 · válida para a versão 2.1.0 do app</em></p>
+<p><em>Última atualização: 25 de novembro de 2026 · válida para a versão 2.1.0 do app</em></p>
 <p>Esta política descreve como o <strong>Bufunfa</strong> trata as informações de quem o usa. Ela foi escrita a partir do funcionamento real do código, que é público e pode ser conferido no <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">repositório do projeto</a>.</p>
 <h2 id="resumo">Resumo</h2>
 <ul>
 <li><strong>Não há cadastro, conta, login nem servidor próprio.</strong> O app é um conjunto de arquivos estáticos hospedados no GitHub Pages e executados no seu navegador.</li>
 <li><strong>Os dados financeiros ficam no seu aparelho</strong>, no armazenamento local do navegador. O autor não recebe, não vê e não guarda esses dados.</li>
 <li><strong>Não há cookies, ferramentas de análise (analytics), anúncios nem rastreamento.</strong></li>
-<li>Alguns recursos <strong>consultam serviços públicos na internet</strong> (cotações e fontes) ou <strong>enviam uma mensagem quando você usa o formulário de feedback</strong>. Esses envios estão descritos abaixo.</li>
+<li>Alguns recursos <strong>consultam serviços públicos na internet</strong> (cotações e taxas) ou <strong>enviam uma mensagem quando você usa o formulário de feedback</strong>. Esses envios estão descritos abaixo.</li>
 </ul>
 <h2 id="onde-os-dados-ficam">Onde os dados ficam</h2>
 <div class="tabela"><table>
@@ -99,7 +97,7 @@
 </tr>
 <tr>
 <td>Cache do service worker</td>
-<td>Os arquivos do próprio app (para funcionar sem internet), as fontes e, se você ativar os lembretes, uma lista com o nome, o valor e a data das contas que vencem nos próximos dias, usada para mostrar as notificações no próprio aparelho.</td>
+<td>Os arquivos do próprio app (para funcionar sem internet), inclusive as fontes, e, se você ativar os lembretes, uma lista com o nome, o valor e a data das contas que vencem nos próximos dias, usada para mostrar as notificações no próprio aparelho.</td>
 </tr>
 </tbody>
 </table></div>
@@ -118,11 +116,6 @@
 <td>Abrir o app</td>
 <td>GitHub Pages (hospedagem)</td>
 <td>O pedido dos arquivos do site, como em qualquer página da web. O GitHub pode registrar dados técnicos de acesso, como o endereço IP, conforme a <a href="https://docs.github.com/pt/site-policy/privacy-policies/github-general-privacy-statement">declaração de privacidade do GitHub</a>.</td>
-</tr>
-<tr>
-<td>Carregar as fontes</td>
-<td>Google Fonts</td>
-<td>O pedido das fontes Geist, Geist Mono, Instrument Serif e Space Grotesk. O Google recebe dados técnicos da conexão, como o endereço IP.</td>
 </tr>
 <tr>
 <td>Cotações de moedas, taxas e investimentos</td>

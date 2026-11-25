@@ -1,6 +1,6 @@
 # Política de privacidade
 
-*Última atualização: 18 de novembro de 2026 · válida para a versão 2.1.0 do app*
+*Última atualização: 25 de novembro de 2026 · válida para a versão 2.1.0 do app*
 
 Esta política descreve como o **Bufunfa** trata as informações de quem o usa. Ela foi escrita a partir do funcionamento real do código, que é público e pode ser conferido no [repositório do projeto](https://github.com/jvm2707/Controle-Financeiro-JVM).
 
@@ -9,7 +9,7 @@ Esta política descreve como o **Bufunfa** trata as informações de quem o usa.
 - **Não há cadastro, conta, login nem servidor próprio.** O app é um conjunto de arquivos estáticos hospedados no GitHub Pages e executados no seu navegador.
 - **Os dados financeiros ficam no seu aparelho**, no armazenamento local do navegador. O autor não recebe, não vê e não guarda esses dados.
 - **Não há cookies, ferramentas de análise (analytics), anúncios nem rastreamento.**
-- Alguns recursos **consultam serviços públicos na internet** (cotações e fontes) ou **enviam uma mensagem quando você usa o formulário de feedback**. Esses envios estão descritos abaixo.
+- Alguns recursos **consultam serviços públicos na internet** (cotações e taxas) ou **enviam uma mensagem quando você usa o formulário de feedback**. Esses envios estão descritos abaixo.
 
 ## Onde os dados ficam
 
@@ -18,7 +18,7 @@ Esta política descreve como o **Bufunfa** trata as informações de quem o usa.
 | `localStorage` | Todos os dados financeiros: despesas, receitas, receitas recorrentes, cartões (apelido, final com 4 dígitos, dias de fechamento e vencimento, limite), categorias, orçamentos, metas e aportes, investimentos, aportes e resgates, meta da reserva, exclusões de ocorrências e histórico de importações de extrato. Também guarda preferências (tema, valores ocultos, tela atual, moedas da cotação), a última cotação obtida, imagens de logos que você enviar para os cartões e, se você informar, o token gratuito da Brapi. |
 | `sessionStorage` | Apenas a posição da rolagem da página, por alguns instantes, quando o app é recarregado para aplicar uma atualização. |
 | `IndexedDB` | Apenas a referência da pasta escolhida para o backup automático (não guarda valores financeiros). |
-| Cache do service worker | Os arquivos do próprio app (para funcionar sem internet), as fontes e, se você ativar os lembretes, uma lista com o nome, o valor e a data das contas que vencem nos próximos dias, usada para mostrar as notificações no próprio aparelho. |
+| Cache do service worker | Os arquivos do próprio app (para funcionar sem internet), inclusive as fontes, e, se você ativar os lembretes, uma lista com o nome, o valor e a data das contas que vencem nos próximos dias, usada para mostrar as notificações no próprio aparelho. |
 
 Esses dados ficam **no navegador e no endereço em que o app foi aberto**. Eles não são sincronizados entre aparelhos ou navegadores. Em uma janela anônima, tudo é apagado ao fechar a janela.
 
@@ -27,7 +27,6 @@ Esses dados ficam **no navegador e no endereço em que o app foi aberto**. Eles 
 | Situação | Para onde | O que é enviado |
 |---|---|---|
 | Abrir o app | GitHub Pages (hospedagem) | O pedido dos arquivos do site, como em qualquer página da web. O GitHub pode registrar dados técnicos de acesso, como o endereço IP, conforme a [declaração de privacidade do GitHub](https://docs.github.com/pt/site-policy/privacy-policies/github-general-privacy-statement). |
-| Carregar as fontes | Google Fonts | O pedido das fontes Geist, Geist Mono, Instrument Serif e Space Grotesk. O Google recebe dados técnicos da conexão, como o endereço IP. |
 | Cotações de moedas, taxas e investimentos | Banco Central do Brasil, AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi e Yahoo Finance | Somente códigos públicos (por exemplo `USD-BRL`, `PETR4`, `bitcoin`) e datas. **Valores, saldos e descrições não são enviados.** Na Brapi, o token informado por você acompanha o pedido. |
 | Investimento com "Endpoint REST" | O endereço que você mesmo configurar | Um pedido ao endereço informado, feito pelo seu navegador. |
 | Enviar feedback | Web3Forms, que repassa ao autor por e-mail | O tipo da mensagem, o texto escrito, a versão do app e se o envio foi feito pelo celular ou pelo computador. Nome e e-mail não são pedidos. |

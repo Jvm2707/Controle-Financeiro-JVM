@@ -1,0 +1,25 @@
+# Mantém o projeto do Supabase (plano Free) ativo.
+# O Free pausa após 7 dias sem uso; isto faz uma consulta mínima a cada 3 dias.
+# Usa só a chave pública (publishable), que já é pública por natureza.
+
+name: Manter Supabase
+
+on:
+  schedule:
+    - cron: "17 9 */3 * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Consultar o banco
+        run: |
+          curl -fsS -X POST \
+            "https://qlstbdvlofczlgkjeqbe.supabase.co/rest/v1/rpc/manter_ativo" \
+            -H "apikey: sb_publishable_jiXr0cW-IYqDGRmTID9l-Q_ZWFL1Q2x" \
+            -H "Content-Type: application/json" \
+            -d '{}'

@@ -14,7 +14,7 @@ Bufunfa (antigo Controle Financeiro JVM): aplicação web gratuita de **controle
 
 | | |
 |---|---|
-| Versão | 2.1.0 |
+| Versão | 3.0.0 |
 | Tecnologias | HTML, CSS e JavaScript puros, service worker (PWA), SVG |
 | Dados | `localStorage` do navegador; sem servidor, conta ou sincronização |
 | Hospedagem | GitHub Pages (site estático) |

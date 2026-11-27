@@ -1,0 +1,28 @@
+# Cabeçalhos do Cloudflare (Workers com arquivos estáticos).
+# O GitHub Pages ignora este arquivo.
+# A CSP continua no <meta> do index.html (REGRA 9); não duplicar aqui.
+
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+# O service worker precisa ser conferido sempre, senão o app instalado não atualiza.
+/sw.js
+  Cache-Control: no-cache
+
+# Fontes e imagens mudam raramente.
+/assets/*
+  Cache-Control: public, max-age=604800
+
+/assets/fontes/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Endereços *.workers.dev: o Google não deve indexar (o SEO fica para o domínio próprio).
+# :sub vale para um nível só, o que cobre o principal (bufunfa.), as pré-visualizações e as versões
+# (v3-bufunfa., <id>-bufunfa., <apelido>-bufunfa.), todos em .jvmsr07.workers.dev
+https://:sub.jvmsr07.workers.dev/*
+  X-Robots-Tag: noindex, nofollow

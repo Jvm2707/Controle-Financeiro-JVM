@@ -65,12 +65,13 @@
         <article class="cartao">
             <p class="sobretitulo">Privacidade</p>
 <h1 id="politica-de-privacidade">Política de privacidade</h1>
-<p><em>Última atualização: 25 de novembro de 2026 · válida para a versão 2.1.0 do app</em></p>
+<p><em>Última atualização: 26 de novembro de 2026 · válida para a versão 3.0.0 do app</em></p>
 <p>Esta política descreve como o <strong>Bufunfa</strong> trata as informações de quem o usa. Ela foi escrita a partir do funcionamento real do código, que é público e pode ser conferido no <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">repositório do projeto</a>.</p>
 <h2 id="resumo">Resumo</h2>
 <ul>
-<li><strong>Não há cadastro, conta, login nem servidor próprio.</strong> O app é um conjunto de arquivos estáticos hospedados no GitHub Pages e executados no seu navegador.</li>
+<li><strong>O app funciona sem cadastro.</strong> É um conjunto de arquivos estáticos executados no seu navegador.</li>
 <li><strong>Os dados financeiros ficam no seu aparelho</strong>, no armazenamento local do navegador. O autor não recebe, não vê e não guarda esses dados.</li>
+<li><strong>A conta é opcional.</strong> Quem cria uma conta para sincronizar entre aparelhos envia ao servidor (Supabase) apenas o <strong>e-mail</strong>, a <strong>senha da conta</strong> (para o login) e o <strong>backup criptografado no próprio aparelho</strong>. A senha de criptografia nunca sai do aparelho, e nem o autor nem o Supabase conseguem ler o backup. Entrar com o Google também é opcional: nesse caso, o Google informa apenas o nome e o e-mail da conta Google.</li>
 <li><strong>Não há cookies, ferramentas de análise (analytics), anúncios nem rastreamento.</strong></li>
 <li>Alguns recursos <strong>consultam serviços públicos na internet</strong> (cotações e taxas) ou <strong>enviam uma mensagem quando você usa o formulário de feedback</strong>. Esses envios estão descritos abaixo.</li>
 </ul>
@@ -85,7 +86,7 @@
 <tbody>
 <tr>
 <td><code>localStorage</code></td>
-<td>Todos os dados financeiros: despesas, receitas, receitas recorrentes, cartões (apelido, final com 4 dígitos, dias de fechamento e vencimento, limite), categorias, orçamentos, metas e aportes, investimentos, aportes e resgates, meta da reserva, exclusões de ocorrências e histórico de importações de extrato. Também guarda preferências (tema, valores ocultos, tela atual, moedas da cotação), a última cotação obtida, imagens de logos que você enviar para os cartões e, se você informar, o token gratuito da Brapi.</td>
+<td>Todos os dados financeiros: despesas, receitas, receitas recorrentes, cartões (apelido, final com 4 dígitos, dias de fechamento e vencimento, limite), categorias, orçamentos, metas e aportes, investimentos, aportes e resgates, meta da reserva, exclusões de ocorrências e histórico de importações de extrato. Também guarda preferências (tema, valores ocultos, tela atual, moedas da cotação), a última cotação obtida, imagens de logos que você enviar para os cartões e, se você informar, o token gratuito da Brapi. Com conta, guarda também o e-mail, os tokens de acesso da sessão e a versão e a data da última sincronização. Guarda ainda a data da primeira abertura e quando as sugestões de criar conta foram mostradas ou recusadas, para não repeti-las.</td>
 </tr>
 <tr>
 <td><code>sessionStorage</code></td>
@@ -93,7 +94,7 @@
 </tr>
 <tr>
 <td><code>IndexedDB</code></td>
-<td>Apenas a referência da pasta escolhida para o backup automático (não guarda valores financeiros).</td>
+<td>A referência da pasta escolhida para o backup automático e, se você tiver conta e marcar "Lembrar neste aparelho", a chave de criptografia da sincronização, guardada de forma que não pode ser copiada para fora do navegador. Não guarda valores financeiros.</td>
 </tr>
 <tr>
 <td>Cache do service worker</td>
@@ -101,7 +102,7 @@
 </tr>
 </tbody>
 </table></div>
-<p>Esses dados ficam <strong>no navegador e no endereço em que o app foi aberto</strong>. Eles não são sincronizados entre aparelhos ou navegadores. Em uma janela anônima, tudo é apagado ao fechar a janela.</p>
+<p>Esses dados ficam <strong>no navegador e no endereço em que o app foi aberto</strong>. Sem conta, eles não são sincronizados entre aparelhos ou navegadores. Em uma janela anônima, tudo é apagado ao fechar a janela.</p>
 <h2 id="o-que-sai-do-seu-aparelho">O que sai do seu aparelho</h2>
 <div class="tabela"><table>
 <thead>
@@ -128,13 +129,23 @@
 <td>Um pedido ao endereço informado, feito pelo seu navegador.</td>
 </tr>
 <tr>
+<td>Criar conta, entrar, sincronizar e apagar a conta (opcional)</td>
+<td>Supabase (<code>qlstbdvlofczlgkjeqbe.supabase.co</code>), conforme a <a href="https://supabase.com/privacy">política de privacidade do Supabase</a></td>
+<td>O e-mail e a senha da conta (no cadastro e no login) e o backup <strong>criptografado no aparelho</strong> antes do envio, com os dados técnicos necessários para abri-lo (vetor de inicialização, sal e número da versão). O Supabase registra a data de cada envio.</td>
+</tr>
+<tr>
+<td>Entrar com Google (opcional)</td>
+<td>Google, conforme a <a href="https://policies.google.com/privacy">política de privacidade do Google</a>, e Supabase</td>
+<td>O Google confirma sua identidade e informa ao Supabase o e-mail e o nome da conta Google. A senha da conta Google não passa pelo app. A senha de criptografia continua sendo pedida e nunca sai do aparelho.</td>
+</tr>
+<tr>
 <td>Enviar feedback</td>
 <td>Web3Forms, que repassa ao autor por e-mail</td>
 <td>O tipo da mensagem, o texto escrito, a versão do app e se o envio foi feito pelo celular ou pelo computador. Nome e e-mail não são pedidos.</td>
 </tr>
 </tbody>
 </table></div>
-<p>Nenhum desses envios inclui suas despesas, receitas, saldos, metas ou investimentos.</p>
+<p>Nenhum desses envios inclui suas despesas, receitas, saldos, metas ou investimentos em forma legível. Na sincronização, eles só saem do aparelho criptografados.</p>
 <h2 id="backups-e-exportacoes">Backups e exportações</h2>
 <ul>
 <li><strong>Backup:</strong> gera um arquivo <code>backup-financeiro-AAAA-MM-DD.json</code> no seu aparelho com todos os dados financeiros. O arquivo <strong>não é criptografado</strong>: guarde-o com o mesmo cuidado que teria com um extrato.</li>
@@ -142,19 +153,29 @@
 <li><strong>Backup automático:</strong> disponível nos navegadores que permitem acesso a pastas (como Chrome e Edge no computador). O app grava o arquivo na pasta que você escolher. Se essa pasta for sincronizada com um serviço de nuvem (Google Drive, OneDrive etc.), a cópia passa a seguir as regras desse serviço.</li>
 <li><strong>Exportar despesas (CSV) e relatório do mês:</strong> os arquivos são gerados no próprio aparelho, sem envio pela internet.</li>
 </ul>
+<h2 id="conta-e-sincronizacao-opcional">Conta e sincronização (opcional)</h2>
+<ul>
+<li><strong>Criptografia de ponta a ponta:</strong> o backup é compactado e criptografado no aparelho com AES-GCM de 256 bits. A chave é derivada da <strong>senha de criptografia</strong> (PBKDF2 com SHA-256, 600 mil iterações e sal aleatório), que é diferente da senha da conta e nunca é enviada.</li>
+<li><strong>Quem consegue ler:</strong> apenas quem tem a senha de criptografia ou a chave de recuperação. O autor do app e o Supabase guardam só o texto criptografado.</li>
+<li><strong>Esqueceu a senha de criptografia, perde o backup da nuvem; os dados do aparelho continuam.</strong> A chave de recuperação, exibida no app, permite abrir o backup sem a senha. Guarde-a fora do aparelho.</li>
+<li><strong>Conflitos:</strong> quando o aparelho e a nuvem foram alterados separadamente, o app pergunta qual versão manter e baixa antes um arquivo de segurança da versão descartada. Esse arquivo não é criptografado.</li>
+<li><strong>Sair:</strong> encerra a sessão neste aparelho. Os dados do aparelho continuam.</li>
+<li><strong>Apagar a conta:</strong> o botão "Apagar minha conta e meus dados da nuvem" apaga a conta e o backup do servidor. Os dados do aparelho continuam.</li>
+</ul>
 <h2 id="notificacoes">Notificações</h2>
 <p>Os lembretes de vencimento são opcionais e gerados pelo próprio navegador, a partir dos dados salvos no aparelho. Não existe servidor de notificações.</p>
 <h2 id="como-apagar-seus-dados">Como apagar seus dados</h2>
 <ul>
 <li>No app: <strong>Sobre → Dados do app → Limpar dados deste navegador</strong>, com dupla confirmação.</li>
+<li>Dados da nuvem: <strong>Conta e sincronização → Apagar minha conta e meus dados da nuvem</strong>.</li>
 <li>Pelo navegador: apagar os dados do site <code>jvm2707.github.io</code> nas configurações também remove tudo.</li>
 </ul>
 <p>A exclusão não pode ser desfeita. Faça um backup antes, se quiser guardar uma cópia.</p>
 <h2 id="limitacoes-e-responsabilidades">Limitações e responsabilidades</h2>
 <ul>
-<li><strong>Não há proteção por senha ou criptografia dentro do app.</strong> Qualquer pessoa com acesso ao seu aparelho e ao seu navegador consegue ver os dados. Use o bloqueio do próprio aparelho.</li>
+<li><strong>Os dados guardados no aparelho não são criptografados</strong> (a criptografia vale para o backup enviado à nuvem). Qualquer pessoa com acesso ao seu aparelho e ao seu navegador consegue ver os dados. Use o bloqueio do próprio aparelho.</li>
 <li>Os dados podem ser perdidos se você limpar o navegador, trocar de aparelho sem backup ou se o navegador remover dados do site por falta de espaço. <strong>Fazer backups é responsabilidade de quem usa.</strong></li>
-<li>O app não tem como recuperar dados apagados, porque o autor não tem cópia deles.</li>
+<li>O app não tem como recuperar dados apagados nem abrir o backup da nuvem sem a senha de criptografia ou a chave de recuperação, porque o autor não tem cópia legível deles.</li>
 <li>Cotações dependem de serviços de terceiros e podem estar indisponíveis ou atrasadas. Simulações e comparações de taxas são estimativas e não constituem recomendação de investimento.</li>
 </ul>
 <h2 id="alteracoes-nesta-politica">Alterações nesta política</h2>

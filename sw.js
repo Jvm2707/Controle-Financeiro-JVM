@@ -1,21 +1,28 @@
 // Controle Financeiro · service worker
 // REGRA 3: ao subir o ?v= no HTML, subir também a VERSAO abaixo (com o mesmo número).
-const VERSAO = "18.42";
+const VERSAO = "18.69";
 const CACHE_APP = "cf-app-" + VERSAO;
 const CACHE_LEMBRETES = "cf-lembretes";
 
 const NUCLEO = [
-    "./",
-    "./index.html",
+    "./", // v18.56: a landing
+    "./landing.js?v=" + VERSAO,
+    "./conta.css?v=" + VERSAO,
+    "./transicao.js?v=" + VERSAO, // v18.61: transição entre a landing e as páginas de conta // v18.57: páginas /entrar e /criar-conta
+    "./rendimento.js?v=" + VERSAO, // v18.58: catálogo e cálculo de rendimento (app e simulador da landing)
+    "./elastico.js?v=" + VERSAO, // v18.58: efeito elástico (app e landing)
+    "./app/", // v18.56: o app mora em /app
     "./Controlefinanceiro.css?v=" + VERSAO,
     "./Controlefinanceiro.js?v=" + VERSAO,
     "./Controlefinanceiro-sobre.js?v=" + VERSAO, // v18.31: Novidades da tela Sobre (carregadas sob demanda)
+    "./Controlefinanceiro-nuvem.js?v=" + VERSAO, // v18.43: conta e sincronização (carregada sob demanda)
     "./manifest.webmanifest",
     "./assets/fontes/geist.woff2", // v18.40: fontes no próprio site
     "./assets/fontes/geist-mono.woff2",
     "./assets/fontes/instrument-serif.woff2",
     "./assets/fontes/instrument-serif-italico.woff2",
     "./assets/fontes/space-grotesk.woff2",
+    "./assets/fontes/jetbrains-mono.woff2", // v18.56: números da landing
     "./assets/logo-jvm.png",
     "./assets/logo-jvm-128.png",
     "./assets/fundo-liquid-escuro.webp",
@@ -62,7 +69,8 @@ self.addEventListener("fetch", function(evento) {
     // sempre da internet, sem passar pelo cache do app
     const escopo = new URL(self.registration.scope);
     const rota = url.pathname.slice(escopo.pathname.length);
-    const ehApp = rota === "" || rota === "index.html";
+    const ehApp = /^(app\/)?(index\.html)?$/.test(rota); // v18.56: landing (/) e app (/app/)
+    const pagina = "./" + rota.replace(/index\.html$/, "");
     if (!ehApp && (pedido.mode === "navigate" || /\.(md|txt|xml)$/.test(rota))) return;
 
     // App: internet primeiro (pega a versão nova); sem internet, a guardada
@@ -72,11 +80,11 @@ self.addEventListener("fetch", function(evento) {
                 // Só guarda a página do app quando carregou certo (nunca uma página de erro 404/500)
                 if (resposta.ok) {
                     const copia = resposta.clone();
-                    caches.open(CACHE_APP).then(function(cache) { cache.put("./index.html", copia); });
+                    caches.open(CACHE_APP).then(function(cache) { cache.put(pagina, copia); });
                 }
                 return resposta;
             }).catch(function() {
-                return caches.match("./index.html").then(function(r) { return r || caches.match("./"); });
+                return caches.match(pagina, { ignoreSearch: true }).then(function(r) { return r || caches.match("./app/"); });
             })
         );
         return;
@@ -141,7 +149,7 @@ self.addEventListener("notificationclick", function(evento) {
         self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function(janelas) {
             const aberta = janelas.find(function(j) { return j.url.startsWith(self.registration.scope); });
             if (aberta) return aberta.focus();
-            return self.clients.openWindow("./");
+            return self.clients.openWindow("./app/");
         })
     );
 });

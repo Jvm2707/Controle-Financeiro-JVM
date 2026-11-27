@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- v18.57: os formulários são os do Controlefinanceiro-nuvem.js (os mesmos da gaveta do app); só o Supabase é chamado -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://qlstbdvlofczlgkjeqbe.supabase.co; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Entrar · Bufunfa</title>
+<meta name="description" content="Entre na sua conta do Bufunfa para sincronizar seus dados entre o celular e o PC, com criptografia de ponta a ponta.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://jvm2707.github.io/Controle-Financeiro-JVM/entrar/">
+<base href="../">
+<link rel="icon" type="image/png" href="assets/icones/icone-192.png">
+<link rel="apple-touch-icon" href="assets/icones/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#050507">
+<link rel="preload" href="assets/fontes/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="conta.css?v=18.69">
+<!-- v18.62: o primeiro quadro (e a foto da transição) só sai depois que o nuvem.js preenche o cartão: defer roda com o documento lido, blocking=render segura a pintura (rel=expect não é suportado) -->
+<script src="Controlefinanceiro-nuvem.js?v=18.69" defer blocking="render"></script>
+<script src="transicao.js?v=18.69"></script>
+</head>
+<body data-conta-pagina="entrar">
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+<filter id="lg-borda" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="1" seed="7" result="mapa"/>
+<feGaussianBlur in="mapa" stdDeviation="3" result="liso"/>
+<feDisplacementMap in="SourceGraphic" in2="liso" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+</svg>
+<div class="conta-raiz">
+<div class="l-fundo" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;z-index:0">
+<div style="--r:-24deg;position:absolute;width:1400px;height:380px;left:-300px;top:120px;border-radius:50%;background:linear-gradient(90deg,transparent,rgba(200,200,215,.20) 30%,rgba(255,255,255,.32) 48%,rgba(150,150,165,.14) 62%,transparent);filter:blur(30px);transform:rotate(-24deg);animation:deriva 22s ease-in-out infinite"></div>
+<div style="--r:18deg;position:absolute;width:1200px;height:260px;right:-360px;top:520px;border-radius:50%;background:linear-gradient(90deg,transparent,rgba(232,199,102,.26) 40%,rgba(255,236,170,.30) 52%,transparent);filter:blur(28px);transform:rotate(18deg);animation:deriva 26s ease-in-out infinite reverse"></div>
+<div style="--r:-12deg;position:absolute;width:1600px;height:300px;left:-200px;top:1700px;border-radius:50%;background:linear-gradient(90deg,transparent,rgba(180,180,195,.16) 35%,rgba(255,255,255,.22) 50%,transparent);filter:blur(34px);transform:rotate(-12deg);animation:deriva 30s ease-in-out infinite"></div>
+<div style="--r:28deg;position:absolute;width:1100px;height:240px;right:-260px;top:2700px;border-radius:50%;background:linear-gradient(90deg,transparent,rgba(232,199,102,.22) 45%,transparent);filter:blur(30px);transform:rotate(28deg);animation:deriva 24s ease-in-out infinite reverse"></div>
+<div style="position:absolute;inset:0;background:radial-gradient(900px 500px at 75% 10%,rgba(232,199,102,.10),transparent 60%),radial-gradient(1200px 900px at 50% 120%,rgba(0,0,0,.8),transparent 60%)"></div>
+</div>
+<header class="conta-topo">
+<a class="conta-marca" href="./"><img src="assets/icones/icone-192.png" alt="" width="42" height="42">Bufunfa</a>
+</header>
+<main class="conta-meio">
+<div id="conta-cartao" class="conta-cartao"></div>
+<p class="conta-abaixo" hidden><a href="app/">Continuar sem conta</a><span>Os dados ficam só neste aparelho. Dá para criar a conta depois.</span></p>
+
+</main>
+</div>
+</body>
+</html>

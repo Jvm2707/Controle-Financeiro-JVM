@@ -6,7 +6,7 @@ O Bufunfa é um projeto pessoal, mantido por um desenvolvedor independente (JVM)
 
 A forma mais direta de falar com o autor é o formulário **Contato e feedback**, no painel **Sobre** do aplicativo:
 
-1. Abra o [Bufunfa](../).
+1. Abra o [Bufunfa](../app/).
 2. Entre em **Mais → Sobre** (ou pelo ícone de informação no topo do celular).
 3. Na seção **Contato e feedback**, escolha o tipo (**Sugestão**, **Problema** ou **Elogio**), escreva a mensagem (até 1.000 caracteres) e envie.
 

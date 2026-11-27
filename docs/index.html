@@ -69,10 +69,10 @@
 <ul>
 <li><strong>Aplicação:</strong> <a href="https://jvm2707.github.io/Controle-Financeiro-JVM/">https://jvm2707.github.io/Controle-Financeiro-JVM/</a></li>
 <li><strong>Repositório:</strong> <a href="https://github.com/jvm2707/Controle-Financeiro-JVM">github.com/jvm2707/Controle-Financeiro-JVM</a></li>
-<li><strong>Versão documentada:</strong> 2.1.0</li>
+<li><strong>Versão documentada:</strong> 3.0.0</li>
 </ul>
 <h2 id="recursos-que-nao-existem">Recursos que não existem</h2>
-<p>Para evitar confusão: o projeto <strong>não oferece API própria, SDK, CLI, servidor MCP, webhooks nem integração bancária</strong>. Ele apenas consome APIs públicas de cotações e taxas (listadas abaixo). Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem <strong>ler</strong> as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.</p>
+<p>Para evitar confusão: o projeto <strong>não oferece API própria, SDK, CLI, servidor MCP, webhooks nem integração bancária</strong>. Ele apenas consome APIs públicas de cotações e taxas (listadas abaixo). Não há servidor de aplicação próprio. Tudo roda no navegador de quem usa; a única exceção é a conta opcional, em que o Supabase guarda o e-mail e um backup criptografado no aparelho, que ninguém além da pessoa consegue abrir. Agentes de IA e ferramentas automatizadas podem <strong>ler</strong> as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.</p>
 <h2 id="tecnologias">Tecnologias</h2>
 <div class="tabela"><table>
 <thead>
@@ -111,6 +111,10 @@
 <td>APIs públicas de cotações: Banco Central do Brasil (SGS), AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi e Yahoo Finance</td>
 </tr>
 <tr>
+<td>Conta e sincronização (opcional)</td>
+<td>Supabase (Auth e tabela <code>backups</code> com RLS), chamado pela API REST com <code>fetch</code>, sem SDK; criptografia com Web Crypto (PBKDF2 + AES-GCM) e compactação com <code>CompressionStream</code></td>
+</tr>
+<tr>
 <td>Feedback</td>
 <td>Web3Forms (envio da mensagem por e-mail ao autor)</td>
 </tr>
@@ -126,10 +130,18 @@
 </table></div>
 <h2 id="estrutura-dos-arquivos-publicados">Estrutura dos arquivos publicados</h2>
 <pre><code class="language-text">/Controle-Financeiro-JVM/
-├── index.html              Aplicação (todas as telas)
+├── index.html              Página inicial (apresentação; quem já usa o app vai direto para app/)
+├── landing.js              Decide, antes de pintar, se a visita vai direto para o app
+├── app/index.html          Aplicação (todas as telas)
+├── entrar/, criar-conta/   Entrar e criar conta (formulários do Controlefinanceiro-nuvem.js, sem o JS do app)
+├── conta.css               Visual dessas duas páginas
+├── transicao.js            Transição entre a landing e as páginas de conta (o botão vira o cartão)
+├── rendimento.js           Catálogo de bancos e cálculo de rendimento (app e simulador da landing)
+├── elastico.js             Efeito elástico nas bordas da página (app e landing)
 ├── index.md                Descrição da aplicação em Markdown, para agentes
 ├── Controlefinanceiro.js   Lógica do app
 ├── Controlefinanceiro-sobre.js  Histórico de versões da tela Sobre (carregado ao abrir o Sobre)
+├── Controlefinanceiro-nuvem.js  Conta e sincronização (carregado ao abrir a conta ou se houver sessão)
 ├── Controlefinanceiro.css  Estilos do app
 ├── sw.js                   Service worker (cache offline e lembretes)
 ├── manifest.webmanifest    Manifesto do app instalável
@@ -157,7 +169,7 @@ npx serve .
 <ol start="3">
 <li>Abra <code>http://localhost:8080/</code> no navegador.</li>
 </ol>
-<p>Abrir o <code>index.html</code> direto do disco (<code>file://</code>) também funciona para o uso básico, mas o service worker, a instalação como app e os lembretes só funcionam em <code>http://localhost</code> ou em HTTPS.</p>
+<p>Abrir o <code>app/index.html</code> direto do disco (<code>file://</code>) também funciona para o uso básico, mas o service worker, a instalação como app e os lembretes só funcionam em <code>http://localhost</code> ou em HTTPS.</p>
 <p>Os dados de uma cópia local ficam separados dos dados do site oficial, porque o navegador separa o armazenamento por endereço.</p>
 <h2 id="armazenamento-local">Armazenamento local</h2>
 <p>Cada conjunto de dados é salvo como texto JSON em uma chave do <code>localStorage</code>. As principais:</p>
@@ -225,6 +237,18 @@ npx serve .
 <li><strong>Exportar despesas</strong> gera um CSV que abre no Excel ou no Google Planilhas. <strong>Relatório do mês</strong> abre a impressão, de onde é possível salvar em PDF.</li>
 </ul>
 <p>O arquivo de backup não é criptografado.</p>
+<h2 id="conta-e-sincronizacao-opcional">Conta e sincronização (opcional)</h2>
+<ul>
+<li><strong>O que vai para o servidor:</strong> o e-mail e a senha da conta (Supabase Auth, com confirmação por e-mail) e uma linha na tabela <code>backups</code> com <code>dados_cifrados</code>, <code>iv</code>, <code>sal</code> e <code>versao</code>. Cada pessoa só lê e altera a própria linha (Row Level Security).</li>
+<li><strong>Entrar com Google (opcional):</strong> pelo OAuth do Supabase (<code>/auth/v1/authorize?provider=google</code>). O botão só aparece quando o provedor está ativo no painel (<code>/auth/v1/settings</code>). A senha de criptografia continua obrigatória.</li>
+<li><strong>Criptografia:</strong> o mesmo JSON do backup é compactado (gzip) e criptografado no aparelho com AES-GCM de 256 bits e um vetor de inicialização novo a cada envio. A chave vem de PBKDF2 com SHA-256, 600 mil iterações e sal aleatório de 16 bytes, a partir da senha de criptografia, que é diferente da senha da conta e nunca é enviada. A chave de recuperação é a própria chave em Base64.</li>
+<li><strong>Limite:</strong> o backup criptografado precisa caber em 5 MB; acima disso, o app avisa e não envia.</li>
+<li><strong>Quando sincroniza:</strong> ao entrar, quando a internet volta, ao voltar para a aba e 5 segundos depois de uma alteração nos dados. Só a aba visível envia.</li>
+<li><strong>Conflitos:</strong> o envio só é aceito se a nuvem ainda estiver na versão conhecida pelo aparelho. Se os dois lados mudaram, o app pergunta qual manter e baixa antes um arquivo de segurança da versão descartada (<code>backup-financeiro-AAAA-MM-DD-antes-da-nuvem.json</code> ou <code>-antes-do-aparelho.json</code>).</li>
+<li><strong>Senha de criptografia errada:</strong> nada é enviado nem recriado. Substituir a nuvem só pelo botão "Começar do zero na nuvem", com confirmação e arquivo de segurança antes.</li>
+<li><strong>Sugestões de conta:</strong> no máximo uma a cada 7 dias; "Agora não" adia aquela sugestão por 14 dias e, depois de 3 recusas seguidas, elas param. O controle fica em <code>ofertasConta</code> e <code>primeiroUso</code> no <code>localStorage</code> (fora do backup).</li>
+<li><strong>Chaves locais:</strong> <code>nuvemSessao</code> (e-mail e tokens), <code>nuvemVersao</code>, <code>nuvemAlterado</code> e <code>nuvemUltima</code> no <code>localStorage</code>; a chave, se lembrada, fica no IndexedDB <code>bufunfa-nuvem</code> como chave não exportável.</li>
+</ul>
 <h2 id="atualizacoes-e-cache">Atualizações e cache</h2>
 <p>Cada publicação muda o parâmetro <code>?v=</code> dos arquivos JS e CSS e a constante <code>VERSAO</code> do <code>sw.js</code>. Assim, quem já instalou o app recebe os arquivos novos, e os caches antigos são apagados.</p>
 <h2 id="seguranca">Segurança</h2>

@@ -4,11 +4,11 @@ Guia técnico do projeto: tecnologias, estrutura dos arquivos, como executar, co
 
 - **Aplicação:** <https://jvm2707.github.io/Controle-Financeiro-JVM/>
 - **Repositório:** [github.com/jvm2707/Controle-Financeiro-JVM](https://github.com/jvm2707/Controle-Financeiro-JVM)
-- **Versão documentada:** 2.1.0
+- **Versão documentada:** 3.0.0
 
 ## Recursos que não existem
 
-Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor MCP, webhooks nem integração bancária**. Ele apenas consome APIs públicas de cotações e taxas (listadas abaixo). Não há servidor de aplicação nem banco de dados remoto. Tudo roda no navegador de quem usa. Agentes de IA e ferramentas automatizadas podem **ler** as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.
+Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor MCP, webhooks nem integração bancária**. Ele apenas consome APIs públicas de cotações e taxas (listadas abaixo). Não há servidor de aplicação próprio. Tudo roda no navegador de quem usa; a única exceção é a conta opcional, em que o Supabase guarda o e-mail e um backup criptografado no aparelho, que ninguém além da pessoa consegue abrir. Agentes de IA e ferramentas automatizadas podem **ler** as páginas públicas e os arquivos em Markdown, mas não conseguem consultar nem alterar os dados financeiros de ninguém.
 
 ## Tecnologias
 
@@ -21,6 +21,7 @@ Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor
 | Backup automático | File System Access API, com a pasta escolhida guardada no IndexedDB |
 | Lembretes | Notifications API e Periodic Background Sync, quando o navegador permite |
 | Dados externos | APIs públicas de cotações: Banco Central do Brasil (SGS), AwesomeAPI, ExchangeRate-API, CoinGecko, Brapi e Yahoo Finance |
+| Conta e sincronização (opcional) | Supabase (Auth e tabela `backups` com RLS), chamado pela API REST com `fetch`, sem SDK; criptografia com Web Crypto (PBKDF2 + AES-GCM) e compactação com `CompressionStream` |
 | Feedback | Web3Forms (envio da mensagem por e-mail ao autor) |
 | Fontes | Geist, Geist Mono, Instrument Serif e Space Grotesk (licença OFL), hospedadas no próprio site em `assets/fontes/` |
 | Hospedagem | GitHub Pages, como site estático |
@@ -29,10 +30,18 @@ Para evitar confusão: o projeto **não oferece API própria, SDK, CLI, servidor
 
 ```text
 /Controle-Financeiro-JVM/
-├── index.html              Aplicação (todas as telas)
+├── index.html              Página inicial (apresentação; quem já usa o app vai direto para app/)
+├── landing.js              Decide, antes de pintar, se a visita vai direto para o app
+├── app/index.html          Aplicação (todas as telas)
+├── entrar/, criar-conta/   Entrar e criar conta (formulários do Controlefinanceiro-nuvem.js, sem o JS do app)
+├── conta.css               Visual dessas duas páginas
+├── transicao.js            Transição entre a landing e as páginas de conta (o botão vira o cartão)
+├── rendimento.js           Catálogo de bancos e cálculo de rendimento (app e simulador da landing)
+├── elastico.js             Efeito elástico nas bordas da página (app e landing)
 ├── index.md                Descrição da aplicação em Markdown, para agentes
 ├── Controlefinanceiro.js   Lógica do app
 ├── Controlefinanceiro-sobre.js  Histórico de versões da tela Sobre (carregado ao abrir o Sobre)
+├── Controlefinanceiro-nuvem.js  Conta e sincronização (carregado ao abrir a conta ou se houver sessão)
 ├── Controlefinanceiro.css  Estilos do app
 ├── sw.js                   Service worker (cache offline e lembretes)
 ├── manifest.webmanifest    Manifesto do app instalável
@@ -64,7 +73,7 @@ npx serve .
 
 3. Abra `http://localhost:8080/` no navegador.
 
-Abrir o `index.html` direto do disco (`file://`) também funciona para o uso básico, mas o service worker, a instalação como app e os lembretes só funcionam em `http://localhost` ou em HTTPS.
+Abrir o `app/index.html` direto do disco (`file://`) também funciona para o uso básico, mas o service worker, a instalação como app e os lembretes só funcionam em `http://localhost` ou em HTTPS.
 
 Os dados de uma cópia local ficam separados dos dados do site oficial, porque o navegador separa o armazenamento por endereço.
 
@@ -98,6 +107,18 @@ As despesas recorrentes são mantidas com 12 meses de ocorrências à frente. Ca
 - **Exportar despesas** gera um CSV que abre no Excel ou no Google Planilhas. **Relatório do mês** abre a impressão, de onde é possível salvar em PDF.
 
 O arquivo de backup não é criptografado.
+
+## Conta e sincronização (opcional)
+
+- **O que vai para o servidor:** o e-mail e a senha da conta (Supabase Auth, com confirmação por e-mail) e uma linha na tabela `backups` com `dados_cifrados`, `iv`, `sal` e `versao`. Cada pessoa só lê e altera a própria linha (Row Level Security).
+- **Entrar com Google (opcional):** pelo OAuth do Supabase (`/auth/v1/authorize?provider=google`). O botão só aparece quando o provedor está ativo no painel (`/auth/v1/settings`). A senha de criptografia continua obrigatória.
+- **Criptografia:** o mesmo JSON do backup é compactado (gzip) e criptografado no aparelho com AES-GCM de 256 bits e um vetor de inicialização novo a cada envio. A chave vem de PBKDF2 com SHA-256, 600 mil iterações e sal aleatório de 16 bytes, a partir da senha de criptografia, que é diferente da senha da conta e nunca é enviada. A chave de recuperação é a própria chave em Base64.
+- **Limite:** o backup criptografado precisa caber em 5 MB; acima disso, o app avisa e não envia.
+- **Quando sincroniza:** ao entrar, quando a internet volta, ao voltar para a aba e 5 segundos depois de uma alteração nos dados. Só a aba visível envia.
+- **Conflitos:** o envio só é aceito se a nuvem ainda estiver na versão conhecida pelo aparelho. Se os dois lados mudaram, o app pergunta qual manter e baixa antes um arquivo de segurança da versão descartada (`backup-financeiro-AAAA-MM-DD-antes-da-nuvem.json` ou `-antes-do-aparelho.json`).
+- **Senha de criptografia errada:** nada é enviado nem recriado. Substituir a nuvem só pelo botão "Começar do zero na nuvem", com confirmação e arquivo de segurança antes.
+- **Sugestões de conta:** no máximo uma a cada 7 dias; "Agora não" adia aquela sugestão por 14 dias e, depois de 3 recusas seguidas, elas param. O controle fica em `ofertasConta` e `primeiroUso` no `localStorage` (fora do backup).
+- **Chaves locais:** `nuvemSessao` (e-mail e tokens), `nuvemVersao`, `nuvemAlterado` e `nuvemUltima` no `localStorage`; a chave, se lembrada, fica no IndexedDB `bufunfa-nuvem` como chave não exportável.
 
 ## Atualizações e cache
 

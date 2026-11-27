@@ -4,7 +4,7 @@
   "description": "Controle financeiro pessoal: despesas, receitas, cartões, metas e investimentos. Seus dados ficam só no seu aparelho.",
   "lang": "pt-BR",
   "id": "./",
-  "start_url": "./",
+  "start_url": "./app/",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -17,6 +17,6 @@
     { "src": "assets/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Nova despesa", "url": "./#nova-despesa", "icons": [{ "src": "assets/icones/icone-192.png", "sizes": "192x192" }] }
+    { "name": "Nova despesa", "url": "./app/#nova-despesa", "icons": [{ "src": "assets/icones/icone-192.png", "sizes": "192x192" }] }
   ]
 }
